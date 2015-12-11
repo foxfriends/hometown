@@ -1,0 +1,37 @@
+{
+  "name": "hometown",
+  "version": "1.0.0",
+  "description": "Run your own town, have your friends over, and make a happy life for all your townsfolk",
+  "main": "server.es6",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "town",
+    "slice",
+    "of",
+    "life",
+    "animal",
+    "crossing",
+    "animal",
+    "crossing",
+    "village",
+    "happy",
+    "home",
+    "relaxing"
+  ],
+  "author": "Cameron Eldridge",
+  "license": "MIT",
+  "dependencies": {
+    "pg": "^4.4.3"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OinkIguana/hometown.git"
+  },
+  "bugs": {
+    "url": "https://github.com/OinkIguana/hometown/issues"
+  },
+  "homepage": "https://github.com/OinkIguana/hometown#readme"
+}
