@@ -60,9 +60,9 @@
 	
 	var _draw2 = _interopRequireDefault(_draw);
 	
-	var _sprite = __webpack_require__(245);
+	var _sprite = __webpack_require__(246);
 	
-	var _util = __webpack_require__(246);
+	var _util = __webpack_require__(245);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -14598,6 +14598,8 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var socket = exports.socket = (0, _socket2.default)();
+	
+	exports.default = { socket: socket };
 
 /***/ },
 /* 194 */
@@ -21940,9 +21942,11 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.PixelData = exports.Path = exports.transformed = exports.setFont = exports.setShadow = exports.setLine = exports.setComposite = exports.setAlpha = exports.setColor = exports.clear = exports.sprite = exports.pixelData = exports.image = exports.textWidth = exports.text = exports.circle = exports.point = exports.rect = undefined;
+	exports.PixelData = exports.Path = exports.transformed = exports.setFont = exports.setShadow = exports.setLine = exports.setComposite = exports.setAlpha = exports.setColor = exports.clear = exports.pixelData = exports.sprite = exports.image = exports.textWidth = exports.text = exports.circle = exports.point = exports.rect = undefined;
 	
 	var _canvas = __webpack_require__(192);
+	
+	var _util = __webpack_require__(245);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -21994,15 +21998,12 @@
 	    _canvas.c2d.drawImage.apply(_canvas.c2d, arguments);
 	};
 	
-	var pixelData = exports.pixelData = function pixelData(img, x, y) {
-	    _canvas.c2d.putImageData(img[IMAGE_DATA], x, y);
+	var sprite = exports.sprite = function sprite(spr, subimage, x, y) {
+	    _canvas.c2d.drawImage.apply(_canvas.c2d, [spr.image].concat(_toConsumableArray(spr.frames[subimage]), [x, y, spr.frames[subimage].h, spr.frames[subimage].w]));
 	};
 	
-	var sprite = exports.sprite = function sprite(_sprite, subimage, x, y) {
-	    var _console;
-	
-	    (_console = console).log.apply(_console, [_sprite.image].concat(_toConsumableArray(_sprite.frames[subimage]), [x, y, _sprite.frames[subimage].h, _sprite.frames[subimage].w]));
-	    _canvas.c2d.drawImage.apply(_canvas.c2d, [_sprite.image].concat(_toConsumableArray(_sprite.frames[subimage]), [x, y, _sprite.frames[subimage].h, _sprite.frames[subimage].w]));
+	var pixelData = exports.pixelData = function pixelData(pd, x, y) {
+	    pd.draw(x, y);
 	};
 	
 	var clear = exports.clear = function clear() {
@@ -22010,10 +22011,10 @@
 	};
 	
 	var setColor = exports.setColor = function setColor(c) {
-	    return _canvas.c2d.fillStyle = _canvas.c2d.strokeStyle = c;
+	    _canvas.c2d.fillStyle = _canvas.c2d.strokeStyle = typeof c === 'number' ? '#' + (0, _util.pad)(c.toString(16), 6, '0') : c;
 	};
 	var setAlpha = exports.setAlpha = function setAlpha(a) {
-	    return _canvas.c2d.globalAlpha = a;
+	    return _canvas.c2d.globalAlpha = (0, _util.range)(0, 1, 0).constrain(a);
 	};
 	var setComposite = exports.setComposite = function setComposite(o) {
 	    return _canvas.c2d.globalCompositeOperation = o;
@@ -22026,7 +22027,11 @@
 	    var join = _ref.join;
 	    var width = _ref.width;
 	    var miter = _ref.miter;
+	    var reset = _ref.reset;
 	
+	    if (reset === true) {
+	        return setLine({ cap: 'butt', join: 'miter', width: 1, miter: 10 });
+	    }
 	    if (cap !== undefined) {
 	        _canvas.c2d.lineCap = cap;
 	    }
@@ -22050,7 +22055,7 @@
 	    var reset = _ref2.reset;
 	
 	    if (reset === true) {
-	        return setShadow({ x: 0, y: 0, blur: 0, color: 'black' });
+	        return setShadow({ x: 0, y: 0, blur: 0, color: '#000000' });
 	    }
 	    if (x !== undefined) {
 	        _canvas.c2d.shadowOffsetX = x;
@@ -22062,19 +22067,31 @@
 	        _canvas.c2d.shadowBlur = blur;
 	    }
 	    if (color !== undefined) {
-	        _canvas.c2d.shadowColor = color;
+	        _canvas.c2d.shadowColor = typeof color === 'number' ? '#' + (0, _util.pad)(color.toString(16), 6, '0') : color;
 	    }
 	};
+	
+	var fontSize = 10;
+	var fontFamily = 'sans-serif';
 	var setFont = exports.setFont = function setFont() {
 	    var _ref3 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 	
-	    var font = _ref3.font;
+	    var family = _ref3.family;
+	    var size = _ref3.size;
 	    var align = _ref3.align;
 	    var baseline = _ref3.baseline;
+	    var reset = _ref3.reset;
 	
-	    if (font !== undefined) {
-	        _canvas.c2d.font = font;
+	    if (reset === true) {
+	        return setFont({ family: 'sans-serif', size: 10, align: 'start', baseline: 'alphabetic' });
 	    }
+	    if (family !== undefined) {
+	        fontFamily = family;
+	    }
+	    if (size !== undefined) {
+	        fontSize = size;
+	    }
+	    _canvas.c2d.font = fontSize + 'px ' + fontFamily;
 	    if (align !== undefined) {
 	        _canvas.c2d.textAlign = align;
 	    }
@@ -22090,17 +22107,20 @@
 	    }
 	
 	    _canvas.c2d.save();
-	    if (opts.scale) {
-	        _canvas.c2d.scale(opts.scale.x || 1, opts.scale.y || 1);
-	    }
-	    if (opts.rotate) {
-	        _canvas.c2d.rotate(opts.rotate);
-	    }
-	    if (opts.translate) {
-	        _canvas.c2d.translate(opts.translate.x || 0, opts.translate.y || 0);
-	    }
-	    if (opts.transform) {
-	        _canvas.c2d.transform(opts.transform);
+	
+	    if (opts) {
+	        if (opts.scale) {
+	            _canvas.c2d.scale(opts.scale.x || 1, opts.scale.y || 1);
+	        }
+	        if (opts.rotate) {
+	            _canvas.c2d.rotate(opts.rotate);
+	        }
+	        if (opts.translate) {
+	            _canvas.c2d.translate(opts.translate.x || 0, opts.translate.y || 0);
+	        }
+	        if (opts.transform) {
+	            _canvas.c2d.transform.apply(_canvas.c2d, _toConsumableArray(opts.transform));
+	        }
 	    }
 	
 	    var _iteratorNormalCompletion = true;
@@ -22227,13 +22247,34 @@
 	            return this;
 	        }
 	    }, {
+	        key: 'do',
+	        value: function _do(fn) {
+	            var _this = this;
+	
+	            this[STACK].push(function () {
+	                return fn(_this);
+	            });
+	            return this;
+	        }
+	    }, {
 	        key: 'fill',
 	        value: function fill() {
+	            var _this2 = this;
+	
 	            var _ref4 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 	
 	            var color = _ref4.color;
 	            var shadow = _ref4.shadow;
-	            var offset = _ref4.offset;
+	            var transform = _ref4.transform;
+	
+	            if (transform !== undefined) {
+	                transformed(transform, function () {
+	                    return _this2.fill({ color: color, shadow: shadow });
+	                });
+	                return this;
+	            }
+	
+	            _canvas.c2d.save();
 	
 	            if (color !== undefined) {
 	                setColor(color);
@@ -22241,24 +22282,32 @@
 	            if (shadow !== undefined) {
 	                setShadow(shadow);
 	            }
-	            if (offset !== undefined) {
-	                var x = offset.x || 0;
-	                var y = offset.y || 0;
 	
-	                _canvas.c2d.translate(x, y);
-	            }
 	            this[GENERATE]();
 	            _canvas.c2d.fill();
+	
+	            _canvas.c2d.restore();
 	            return this;
 	        }
 	    }, {
 	        key: 'stroke',
 	        value: function stroke() {
+	            var _this3 = this;
+	
 	            var _ref5 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 	
 	            var color = _ref5.color;
 	            var line = _ref5.line;
-	            var offset = _ref5.offset;
+	            var transform = _ref5.transform;
+	
+	            if (transform !== undefined) {
+	                transformed(transform, function () {
+	                    return _this3.stroke({ color: color, line: line });
+	                });
+	                return this;
+	            }
+	
+	            _canvas.c2d.save();
 	
 	            if (color !== undefined) {
 	                setColor(color);
@@ -22266,41 +22315,39 @@
 	            if (line !== undefined) {
 	                setLine(line);
 	            }
-	            if (offset !== undefined) {
-	                var x = offset.x || 0;
-	                var y = offset.y || 0;
 	
-	                _canvas.c2d.translate(x, y);
-	            }
 	            this[GENERATE]();
 	            _canvas.c2d.stroke();
-	            if (offset !== undefined) {
-	                var x = offset.x || 0;
-	                var y = offset.y || 0;
 	
-	                _canvas.c2d.translate(-x, -y);
-	            }
+	            _canvas.c2d.restore();
 	            return this;
 	        }
 	    }, {
 	        key: 'doInside',
-	        value: function doInside(opts) {
+	        value: function doInside(transform) {
+	            var _this4 = this;
+	
 	            for (var _len8 = arguments.length, todo = Array(_len8 > 1 ? _len8 - 1 : 0), _key8 = 1; _key8 < _len8; _key8++) {
 	                todo[_key8 - 1] = arguments[_key8];
 	            }
 	
-	            _canvas.c2d.save();
-	            // Optional options
-	            if (typeof opts === 'function') {
-	                todo = [opts].concat(_toConsumableArray(todo));
-	            } else {
-	                var offset = opts.offset;
-	
-	                _canvas.c2d.translate(offset.x || 0, offset.y || 0);
+	            // Optional transform
+	            if (transform !== undefined && todo.length !== 0) {
+	                if (typeof transform !== 'function') {
+	                    transformed(transform, function () {
+	                        return _this4.doInside.apply(_this4, _toConsumableArray(todo));
+	                    });
+	                    return this;
+	                } else {
+	                    todo = [transform].concat(_toConsumableArray(todo));
+	                }
 	            }
-	            setShadow({ reset: true });
+	
+	            _canvas.c2d.save();
+	            setShadow({ reset: true }); // Clip doesn't work if shadow is not default??
 	            this[GENERATE]();
 	            _canvas.c2d.clip();
+	
 	            var _iteratorNormalCompletion2 = true;
 	            var _didIteratorError2 = false;
 	            var _iteratorError2 = undefined;
@@ -22368,6 +22415,11 @@
 	                }
 	            }
 	        }
+	    }, {
+	        key: 'length',
+	        get: function get() {
+	            return this[STACK].length - 1;
+	        }
 	    }]);
 	
 	    return Path;
@@ -22409,7 +22461,7 @@
 	                    return new Proxy(target, {
 	                        get: function get(target, y) {
 	                            var ind = 4 * (y * target[IMAGE_DATA].width + x);
-	                            return target[IMAGE_DATA].data.slice(ind, ind + 4);
+	                            return [].concat(_toConsumableArray(target[IMAGE_DATA].data.slice(ind, ind + 4)));
 	                        },
 	                        set: function set(target, y, value) {
 	                            var ind = 4 * (y * target[IMAGE_DATA].width + x);
@@ -22426,7 +22478,7 @@
 	                    });
 	                },
 	                set: function set() {
-	                    throw 'Cannot set pixel with only one coordinate';
+	                    throw new TypeError('Cannot set pixel with only one coordinate');
 	                }
 	            });
 	        }
@@ -22443,6 +22495,275 @@
 
 /***/ },
 /* 245 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	    Various structures to make things easier
+	*/
+	'use strict';
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var ELEMENTS = Symbol('ELEMENTS');
+	var INDEX = Symbol('INDEX');
+	
+	// A sequence of values, which loops around on itself as you iterate over it
+	
+	var Sequence = exports.Sequence = new Proxy((function () {
+	    function _class() {
+	        _classCallCheck(this, _class);
+	    }
+	
+	    return _class;
+	})(), {
+	    construct: function construct(target, args) {
+	        var InnerSequence = (function () {
+	            function InnerSequence() {
+	                _classCallCheck(this, InnerSequence);
+	
+	                for (var _len = arguments.length, elements = Array(_len), _key = 0; _key < _len; _key++) {
+	                    elements[_key] = arguments[_key];
+	                }
+	
+	                this[ELEMENTS] = elements;
+	                this[INDEX] = 0;
+	            }
+	
+	            _createClass(InnerSequence, [{
+	                key: Symbol.iterator,
+	                value: regeneratorRuntime.mark(function value() {
+	                    return regeneratorRuntime.wrap(function value$(_context) {
+	                        while (1) {
+	                            switch (_context.prev = _context.next) {
+	                                case 0:
+	                                    return _context.delegateYield(this[ELEMENTS], 't0', 1);
+	
+	                                case 1:
+	                                case 'end':
+	                                    return _context.stop();
+	                            }
+	                        }
+	                    }, value, this);
+	                })
+	            }, {
+	                key: 'infinite',
+	                value: function infinite() {
+	                    var that = this;
+	                    return regeneratorRuntime.mark(function _callee() {
+	                        return regeneratorRuntime.wrap(function _callee$(_context2) {
+	                            while (1) {
+	                                switch (_context2.prev = _context2.next) {
+	                                    case 0:
+	                                        if (false) {
+	                                            _context2.next = 5;
+	                                            break;
+	                                        }
+	
+	                                        _context2.next = 3;
+	                                        return that.next().value;
+	
+	                                    case 3:
+	                                        _context2.next = 0;
+	                                        break;
+	
+	                                    case 5:
+	                                    case 'end':
+	                                        return _context2.stop();
+	                                }
+	                            }
+	                        }, _callee, this);
+	                    })();
+	                }
+	            }, {
+	                key: 'next',
+	                value: function next() {
+	                    return { done: false, value: this[ELEMENTS][this.index++] };
+	                }
+	            }, {
+	                key: 'length',
+	                get: function get() {
+	                    return this[ELEMENTS].length;
+	                }
+	            }, {
+	                key: 'current',
+	                get: function get() {
+	                    return this[ELEMENTS][this[INDEX]];
+	                }
+	            }, {
+	                key: 'index',
+	                get: function get() {
+	                    return this[INDEX];
+	                },
+	                set: function set(x) {
+	                    return this[INDEX] = x % this[ELEMENTS].length;
+	                }
+	            }]);
+	
+	            return InnerSequence;
+	        })();
+	        return new Proxy(new (Function.prototype.bind.apply(InnerSequence, [null].concat(_toConsumableArray(args))))(), {
+	            get: function get(target, prop) {
+	                return (typeof prop === 'undefined' ? 'undefined' : _typeof(prop)) !== 'symbol' && !isNaN(prop) ? target[ELEMENTS][(target.length + prop % target.length) % target.length] : target[prop];
+	            },
+	            set: function set(target, prop, value) {
+	                if ((typeof prop === 'undefined' ? 'undefined' : _typeof(prop)) !== 'symbol' && !isNaN(prop)) {
+	                    target[ELEMENTS][(target.length + prop % target.length) % target.length] = value;
+	                    return true;
+	                } else {
+	                    target[prop] = value;
+	                    return true;
+	                }
+	            }
+	        });
+	    }
+	});
+	
+	var MIN = Symbol('MIN');
+	var MAX = Symbol('MAX');
+	var STEP = Symbol('STEP');
+	// A range of values (similar to Python)
+	
+	var Range = exports.Range = new Proxy((function () {
+	    function _class2() {
+	        _classCallCheck(this, _class2);
+	    }
+	
+	    return _class2;
+	})(), {
+	    construct: function construct(target, args) {
+	        var InternalRange = (function () {
+	            function InternalRange(min, max) {
+	                var step = arguments.length <= 2 || arguments[2] === undefined ? 1 : arguments[2];
+	
+	                _classCallCheck(this, InternalRange);
+	
+	                this[MIN] = min;
+	                this[MAX] = max;
+	                this[STEP] = step;
+	            }
+	
+	            _createClass(InternalRange, [{
+	                key: Symbol.iterator,
+	                value: regeneratorRuntime.mark(function value() {
+	                    var i;
+	                    return regeneratorRuntime.wrap(function value$(_context3) {
+	                        while (1) {
+	                            switch (_context3.prev = _context3.next) {
+	                                case 0:
+	                                    if (!(this[STEP] === 0)) {
+	                                        _context3.next = 2;
+	                                        break;
+	                                    }
+	
+	                                    throw new TypeError('Cannot iterate with 0 step');
+	
+	                                case 2:
+	                                    i = this[MIN];
+	
+	                                case 3:
+	                                    if (!(i < this[MAX])) {
+	                                        _context3.next = 9;
+	                                        break;
+	                                    }
+	
+	                                    _context3.next = 6;
+	                                    return i;
+	
+	                                case 6:
+	                                    i += this[STEP];
+	                                    _context3.next = 3;
+	                                    break;
+	
+	                                case 9:
+	                                case 'end':
+	                                    return _context3.stop();
+	                            }
+	                        }
+	                    }, value, this);
+	                })
+	            }, {
+	                key: 'constrain',
+	                value: function constrain(x) {
+	                    if (this[STEP] !== 0) {
+	                        x = this[MIN] + Math.round((x - this[MIN]) / this[STEP]) * this[STEP];
+	                    }
+	                    return Math.min(Math.max(x, this[MIN]), this[MAX]);
+	                }
+	            }, {
+	                key: 'min',
+	                get: function get() {
+	                    return this[MIN];
+	                },
+	                set: function set(x) {
+	                    return this[MIN] = x;
+	                }
+	            }, {
+	                key: 'max',
+	                get: function get() {
+	                    return this[MAX];
+	                },
+	                set: function set(x) {
+	                    return this[MAX] = x;
+	                }
+	            }, {
+	                key: 'step',
+	                get: function get() {
+	                    return this[STEP];
+	                },
+	                set: function set(x) {
+	                    return this[STEP] = x;
+	                }
+	            }, {
+	                key: 'length',
+	                get: function get() {
+	                    return Math.ceil((this[MAX] - this[MIN]) / this[STEP]);
+	                }
+	            }]);
+	
+	            return InternalRange;
+	        })();
+	        return new Proxy(new (Function.prototype.bind.apply(InternalRange, [null].concat(_toConsumableArray(args))))(), {
+	            has: function has(target, x) {
+	                return x >= target.min && x < target.max && (target.step === 0 || (x - target.min) % target.step === 0);
+	            }
+	        });
+	    }
+	});
+	
+	// Function produces a range in array form
+	var range = exports.range = function range() {
+	    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	        args[_key2] = arguments[_key2];
+	    }
+	
+	    return new (Function.prototype.bind.apply(Range, [null].concat(args)))();
+	};
+	
+	// Pads str with char until its length is len
+	var pad = exports.pad = function pad(str) {
+	    var len = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+	    var char = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
+	
+	    if (char === '') {
+	        throw new TypeError('Cannot pad with no character');
+	    }
+	    return str.length >= len ? str : pad(char + str, len, char);
+	};
+	
+	exports.default = { Sequence: Sequence, Range: Range, range: range, pad: pad };
+
+/***/ },
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -22490,7 +22811,7 @@
 	    _createClass(Sprite, [{
 	        key: 'draw',
 	        value: function draw(subimage, x, y) {
-	            _draw3.default.image.apply(_draw3.default, [this[IMAGE]].concat(_toConsumableArray(this.frames[subimage]), [x, y]));
+	            _draw3.default.sprite(this, subimage, x, y);
 	        }
 	    }, {
 	        key: 'width',
@@ -22525,7 +22846,7 @@
 	                    });
 	                },
 	                set: function set() {
-	                    throw 'Sprite frames are read-only';
+	                    throw new TypeError('Sprite frames are read-only');
 	                }
 	            });
 	        }
@@ -22533,226 +22854,8 @@
 	
 	    return Sprite;
 	})();
-
-/***/ },
-/* 246 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-	    Various structures to make things easier
-	*/
-	'use strict';
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var ELEMENTS = Symbol('ELEMENTS');
-	var INDEX = Symbol('INDEX');
-	
-	// A sequence of values, which loops around on itself as you iterate over it
-	
-	var Sequence = exports.Sequence = (function () {
-	    function Sequence() {
-	        _classCallCheck(this, Sequence);
-	
-	        for (var _len = arguments.length, elements = Array(_len), _key = 0; _key < _len; _key++) {
-	            elements[_key] = arguments[_key];
-	        }
-	
-	        this[ELEMENTS] = elements;
-	        this[INDEX] = 0;
-	    }
-	
-	    _createClass(Sequence, [{
-	        key: Symbol.iterator,
-	        value: regeneratorRuntime.mark(function value() {
-	            return regeneratorRuntime.wrap(function value$(_context) {
-	                while (1) {
-	                    switch (_context.prev = _context.next) {
-	                        case 0:
-	                            return _context.delegateYield(this[ELEMENTS], 't0', 1);
-	
-	                        case 1:
-	                        case 'end':
-	                            return _context.stop();
-	                    }
-	                }
-	            }, value, this);
-	        })
-	    }, {
-	        key: 'next',
-	        value: function next() {
-	            return { done: false, value: this[ELEMENTS][this.index++] };
-	        }
-	    }, {
-	        key: 'elements',
-	        get: function get() {
-	            return new Proxy(this, {
-	                get: function get(target, index) {
-	                    return target[ELEMENTS][index];
-	                },
-	                set: function set() {
-	                    throw 'Sequence elements are read-only';
-	                }
-	            });
-	        }
-	    }, {
-	        key: 'length',
-	        get: function get() {
-	            return this[ELEMENTS].length;
-	        }
-	    }, {
-	        key: 'current',
-	        get: function get() {
-	            return this[ELEMENTS][this[INDEX]];
-	        }
-	    }, {
-	        key: 'index',
-	        get: function get() {
-	            return this[INDEX];
-	        },
-	        set: function set(x) {
-	            this[INDEX] = x % this[ELEMENTS].length;
-	            return this[INDEX];
-	        }
-	    }, {
-	        key: 'infinite',
-	        get: function get() {
-	            var that = this;
-	            return regeneratorRuntime.mark(function _callee() {
-	                return regeneratorRuntime.wrap(function _callee$(_context2) {
-	                    while (1) {
-	                        switch (_context2.prev = _context2.next) {
-	                            case 0:
-	                                if (false) {
-	                                    _context2.next = 5;
-	                                    break;
-	                                }
-	
-	                                _context2.next = 3;
-	                                return that.next().value;
-	
-	                            case 3:
-	                                _context2.next = 0;
-	                                break;
-	
-	                            case 5:
-	                            case 'end':
-	                                return _context2.stop();
-	                        }
-	                    }
-	                }, _callee, this);
-	            })();
-	        }
-	    }]);
-	
-	    return Sequence;
-	})();
-	
-	var MIN = Symbol('MIN');
-	var MAX = Symbol('MAX');
-	var STEP = Symbol('STEP');
-	// A range of values (similar to Python)
-	
-	var Range = exports.Range = new Proxy((function () {
-	    function _class() {
-	        _classCallCheck(this, _class);
-	    }
-	
-	    return _class;
-	})(), {
-	    construct: function construct(target, args) {
-	        var InternalRange = (function () {
-	            function InternalRange(min, max) {
-	                var step = arguments.length <= 2 || arguments[2] === undefined ? 1 : arguments[2];
-	
-	                _classCallCheck(this, InternalRange);
-	
-	                this[MIN] = min;
-	                this[MAX] = max;
-	                this[STEP] = step;
-	            }
-	
-	            _createClass(InternalRange, [{
-	                key: Symbol.iterator,
-	                value: regeneratorRuntime.mark(function value() {
-	                    var i;
-	                    return regeneratorRuntime.wrap(function value$(_context3) {
-	                        while (1) {
-	                            switch (_context3.prev = _context3.next) {
-	                                case 0:
-	                                    i = this[MIN];
-	
-	                                case 1:
-	                                    if (!(i < this[MAX])) {
-	                                        _context3.next = 7;
-	                                        break;
-	                                    }
-	
-	                                    _context3.next = 4;
-	                                    return i;
-	
-	                                case 4:
-	                                    i += this[STEP];
-	                                    _context3.next = 1;
-	                                    break;
-	
-	                                case 7:
-	                                case 'end':
-	                                    return _context3.stop();
-	                            }
-	                        }
-	                    }, value, this);
-	                })
-	            }, {
-	                key: 'min',
-	                get: function get() {
-	                    return this[MIN];
-	                }
-	            }, {
-	                key: 'max',
-	                get: function get() {
-	                    return this[MAX];
-	                }
-	            }, {
-	                key: 'step',
-	                get: function get() {
-	                    return this[STEP];
-	                }
-	            }, {
-	                key: 'length',
-	                get: function get() {
-	                    return Math.ceil((this[MAX] - this[MIN]) / this[STEP]);
-	                }
-	            }]);
-	
-	            return InternalRange;
-	        })();
-	        return new Proxy(new (Function.prototype.bind.apply(InternalRange, [null].concat(_toConsumableArray(args))))(), {
-	            has: function has(target, x) {
-	                return x >= target.min && x < target.max;
-	            }
-	        });
-	    }
-	});
-	
-	// Function produces a range in array form
-	var range = exports.range = function range() {
-	    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-	        args[_key2] = arguments[_key2];
-	    }
-	
-	    return [].concat(_toConsumableArray(new (Function.prototype.bind.apply(Range, [null].concat(args)))()));
-	};
-	
-	exports.default = { Sequence: Sequence, Range: Range, range: range };
+	exports.default = { Sprite: Sprite };
 
 /***/ }
 /******/ ]);

@@ -4,6 +4,7 @@
 */
 'use strict';
 import {canvas, c2d} from './canvas.es6';
+import {pad, range} from './util.es6';
 
 const [GENERATE, STACK, IMAGE_DATA] = [Symbol('GENERATE'), Symbol('STACK'), Symbol('IMAGE_DATA')];
 
@@ -42,35 +43,45 @@ export const image = (...args) => {
     c2d.drawImage(...args);
 };
 
-export const pixelData = (img, x, y) => {
-    c2d.putImageData(img[IMAGE_DATA], x, y);
+export const sprite = (spr, subimage, x, y) => {
+    c2d.drawImage(spr.image, ...spr.frames[subimage], x, y, spr.frames[subimage].h, spr.frames[subimage].w);
 };
 
-export const sprite = (sprite, subimage, x, y) => {
-    c2d.drawImage(sprite.image, ...sprite.frames[subimage], x, y, sprite.frames[subimage].h, sprite.frames[subimage].w);
+export const pixelData = (pd, x, y) => {
+    pd.draw(x, y);
 };
 
 export const clear = () => c2d.clearRect(0, 0, canvas.width, canvas.height);
 
-export const setColor = (c) => c2d.fillStyle = c2d.strokeStyle = c;
-export const setAlpha = (a) => c2d.globalAlpha = a;
+export const setColor = (c) => {
+    c2d.fillStyle = c2d.strokeStyle = (typeof c === 'number' ? '#' + pad(c.toString(16), 6, '0') : c);
+};
+export const setAlpha = (a) => c2d.globalAlpha = range(0, 1, 0).constrain(a);
 export const setComposite = (o) => c2d.globalCompositeOperation = o;
 
-export const setLine = ({cap, join, width, miter} = {}) => {
+export const setLine = ({cap, join, width, miter, reset} = {}) => {
+    if(reset === true) { return setLine({cap: 'butt', join: 'miter', width: 1, miter: 10}); }
     if(cap !== undefined)   { c2d.lineCap = cap; }
     if(join !== undefined)  { c2d.lineJoin = join; }
     if(width !== undefined) { c2d.lineWidth = width; }
     if(miter !== undefined) { c2d.miterLimit = miter; }
 };
 export const setShadow = ({x, y, blur, color, reset} = {}) => {
-    if(reset === true) { return setShadow({x: 0, y: 0, blur: 0, color: 'black'}); }
+    if(reset === true) { return setShadow({x: 0, y: 0, blur: 0, color: '#000000'}); }
     if(x !== undefined)     { c2d.shadowOffsetX = x; }
     if(y !== undefined)     { c2d.shadowOffsetY = y; }
     if(blur !== undefined)  { c2d.shadowBlur = blur; }
-    if(color !== undefined) { c2d.shadowColor = color; }
+    if(color !== undefined) {
+        c2d.shadowColor = (typeof color === 'number' ? '#' + pad(color.toString(16), 6, '0') : color);
+    }
 };
-export const setFont = ({font, align, baseline} = {}) => {
-    if(font !== undefined)      { c2d.font = font; }
+
+let [fontSize, fontFamily] = [10, 'sans-serif'];
+export const setFont = ({family, size, align, baseline, reset} = {}) => {
+    if(reset === true) { return setFont({family: 'sans-serif', size: 10, align: 'start', baseline: 'alphabetic'}); }
+    if(family !== undefined)    { fontFamily = family; }
+    if(size !== undefined)      { fontSize = size; }
+    c2d.font = `${fontSize}px ${fontFamily}`;
     if(align !== undefined)     { c2d.textAlign = align; }
     if(baseline !== undefined)  { c2d.textBaseline = baseline; }
 };
@@ -78,12 +89,16 @@ export const setFont = ({font, align, baseline} = {}) => {
 // Transform the context and perform the given function(s)
 export const transformed = (opts, ...todo) => {
     c2d.save();
-    if(opts.scale)      { c2d.scale(opts.scale.x || 1, opts.scale.y || 1);}
-    if(opts.rotate)     { c2d.rotate(opts.rotate); }
-    if(opts.translate)  { c2d.translate(opts.translate.x || 0, opts.translate.y || 0); }
-    if(opts.transform)  { c2d.transform(opts.transform); }
+
+    if(opts) {
+        if(opts.scale)      { c2d.scale(opts.scale.x || 1, opts.scale.y || 1);}
+        if(opts.rotate)     { c2d.rotate(opts.rotate); }
+        if(opts.translate)  { c2d.translate(opts.translate.x || 0, opts.translate.y || 0); }
+        if(opts.transform)  { c2d.transform(...opts.transform); }
+    }
 
     for(let item of todo) { item(); }
+
     c2d.restore();
 };
 
@@ -127,47 +142,65 @@ export const Path = class {
         return this;
     }
 
-    fill({color, shadow, offset} = {}) {
+    do(fn) {
+        this[STACK].push(() => fn(this));
+        return this;
+    }
+
+    fill({color, shadow, transform} = {}) {
+        if(transform !== undefined) {
+            transformed(transform, () => this.fill({color: color, shadow: shadow}));
+            return this;
+        }
+
+        c2d.save();
+
         if(color !== undefined) { setColor(color); }
         if(shadow !== undefined) { setShadow(shadow); }
-        if(offset !== undefined) {
-            const [x, y] = [offset.x || 0, offset.y || 0];
-            c2d.translate(x, y);
-        }
+
         this[GENERATE]();
         c2d.fill();
+
+        c2d.restore();
         return this;
     }
 
-    stroke({color, line, offset} = {}) {
+    stroke({color, line, transform} = {}) {
+        if(transform !== undefined) {
+            transformed(transform, () => this.stroke({color: color, line: line}));
+            return this;
+        }
+
+        c2d.save();
+
         if(color !== undefined) { setColor(color); }
         if(line !== undefined) { setLine(line); }
-        if(offset !== undefined) {
-            const [x, y] = [offset.x || 0, offset.y || 0];
-            c2d.translate(x, y);
-        }
+
         this[GENERATE]();
         c2d.stroke();
-        if(offset !== undefined) {
-            const [x, y] = [offset.x || 0, offset.y || 0];
-            c2d.translate(-x, -y);
-        }
+
+        c2d.restore();
         return this;
     }
 
-    doInside(opts, ...todo) {
-        c2d.save();
-        // Optional options
-        if(typeof opts === 'function') {
-            todo = [opts, ...todo];
-        } else {
-            const {offset} = opts;
-            c2d.translate(offset.x || 0, offset.y || 0);
+    doInside(transform, ...todo) {
+        // Optional transform
+        if(transform !== undefined && todo.length !== 0) {
+            if(typeof transform !== 'function') {
+                transformed(transform, () => this.doInside(...todo));
+                return this;
+            } else {
+                todo = [transform, ...todo];
+            }
         }
-        setShadow({reset: true});
+
+        c2d.save();
+        setShadow({reset: true}); // Clip doesn't work if shadow is not default??
         this[GENERATE]();
         c2d.clip();
+
         for(let item of todo) { item(); }
+
         c2d.restore();
         return this;
     }
@@ -181,6 +214,10 @@ export const Path = class {
         const cp = new Path();
         cp[STACK] = [...this[STACK]];
         return cp;
+    }
+
+    get length() {
+        return this[STACK].length - 1;
     }
 
     [GENERATE]() { for(let item of this[STACK]) { item(); } }
@@ -201,7 +238,7 @@ export const PixelData = class {
                 return new Proxy(target, {
                     get(target, y) {
                         const ind = 4 * (y * target[IMAGE_DATA].width + x);
-                        return target[IMAGE_DATA].data.slice(ind, ind + 4);
+                        return [...target[IMAGE_DATA].data.slice(ind, ind + 4)];
                     },
                     set(target, y, value) {
                         const ind = 4 * (y * target[IMAGE_DATA].width + x);
@@ -211,7 +248,7 @@ export const PixelData = class {
                     }
                 });
             },
-            set() { throw 'Cannot set pixel with only one coordinate'; }
+            set() { throw new TypeError('Cannot set pixel with only one coordinate'); }
         });
     }
     draw(x, y) {

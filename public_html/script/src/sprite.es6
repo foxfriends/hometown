@@ -36,12 +36,13 @@ export const Sprite = class {
                     }
                 });
             },
-            set() { throw 'Sprite frames are read-only'; }
+            set() { throw new TypeError('Sprite frames are read-only'); }
         });
     }
 
     draw(subimage, x, y) {
-        draw.image(this[IMAGE], ...this.frames[subimage], x, y);
+        draw.sprite(this, subimage, x, y);
     }
 };
 
+export default {Sprite};

@@ -7,10 +7,10 @@ import canvas from '../../../script/src/canvas.es6';
 
 describe('canvas.es6', () => {
     it('should export canvas (DOM element)', () => {
-        expect(canvas.canvas).to.be.instanceof(Element);
+        expect(canvas.canvas).to.be.an.instanceof(Element);
     });
     it('should export $canvas (jQuery object)', () => {
-        expect(canvas.$canvas).to.be.instanceof($);
+        expect(canvas.$canvas).to.be.an.instanceof($);
     });
     it('should export c2d (canvas.context2d)', () => {
         expect(canvas.c2d).to.equal(canvas.canvas.getContext('2d'));
