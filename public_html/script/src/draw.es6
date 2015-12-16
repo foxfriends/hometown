@@ -44,7 +44,9 @@ export const image = (...args) => {
 };
 
 export const sprite = (spr, subimage, x, y) => {
-    c2d.drawImage(spr.image, ...spr.frames[subimage], x, y, spr.frames[subimage].h, spr.frames[subimage].w);
+    if(spr.image instanceof Image) {
+        c2d.drawImage(spr.image, ...spr.frames[subimage], x, y, spr.frames[subimage].h, spr.frames[subimage].w);
+    }
 };
 
 export const pixelData = (pd, x, y) => {

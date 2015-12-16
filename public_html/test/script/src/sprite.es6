@@ -7,8 +7,7 @@ import {Sprite} from '../../../script/src/sprite.es6';
 import draw from '../../../script/src/draw.es6';
 
 describe('sprite.es6', () => {
-    const img = new Image();
-    img.src = 'image.png';
+    const img = new Image(); img.src = 'image.png';
     const spr = new Sprite(img, 32, 64, [[0, 0], [32, 0], [64, 0], [0, 64], [32, 64], [64, 64]]);
 
     describe('Sprite', () => {
@@ -51,6 +50,9 @@ describe('sprite.es6', () => {
             describe('#length', () => {
                 it('should return the number of frames', () => {
                     expect(spr.frames.length).to.equal(6);
+                });
+                it('a sprite should always have at least 1 frame', () => {
+                    expect(new Sprite().frames.length).to.equal(1);
                 });
                 it('should be read only', () => {
                     expect(() => spr.frames.length = 3).to.throw(TypeError);

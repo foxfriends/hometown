@@ -1,6 +1,7 @@
 'use strict';
 import express from 'express';
 import socketIO from 'socket.io';
+import db from './database.es6';
 
 const app = express();
 const server = app.listen(8888, () => {

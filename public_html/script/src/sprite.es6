@@ -2,7 +2,6 @@
     Breaks up an image into predefined sections
 */
 'use strict';
-require('babel-polyfill');
 
 import draw from './draw.es6';
 
@@ -15,7 +14,7 @@ export const Sprite = class {
             this[IMAGE] = new Image();
             this[IMAGE].src = image;
         }
-        this[FRAMES] = frames;
+        this[FRAMES] = frames || [[0, 0]];
         this[WIDTH] = frameWidth;
         this[HEIGHT] = frameHeight;
     }

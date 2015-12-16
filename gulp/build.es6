@@ -6,7 +6,6 @@ import webpackConfig from './webpack.config.js';
 import {entries} from './paths.es6';
 
 const err = function(e) {
-    console.error(e);
     this.emit('end');
 };
 

@@ -47,27 +47,12 @@
 	'use strict';
 	
 	__webpack_require__(1);
-	
-	var _jquery = __webpack_require__(191);
-	
-	var _jquery2 = _interopRequireDefault(_jquery);
-	
-	var _canvas = __webpack_require__(192);
-	
-	var _socket = __webpack_require__(193);
-	
-	var _draw = __webpack_require__(244);
-	
-	var _draw2 = _interopRequireDefault(_draw);
-	
-	var _sprite = __webpack_require__(246);
-	
-	var _util = __webpack_require__(245);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var spr = new _sprite.Sprite('/image.png', 32, 32, [[0, 96], [32, 96], [64, 96]]);
-	_draw2.default.sprite(spr, 1, 32, 32);
+
+	__webpack_require__(191);
+
+	__webpack_require__(193);
+
+	__webpack_require__(244);
 
 /***/ },
 /* 1 */
@@ -5334,6 +5319,35 @@
 
 /***/ },
 /* 191 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	    Set up the canvas
+	*/
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.c2d = exports.canvas = exports.$canvas = undefined;
+	
+	var _jquery = __webpack_require__(192);
+	
+	var _jquery2 = _interopRequireDefault(_jquery);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var $canvas = exports.$canvas = (0, _jquery2.default)('canvas#main');
+	var canvas = exports.canvas = $canvas[0];
+	var c2d = exports.c2d = canvas.getContext('2d');
+	
+	// Initialize canvas
+	$canvas.attr('width', $canvas.width()).attr('height', $canvas.height());
+	
+	exports.default = { $canvas: $canvas, canvas: canvas, c2d: c2d };
+
+/***/ },
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -14549,35 +14563,6 @@
 
 
 /***/ },
-/* 192 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-	    Set up the canvas
-	*/
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.c2d = exports.canvas = exports.$canvas = undefined;
-	
-	var _jquery = __webpack_require__(191);
-	
-	var _jquery2 = _interopRequireDefault(_jquery);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var $canvas = exports.$canvas = (0, _jquery2.default)('canvas#main');
-	var canvas = exports.canvas = $canvas[0];
-	var c2d = exports.c2d = canvas.getContext('2d');
-	
-	// Initialize canvas
-	$canvas.attr('width', $canvas.width()).attr('height', $canvas.height());
-	
-	exports.default = { $canvas: $canvas, canvas: canvas, c2d: c2d };
-
-/***/ },
 /* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -21929,577 +21914,6 @@
 /* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/*
-	    Wrapper around the default canvas drawing functions to make them more usable
-	    and easier to improve upon
-	*/
-	'use strict';
-	
-	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; })();
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.PixelData = exports.Path = exports.transformed = exports.setFont = exports.setShadow = exports.setLine = exports.setComposite = exports.setAlpha = exports.setColor = exports.clear = exports.pixelData = exports.sprite = exports.image = exports.textWidth = exports.text = exports.circle = exports.point = exports.rect = undefined;
-	
-	var _canvas = __webpack_require__(192);
-	
-	var _util = __webpack_require__(245);
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-	
-	var GENERATE = Symbol('GENERATE');
-	var STACK = Symbol('STACK');
-	var IMAGE_DATA = Symbol('IMAGE_DATA');
-	var rect = exports.rect = function rect(x, y, w, h) {
-	    var stroke = arguments.length <= 4 || arguments[4] === undefined ? false : arguments[4];
-	
-	    if (stroke) {
-	        _canvas.c2d.strokeRect(x, y, w, h);
-	    } else {
-	        _canvas.c2d.fillRect(x, y, w, h);
-	    }
-	};
-	
-	var point = exports.point = function point(x, y) {
-	    return _canvas.c2d.fillRect(x, y, 1, 1);
-	};
-	
-	var circle = exports.circle = function circle(x, y, r) {
-	    var stroke = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-	
-	    _canvas.c2d.beginPath();
-	    _canvas.c2d.arc(x, y, r, 0, Math.PI * 2);
-	    if (stroke) {
-	        _canvas.c2d.stroke();
-	    } else {
-	        _canvas.c2d.fill();
-	    }
-	};
-	
-	var text = exports.text = function text(str, x, y) {
-	    var stroke = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-	
-	    if (stroke) {
-	        _canvas.c2d.strokeText(str, x, y);
-	    } else {
-	        _canvas.c2d.fillText(str, x, y);
-	    }
-	};
-	var textWidth = exports.textWidth = function textWidth(str) {
-	    return _canvas.c2d.measureText(str).width;
-	};
-	
-	var image = exports.image = function image() {
-	    _canvas.c2d.drawImage.apply(_canvas.c2d, arguments);
-	};
-	
-	var sprite = exports.sprite = function sprite(spr, subimage, x, y) {
-	    _canvas.c2d.drawImage.apply(_canvas.c2d, [spr.image].concat(_toConsumableArray(spr.frames[subimage]), [x, y, spr.frames[subimage].h, spr.frames[subimage].w]));
-	};
-	
-	var pixelData = exports.pixelData = function pixelData(pd, x, y) {
-	    pd.draw(x, y);
-	};
-	
-	var clear = exports.clear = function clear() {
-	    return _canvas.c2d.clearRect(0, 0, _canvas.canvas.width, _canvas.canvas.height);
-	};
-	
-	var setColor = exports.setColor = function setColor(c) {
-	    _canvas.c2d.fillStyle = _canvas.c2d.strokeStyle = typeof c === 'number' ? '#' + (0, _util.pad)(c.toString(16), 6, '0') : c;
-	};
-	var setAlpha = exports.setAlpha = function setAlpha(a) {
-	    return _canvas.c2d.globalAlpha = (0, _util.range)(0, 1, 0).constrain(a);
-	};
-	var setComposite = exports.setComposite = function setComposite(o) {
-	    return _canvas.c2d.globalCompositeOperation = o;
-	};
-	
-	var setLine = exports.setLine = function setLine() {
-	    var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	
-	    var cap = _ref.cap;
-	    var join = _ref.join;
-	    var width = _ref.width;
-	    var miter = _ref.miter;
-	    var reset = _ref.reset;
-	
-	    if (reset === true) {
-	        return setLine({ cap: 'butt', join: 'miter', width: 1, miter: 10 });
-	    }
-	    if (cap !== undefined) {
-	        _canvas.c2d.lineCap = cap;
-	    }
-	    if (join !== undefined) {
-	        _canvas.c2d.lineJoin = join;
-	    }
-	    if (width !== undefined) {
-	        _canvas.c2d.lineWidth = width;
-	    }
-	    if (miter !== undefined) {
-	        _canvas.c2d.miterLimit = miter;
-	    }
-	};
-	var setShadow = exports.setShadow = function setShadow() {
-	    var _ref2 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	
-	    var x = _ref2.x;
-	    var y = _ref2.y;
-	    var blur = _ref2.blur;
-	    var color = _ref2.color;
-	    var reset = _ref2.reset;
-	
-	    if (reset === true) {
-	        return setShadow({ x: 0, y: 0, blur: 0, color: '#000000' });
-	    }
-	    if (x !== undefined) {
-	        _canvas.c2d.shadowOffsetX = x;
-	    }
-	    if (y !== undefined) {
-	        _canvas.c2d.shadowOffsetY = y;
-	    }
-	    if (blur !== undefined) {
-	        _canvas.c2d.shadowBlur = blur;
-	    }
-	    if (color !== undefined) {
-	        _canvas.c2d.shadowColor = typeof color === 'number' ? '#' + (0, _util.pad)(color.toString(16), 6, '0') : color;
-	    }
-	};
-	
-	var fontSize = 10;
-	var fontFamily = 'sans-serif';
-	var setFont = exports.setFont = function setFont() {
-	    var _ref3 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	
-	    var family = _ref3.family;
-	    var size = _ref3.size;
-	    var align = _ref3.align;
-	    var baseline = _ref3.baseline;
-	    var reset = _ref3.reset;
-	
-	    if (reset === true) {
-	        return setFont({ family: 'sans-serif', size: 10, align: 'start', baseline: 'alphabetic' });
-	    }
-	    if (family !== undefined) {
-	        fontFamily = family;
-	    }
-	    if (size !== undefined) {
-	        fontSize = size;
-	    }
-	    _canvas.c2d.font = fontSize + 'px ' + fontFamily;
-	    if (align !== undefined) {
-	        _canvas.c2d.textAlign = align;
-	    }
-	    if (baseline !== undefined) {
-	        _canvas.c2d.textBaseline = baseline;
-	    }
-	};
-	
-	// Transform the context and perform the given function(s)
-	var transformed = exports.transformed = function transformed(opts) {
-	    for (var _len = arguments.length, todo = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	        todo[_key - 1] = arguments[_key];
-	    }
-	
-	    _canvas.c2d.save();
-	
-	    if (opts) {
-	        if (opts.scale) {
-	            _canvas.c2d.scale(opts.scale.x || 1, opts.scale.y || 1);
-	        }
-	        if (opts.rotate) {
-	            _canvas.c2d.rotate(opts.rotate);
-	        }
-	        if (opts.translate) {
-	            _canvas.c2d.translate(opts.translate.x || 0, opts.translate.y || 0);
-	        }
-	        if (opts.transform) {
-	            _canvas.c2d.transform.apply(_canvas.c2d, _toConsumableArray(opts.transform));
-	        }
-	    }
-	
-	    var _iteratorNormalCompletion = true;
-	    var _didIteratorError = false;
-	    var _iteratorError = undefined;
-	
-	    try {
-	        for (var _iterator = todo[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	            var item = _step.value;
-	            item();
-	        }
-	    } catch (err) {
-	        _didIteratorError = true;
-	        _iteratorError = err;
-	    } finally {
-	        try {
-	            if (!_iteratorNormalCompletion && _iterator.return) {
-	                _iterator.return();
-	            }
-	        } finally {
-	            if (_didIteratorError) {
-	                throw _iteratorError;
-	            }
-	        }
-	    }
-	
-	    _canvas.c2d.restore();
-	};
-	
-	// Chained, saveable, easy to use context2d paths
-	var Path = exports.Path = (function () {
-	    function Path() {
-	        _classCallCheck(this, Path);
-	
-	        this[STACK] = [function () {
-	            return _canvas.c2d.beginPath();
-	        }];
-	    }
-	
-	    _createClass(Path, [{
-	        key: 'move',
-	        value: function move() {
-	            for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-	                args[_key2] = arguments[_key2];
-	            }
-	
-	            this[STACK].push(function () {
-	                return _canvas.c2d.moveTo.apply(_canvas.c2d, args);
-	            });
-	            return this;
-	        }
-	    }, {
-	        key: 'line',
-	        value: function line() {
-	            for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-	                args[_key3] = arguments[_key3];
-	            }
-	
-	            this[STACK].push(function () {
-	                return _canvas.c2d.lineTo.apply(_canvas.c2d, args);
-	            });
-	            return this;
-	        }
-	    }, {
-	        key: 'rect',
-	        value: function rect() {
-	            for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-	                args[_key4] = arguments[_key4];
-	            }
-	
-	            this[STACK].push(function () {
-	                return _canvas.c2d.rect.apply(_canvas.c2d, args);
-	            });
-	            return this;
-	        }
-	    }, {
-	        key: 'arc',
-	        value: function arc() {
-	            for (var _len5 = arguments.length, args = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
-	                args[_key5] = arguments[_key5];
-	            }
-	
-	            this[STACK].push(function () {
-	                return _canvas.c2d.arc.apply(_canvas.c2d, args);
-	            });
-	            return this;
-	        }
-	    }, {
-	        key: 'curve',
-	        value: function curve() {
-	            for (var _len6 = arguments.length, args = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
-	                args[_key6] = arguments[_key6];
-	            }
-	
-	            this[STACK].push(function () {
-	                return _canvas.c2d.arcTo.apply(_canvas.c2d, args);
-	            });
-	            return this;
-	        }
-	    }, {
-	        key: 'bezier',
-	        value: function bezier() {
-	            for (var _len7 = arguments.length, args = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
-	                args[_key7] = arguments[_key7];
-	            }
-	
-	            if (args.length === 6) {
-	                this[STACK].push(function () {
-	                    return _canvas.c2d.bezierCurveTo.apply(_canvas.c2d, args);
-	                });
-	            } else {
-	                this[STACK].push(function () {
-	                    return _canvas.c2d.quadraticCurveTo.apply(_canvas.c2d, args);
-	                });
-	            }
-	            return this;
-	        }
-	    }, {
-	        key: 'close',
-	        value: function close() {
-	            this[STACK].push(function () {
-	                return _canvas.c2d.closePath();
-	            });
-	            return this;
-	        }
-	    }, {
-	        key: 'do',
-	        value: function _do(fn) {
-	            var _this = this;
-	
-	            this[STACK].push(function () {
-	                return fn(_this);
-	            });
-	            return this;
-	        }
-	    }, {
-	        key: 'fill',
-	        value: function fill() {
-	            var _this2 = this;
-	
-	            var _ref4 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	
-	            var color = _ref4.color;
-	            var shadow = _ref4.shadow;
-	            var transform = _ref4.transform;
-	
-	            if (transform !== undefined) {
-	                transformed(transform, function () {
-	                    return _this2.fill({ color: color, shadow: shadow });
-	                });
-	                return this;
-	            }
-	
-	            _canvas.c2d.save();
-	
-	            if (color !== undefined) {
-	                setColor(color);
-	            }
-	            if (shadow !== undefined) {
-	                setShadow(shadow);
-	            }
-	
-	            this[GENERATE]();
-	            _canvas.c2d.fill();
-	
-	            _canvas.c2d.restore();
-	            return this;
-	        }
-	    }, {
-	        key: 'stroke',
-	        value: function stroke() {
-	            var _this3 = this;
-	
-	            var _ref5 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	
-	            var color = _ref5.color;
-	            var line = _ref5.line;
-	            var transform = _ref5.transform;
-	
-	            if (transform !== undefined) {
-	                transformed(transform, function () {
-	                    return _this3.stroke({ color: color, line: line });
-	                });
-	                return this;
-	            }
-	
-	            _canvas.c2d.save();
-	
-	            if (color !== undefined) {
-	                setColor(color);
-	            }
-	            if (line !== undefined) {
-	                setLine(line);
-	            }
-	
-	            this[GENERATE]();
-	            _canvas.c2d.stroke();
-	
-	            _canvas.c2d.restore();
-	            return this;
-	        }
-	    }, {
-	        key: 'doInside',
-	        value: function doInside(transform) {
-	            var _this4 = this;
-	
-	            for (var _len8 = arguments.length, todo = Array(_len8 > 1 ? _len8 - 1 : 0), _key8 = 1; _key8 < _len8; _key8++) {
-	                todo[_key8 - 1] = arguments[_key8];
-	            }
-	
-	            // Optional transform
-	            if (transform !== undefined && todo.length !== 0) {
-	                if (typeof transform !== 'function') {
-	                    transformed(transform, function () {
-	                        return _this4.doInside.apply(_this4, _toConsumableArray(todo));
-	                    });
-	                    return this;
-	                } else {
-	                    todo = [transform].concat(_toConsumableArray(todo));
-	                }
-	            }
-	
-	            _canvas.c2d.save();
-	            setShadow({ reset: true }); // Clip doesn't work if shadow is not default??
-	            this[GENERATE]();
-	            _canvas.c2d.clip();
-	
-	            var _iteratorNormalCompletion2 = true;
-	            var _didIteratorError2 = false;
-	            var _iteratorError2 = undefined;
-	
-	            try {
-	                for (var _iterator2 = todo[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-	                    var item = _step2.value;
-	                    item();
-	                }
-	            } catch (err) {
-	                _didIteratorError2 = true;
-	                _iteratorError2 = err;
-	            } finally {
-	                try {
-	                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-	                        _iterator2.return();
-	                    }
-	                } finally {
-	                    if (_didIteratorError2) {
-	                        throw _iteratorError2;
-	                    }
-	                }
-	            }
-	
-	            _canvas.c2d.restore();
-	            return this;
-	        }
-	    }, {
-	        key: 'contains',
-	        value: function contains() {
-	            this[GENERATE]();
-	            return _canvas.c2d.isPointInPath.apply(_canvas.c2d, arguments);
-	        }
-	    }, {
-	        key: 'copy',
-	        value: function copy() {
-	            var cp = new Path();
-	            cp[STACK] = [].concat(_toConsumableArray(this[STACK]));
-	            return cp;
-	        }
-	    }, {
-	        key: GENERATE,
-	        value: function value() {
-	            var _iteratorNormalCompletion3 = true;
-	            var _didIteratorError3 = false;
-	            var _iteratorError3 = undefined;
-	
-	            try {
-	                for (var _iterator3 = this[STACK][Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-	                    var item = _step3.value;
-	                    item();
-	                }
-	            } catch (err) {
-	                _didIteratorError3 = true;
-	                _iteratorError3 = err;
-	            } finally {
-	                try {
-	                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
-	                        _iterator3.return();
-	                    }
-	                } finally {
-	                    if (_didIteratorError3) {
-	                        throw _iteratorError3;
-	                    }
-	                }
-	            }
-	        }
-	    }, {
-	        key: 'length',
-	        get: function get() {
-	            return this[STACK].length - 1;
-	        }
-	    }]);
-	
-	    return Path;
-	})();
-	
-	// 2D array wrapper around ImageData's 1D array
-	var PixelData = exports.PixelData = (function () {
-	    function PixelData() {
-	        _classCallCheck(this, PixelData);
-	
-	        for (var _len9 = arguments.length, args = Array(_len9), _key9 = 0; _key9 < _len9; _key9++) {
-	            args[_key9] = arguments[_key9];
-	        }
-	
-	        this[IMAGE_DATA] = args.length === 4 ? _canvas.c2d.getImageData.apply(_canvas.c2d, args) : _canvas.c2d.createImageData.apply(_canvas.c2d, args);
-	    }
-	
-	    _createClass(PixelData, [{
-	        key: 'draw',
-	        value: function draw(x, y) {
-	            _canvas.c2d.putImageData(this[IMAGE_DATA], x, y);
-	        }
-	    }, {
-	        key: 'width',
-	        get: function get() {
-	            return this[IMAGE_DATA].width;
-	        }
-	    }, {
-	        key: 'height',
-	        get: function get() {
-	            return this[IMAGE_DATA].height;
-	        }
-	    }, {
-	        key: 'data',
-	        get: function get() {
-	            return new Proxy(this, {
-	                get: function get(target, x) {
-	                    x = parseInt(x);
-	                    return new Proxy(target, {
-	                        get: function get(target, y) {
-	                            var ind = 4 * (y * target[IMAGE_DATA].width + x);
-	                            return [].concat(_toConsumableArray(target[IMAGE_DATA].data.slice(ind, ind + 4)));
-	                        },
-	                        set: function set(target, y, value) {
-	                            var ind = 4 * (y * target[IMAGE_DATA].width + x);
-	
-	                            var _value = _slicedToArray(value, 4);
-	
-	                            target[IMAGE_DATA].data[ind] = _value[0];
-	                            target[IMAGE_DATA].data[ind + 1] = _value[1];
-	                            target[IMAGE_DATA].data[ind + 2] = _value[2];
-	                            target[IMAGE_DATA].data[ind + 3] = _value[3];
-	
-	                            return true;
-	                        }
-	                    });
-	                },
-	                set: function set() {
-	                    throw new TypeError('Cannot set pixel with only one coordinate');
-	                }
-	            });
-	        }
-	    }]);
-	
-	    return PixelData;
-	})();
-	
-	exports.default = {
-	    rect: rect, point: point, circle: circle, text: text, textWidth: textWidth, image: image, pixelData: pixelData, sprite: sprite, clear: clear,
-	    setColor: setColor, setAlpha: setAlpha, setComposite: setComposite, setLine: setLine, setShadow: setShadow, setFont: setFont, transformed: transformed,
-	    Path: Path, PixelData: PixelData
-	};
-
-/***/ },
-/* 245 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-	    Various structures to make things easier
-	*/
 	'use strict';
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -22507,280 +21921,13 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	exports.input = exports.InputState = undefined;
 	
-	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+	var _jquery = __webpack_require__(192);
 	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	var _jquery2 = _interopRequireDefault(_jquery);
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var ELEMENTS = Symbol('ELEMENTS');
-	var INDEX = Symbol('INDEX');
-	
-	// A sequence of values, which loops around on itself as you iterate over it
-	
-	var Sequence = exports.Sequence = new Proxy((function () {
-	    function _class() {
-	        _classCallCheck(this, _class);
-	    }
-	
-	    return _class;
-	})(), {
-	    construct: function construct(target, args) {
-	        var InnerSequence = (function () {
-	            function InnerSequence() {
-	                _classCallCheck(this, InnerSequence);
-	
-	                for (var _len = arguments.length, elements = Array(_len), _key = 0; _key < _len; _key++) {
-	                    elements[_key] = arguments[_key];
-	                }
-	
-	                this[ELEMENTS] = elements;
-	                this[INDEX] = 0;
-	            }
-	
-	            _createClass(InnerSequence, [{
-	                key: Symbol.iterator,
-	                value: regeneratorRuntime.mark(function value() {
-	                    return regeneratorRuntime.wrap(function value$(_context) {
-	                        while (1) {
-	                            switch (_context.prev = _context.next) {
-	                                case 0:
-	                                    return _context.delegateYield(this[ELEMENTS], 't0', 1);
-	
-	                                case 1:
-	                                case 'end':
-	                                    return _context.stop();
-	                            }
-	                        }
-	                    }, value, this);
-	                })
-	            }, {
-	                key: 'infinite',
-	                value: function infinite() {
-	                    var that = this;
-	                    return regeneratorRuntime.mark(function _callee() {
-	                        return regeneratorRuntime.wrap(function _callee$(_context2) {
-	                            while (1) {
-	                                switch (_context2.prev = _context2.next) {
-	                                    case 0:
-	                                        if (false) {
-	                                            _context2.next = 5;
-	                                            break;
-	                                        }
-	
-	                                        _context2.next = 3;
-	                                        return that.next().value;
-	
-	                                    case 3:
-	                                        _context2.next = 0;
-	                                        break;
-	
-	                                    case 5:
-	                                    case 'end':
-	                                        return _context2.stop();
-	                                }
-	                            }
-	                        }, _callee, this);
-	                    })();
-	                }
-	            }, {
-	                key: 'next',
-	                value: function next() {
-	                    return { done: false, value: this[ELEMENTS][this.index++] };
-	                }
-	            }, {
-	                key: 'length',
-	                get: function get() {
-	                    return this[ELEMENTS].length;
-	                }
-	            }, {
-	                key: 'current',
-	                get: function get() {
-	                    return this[ELEMENTS][this[INDEX]];
-	                }
-	            }, {
-	                key: 'index',
-	                get: function get() {
-	                    return this[INDEX];
-	                },
-	                set: function set(x) {
-	                    return this[INDEX] = x % this[ELEMENTS].length;
-	                }
-	            }]);
-	
-	            return InnerSequence;
-	        })();
-	        return new Proxy(new (Function.prototype.bind.apply(InnerSequence, [null].concat(_toConsumableArray(args))))(), {
-	            get: function get(target, prop) {
-	                return (typeof prop === 'undefined' ? 'undefined' : _typeof(prop)) !== 'symbol' && !isNaN(prop) ? target[ELEMENTS][(target.length + prop % target.length) % target.length] : target[prop];
-	            },
-	            set: function set(target, prop, value) {
-	                if ((typeof prop === 'undefined' ? 'undefined' : _typeof(prop)) !== 'symbol' && !isNaN(prop)) {
-	                    target[ELEMENTS][(target.length + prop % target.length) % target.length] = value;
-	                    return true;
-	                } else {
-	                    target[prop] = value;
-	                    return true;
-	                }
-	            }
-	        });
-	    }
-	});
-	
-	var MIN = Symbol('MIN');
-	var MAX = Symbol('MAX');
-	var STEP = Symbol('STEP');
-	// A range of values (similar to Python)
-	
-	var Range = exports.Range = new Proxy((function () {
-	    function _class2() {
-	        _classCallCheck(this, _class2);
-	    }
-	
-	    return _class2;
-	})(), {
-	    construct: function construct(target, args) {
-	        var InternalRange = (function () {
-	            function InternalRange(min, max) {
-	                var step = arguments.length <= 2 || arguments[2] === undefined ? 1 : arguments[2];
-	
-	                _classCallCheck(this, InternalRange);
-	
-	                this[MIN] = min;
-	                this[MAX] = max;
-	                this[STEP] = step;
-	            }
-	
-	            _createClass(InternalRange, [{
-	                key: Symbol.iterator,
-	                value: regeneratorRuntime.mark(function value() {
-	                    var i;
-	                    return regeneratorRuntime.wrap(function value$(_context3) {
-	                        while (1) {
-	                            switch (_context3.prev = _context3.next) {
-	                                case 0:
-	                                    if (!(this[STEP] === 0)) {
-	                                        _context3.next = 2;
-	                                        break;
-	                                    }
-	
-	                                    throw new TypeError('Cannot iterate with 0 step');
-	
-	                                case 2:
-	                                    i = this[MIN];
-	
-	                                case 3:
-	                                    if (!(i < this[MAX])) {
-	                                        _context3.next = 9;
-	                                        break;
-	                                    }
-	
-	                                    _context3.next = 6;
-	                                    return i;
-	
-	                                case 6:
-	                                    i += this[STEP];
-	                                    _context3.next = 3;
-	                                    break;
-	
-	                                case 9:
-	                                case 'end':
-	                                    return _context3.stop();
-	                            }
-	                        }
-	                    }, value, this);
-	                })
-	            }, {
-	                key: 'constrain',
-	                value: function constrain(x) {
-	                    if (this[STEP] !== 0) {
-	                        x = this[MIN] + Math.round((x - this[MIN]) / this[STEP]) * this[STEP];
-	                    }
-	                    return Math.min(Math.max(x, this[MIN]), this[MAX]);
-	                }
-	            }, {
-	                key: 'min',
-	                get: function get() {
-	                    return this[MIN];
-	                },
-	                set: function set(x) {
-	                    return this[MIN] = x;
-	                }
-	            }, {
-	                key: 'max',
-	                get: function get() {
-	                    return this[MAX];
-	                },
-	                set: function set(x) {
-	                    return this[MAX] = x;
-	                }
-	            }, {
-	                key: 'step',
-	                get: function get() {
-	                    return this[STEP];
-	                },
-	                set: function set(x) {
-	                    return this[STEP] = x;
-	                }
-	            }, {
-	                key: 'length',
-	                get: function get() {
-	                    return Math.ceil((this[MAX] - this[MIN]) / this[STEP]);
-	                }
-	            }]);
-	
-	            return InternalRange;
-	        })();
-	        return new Proxy(new (Function.prototype.bind.apply(InternalRange, [null].concat(_toConsumableArray(args))))(), {
-	            has: function has(target, x) {
-	                return x >= target.min && x < target.max && (target.step === 0 || (x - target.min) % target.step === 0);
-	            }
-	        });
-	    }
-	});
-	
-	// Function produces a range in array form
-	var range = exports.range = function range() {
-	    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-	        args[_key2] = arguments[_key2];
-	    }
-	
-	    return new (Function.prototype.bind.apply(Range, [null].concat(args)))();
-	};
-	
-	// Pads str with char until its length is len
-	var pad = exports.pad = function pad(str) {
-	    var len = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
-	    var char = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
-	
-	    if (char === '') {
-	        throw new TypeError('Cannot pad with no character');
-	    }
-	    return str.length >= len ? str : pad(char + str, len, char);
-	};
-	
-	exports.default = { Sequence: Sequence, Range: Range, range: range, pad: pad };
-
-/***/ },
-/* 246 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-	    Breaks up an image into predefined sections
-	*/
-	'use strict';
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.Sprite = undefined;
-	
-	var _draw2 = __webpack_require__(244);
-	
-	var _draw3 = _interopRequireDefault(_draw2);
+	var _canvas = __webpack_require__(191);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -22788,74 +21935,194 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	__webpack_require__(1);
+	var KEYS = Symbol('KEYS');
+	var MOUSE = Symbol('MOUSE');
+	var CONVERT_KEYCODE = Symbol('CONVERT_KEYCODE');
+	var CONVERT_MOUSEBUTTON = Symbol('CONVERT_MOUSEBUTTON');
+	var InputState = exports.InputState = (function () {
+	    function InputState() {
+	        _classCallCheck(this, InputState);
 	
-	var WIDTH = Symbol('WIDTH');
-	var HEIGHT = Symbol('HEIGHT');
-	var IMAGE = Symbol('IMAGE');
-	var FRAMES = Symbol('FRAMES');
-	var Sprite = exports.Sprite = (function () {
-	    function Sprite(image, frameWidth, frameHeight, frames) {
-	        _classCallCheck(this, Sprite);
-	
-	        this[IMAGE] = image;
-	        if (typeof image === 'string') {
-	            this[IMAGE] = new Image();
-	            this[IMAGE].src = image;
-	        }
-	        this[FRAMES] = frames;
-	        this[WIDTH] = frameWidth;
-	        this[HEIGHT] = frameHeight;
+	        this[KEYS] = [[], []];
+	        this[MOUSE] = [[], []];
 	    }
 	
-	    _createClass(Sprite, [{
-	        key: 'draw',
-	        value: function draw(subimage, x, y) {
-	            _draw3.default.sprite(this, subimage, x, y);
+	    _createClass(InputState, [{
+	        key: 'mousedown',
+	        value: function mousedown(button) {
+	            if (isNaN(button) && typeof button === 'string') {
+	                button = this[CONVERT_MOUSEBUTTON](button);
+	            }
+	            return this[MOUSE][1][button] && !this[MOUSE][0][button];
 	        }
 	    }, {
-	        key: 'width',
-	        get: function get() {
-	            return this[WIDTH];
+	        key: 'mouseup',
+	        value: function mouseup(button) {
+	            if (isNaN(button) && typeof button === 'string') {
+	                button = this[CONVERT_MOUSEBUTTON](button);
+	            }
+	            return !this[MOUSE][1][button] && this[MOUSE][0][button];
 	        }
 	    }, {
-	        key: 'height',
-	        get: function get() {
-	            return this[HEIGHT];
+	        key: 'keydown',
+	        value: function keydown(key) {
+	            if (isNaN(key) && typeof key === 'string') {
+	                key = this[CONVERT_KEYCODE](key);
+	            }
+	            return this[KEYS][1][key] && !this[KEYS][0][key];
 	        }
 	    }, {
-	        key: 'image',
-	        get: function get() {
-	            return this[IMAGE];
+	        key: 'keyup',
+	        value: function keyup(key) {
+	            if (isNaN(key) && typeof key === 'string') {
+	                key = this[CONVERT_KEYCODE](key);
+	            }
+	            return !this[KEYS][1][key] && this[KEYS][0][key];
 	        }
 	    }, {
-	        key: 'frames',
+	        key: 'refresh',
+	        value: function refresh() {
+	            this[KEYS][0] = [].concat(_toConsumableArray(this[KEYS][1]));
+	            this[MOUSE][0] = [].concat(_toConsumableArray(this[MOUSE][1]));
+	        }
+	    }, {
+	        key: CONVERT_MOUSEBUTTON,
+	        value: function value(str) {
+	            str = str.toUpperCase();
+	            switch (str) {
+	                case 'LEFT':
+	                    str = 1;break;
+	                case 'MIDDLE':
+	                    str = 2;break;
+	                case 'RIGHT':
+	                    str = 3;break;
+	                default:
+	                    throw new TypeError('There is no button ' + str);
+	            }
+	            return str;
+	        }
+	    }, {
+	        key: CONVERT_KEYCODE,
+	        value: function value(str) {
+	            str = str.toUpperCase();
+	            switch (str) {
+	                case 'BACKSPACE':
+	                    str = 8;break;
+	                case 'ENTER':
+	                    str = 13;break;
+	                case 'SHIFT':
+	                    str = 16;break;
+	                case 'CONTROL':
+	                case 'CTRL':
+	                    str = 17;break;
+	                case 'ALT':
+	                    str = 18;break;
+	                case 'ESCAPE':
+	                    str = 27;break;
+	                case 'LEFT':
+	                    str = 37;break;
+	                case 'UP':
+	                    str = 38;break;
+	                case 'RIGHT':
+	                    str = 39;break;
+	                case 'DOWN':
+	                    str = 40;break;
+	                default:
+	                    if (str.length === 1) {
+	                        str = str.charCodeAt(0);
+	                    } else if (str[0] === 'F') {
+	                        // Function keys
+	                        str = 111 + parseInt(str[1]);
+	                    } else if (str[0] === 'N') {
+	                        // Numpad
+	                        str = 96 + parseInt(str[1]);
+	                    } else {
+	                        throw new TypeError('There is no key ' + str);
+	                    }
+	            }
+	            return str;
+	        }
+	    }, {
+	        key: 'mousestate',
 	        get: function get() {
 	            return new Proxy(this, {
-	                get: function get(target, index) {
-	                    if (index === 'length') {
-	                        return target[FRAMES][index];
+	                get: function get(target, prop) {
+	                    if (prop === Symbol.iterator) {
+	                        return target[MOUSE][1][Symbol.iterator];
 	                    }
-	                    return new Proxy([].concat(_toConsumableArray(target[FRAMES][index]), [target[WIDTH], target[HEIGHT]]), {
-	                        get: function get(target, prop) {
-	                            if (['x', 'y', 'w', 'h'].indexOf(prop) !== -1) {
-	                                prop = ['x', 'y', 'w', 'h'].indexOf(prop);
-	                            }
-	                            return target[prop];
-	                        }
-	                    });
+	                    if (prop === 'length') {
+	                        return target[MOUSE][1].length;
+	                    }
+	                    if (isNaN(prop) && typeof prop === 'string') {
+	                        prop = target[CONVERT_MOUSEBUTTON](prop);
+	                    }
+	                    return !!target[MOUSE][1][prop];
 	                },
-	                set: function set() {
-	                    throw new TypeError('Sprite frames are read-only');
+	                set: function set(target, prop, value) {
+	                    if (isNaN(prop) && typeof prop === 'string') {
+	                        prop = target[CONVERT_MOUSEBUTTON](prop);
+	                    }
+	                    target[MOUSE][1][prop] = value;
+	                    return true;
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'keystate',
+	        get: function get() {
+	            return new Proxy(this, {
+	                get: function get(target, prop) {
+	                    if (prop === Symbol.iterator) {
+	                        return target[KEYS][1][Symbol.iterator];
+	                    }
+	                    if (prop === 'length') {
+	                        return target[KEYS][1].length;
+	                    }
+	                    if (isNaN(prop) && typeof prop === 'string') {
+	                        prop = target[CONVERT_KEYCODE](prop);
+	                    }
+	                    return !!target[KEYS][1][prop];
+	                },
+	                set: function set(target, prop, value) {
+	                    if (isNaN(prop) && typeof prop === 'string') {
+	                        prop = target[CONVERT_KEYCODE](prop);
+	                    }
+	                    target[KEYS][1][prop] = value;
+	                    return true;
 	                }
 	            });
 	        }
 	    }]);
 	
-	    return Sprite;
+	    return InputState;
 	})();
 	
-	exports.default = { Sprite: Sprite };
+	var input = exports.input = new InputState();
+	
+	_canvas.$canvas.mousedown(function () {
+	    var _ref = arguments.length <= 0 || arguments[0] === undefined ? { which: 0 } : arguments[0];
+	
+	    var which = _ref.which;
+	    return input.mousestate[which] = true;
+	}).keydown(function () {
+	    var _ref2 = arguments.length <= 0 || arguments[0] === undefined ? { which: 0 } : arguments[0];
+	
+	    var which = _ref2.which;
+	    return input.keystate[which] = true;
+	});
+	(0, _jquery2.default)(window).mouseup(function () {
+	    var _ref3 = arguments.length <= 0 || arguments[0] === undefined ? { which: 0 } : arguments[0];
+	
+	    var which = _ref3.which;
+	    return input.mousestate[which] = false;
+	}).keyup(function () {
+	    var _ref4 = arguments.length <= 0 || arguments[0] === undefined ? { which: 0 } : arguments[0];
+	
+	    var which = _ref4.which;
+	    return input.keystate[which] = false;
+	});
+	
+	exports.default = { input: input, InputState: InputState };
 
 /***/ }
 /******/ ]);

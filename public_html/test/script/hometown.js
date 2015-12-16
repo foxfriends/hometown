@@ -49,7 +49,7 @@
 	__webpack_require__(1);
 	mocha.setup("bdd");
 	__webpack_require__(9);
-	__webpack_require__(300);
+	__webpack_require__(298);
 	if (false) {
 		module.hot.accept();
 		module.hot.dispose(function () {
@@ -364,15 +364,23 @@
 	
 	__webpack_require__(51);
 	
-	__webpack_require__(298);
+	__webpack_require__(296);
+	
+	__webpack_require__(299);
 	
 	__webpack_require__(301);
 	
-	__webpack_require__(303);
-	
-	__webpack_require__(350);
+	__webpack_require__(348);
 	
 	__webpack_require__(352);
+	
+	__webpack_require__(355);
+	
+	__webpack_require__(359);
+	
+	__webpack_require__(362);
+	
+	__webpack_require__(364);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -8324,27 +8332,12 @@
 	'use strict';
 	
 	__webpack_require__(52);
-	
-	var _jquery = __webpack_require__(242);
-	
-	var _jquery2 = _interopRequireDefault(_jquery);
-	
-	var _canvas = __webpack_require__(243);
-	
-	var _socket = __webpack_require__(244);
-	
-	var _draw = __webpack_require__(295);
-	
-	var _draw2 = _interopRequireDefault(_draw);
-	
-	var _sprite = __webpack_require__(297);
-	
-	var _util = __webpack_require__(296);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var spr = new _sprite.Sprite('/image.png', 32, 32, [[0, 96], [32, 96], [64, 96]]);
-	_draw2.default.sprite(spr, 1, 32, 32);
+
+	__webpack_require__(242);
+
+	__webpack_require__(244);
+
+	__webpack_require__(295);
 
 /***/ },
 /* 52 */
@@ -13611,6 +13604,35 @@
 
 /***/ },
 /* 242 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	    Set up the canvas
+	*/
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.c2d = exports.canvas = exports.$canvas = undefined;
+	
+	var _jquery = __webpack_require__(243);
+	
+	var _jquery2 = _interopRequireDefault(_jquery);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var $canvas = exports.$canvas = (0, _jquery2.default)('canvas#main');
+	var canvas = exports.canvas = $canvas[0];
+	var c2d = exports.c2d = canvas.getContext('2d');
+	
+	// Initialize canvas
+	$canvas.attr('width', $canvas.width()).attr('height', $canvas.height());
+	
+	exports.default = { $canvas: $canvas, canvas: canvas, c2d: c2d };
+
+/***/ },
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -22826,35 +22848,6 @@
 
 
 /***/ },
-/* 243 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-	    Set up the canvas
-	*/
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.c2d = exports.canvas = exports.$canvas = undefined;
-	
-	var _jquery = __webpack_require__(242);
-	
-	var _jquery2 = _interopRequireDefault(_jquery);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var $canvas = exports.$canvas = (0, _jquery2.default)('canvas#main');
-	var canvas = exports.canvas = $canvas[0];
-	var c2d = exports.c2d = canvas.getContext('2d');
-	
-	// Initialize canvas
-	$canvas.attr('width', $canvas.width()).attr('height', $canvas.height());
-	
-	exports.default = { $canvas: $canvas, canvas: canvas, c2d: c2d };
-
-/***/ },
 /* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -30206,577 +30199,6 @@
 /* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/*
-	    Wrapper around the default canvas drawing functions to make them more usable
-	    and easier to improve upon
-	*/
-	'use strict';
-	
-	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; })();
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.PixelData = exports.Path = exports.transformed = exports.setFont = exports.setShadow = exports.setLine = exports.setComposite = exports.setAlpha = exports.setColor = exports.clear = exports.pixelData = exports.sprite = exports.image = exports.textWidth = exports.text = exports.circle = exports.point = exports.rect = undefined;
-	
-	var _canvas = __webpack_require__(243);
-	
-	var _util = __webpack_require__(296);
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-	
-	var GENERATE = Symbol('GENERATE');
-	var STACK = Symbol('STACK');
-	var IMAGE_DATA = Symbol('IMAGE_DATA');
-	var rect = exports.rect = function rect(x, y, w, h) {
-	    var stroke = arguments.length <= 4 || arguments[4] === undefined ? false : arguments[4];
-	
-	    if (stroke) {
-	        _canvas.c2d.strokeRect(x, y, w, h);
-	    } else {
-	        _canvas.c2d.fillRect(x, y, w, h);
-	    }
-	};
-	
-	var point = exports.point = function point(x, y) {
-	    return _canvas.c2d.fillRect(x, y, 1, 1);
-	};
-	
-	var circle = exports.circle = function circle(x, y, r) {
-	    var stroke = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-	
-	    _canvas.c2d.beginPath();
-	    _canvas.c2d.arc(x, y, r, 0, Math.PI * 2);
-	    if (stroke) {
-	        _canvas.c2d.stroke();
-	    } else {
-	        _canvas.c2d.fill();
-	    }
-	};
-	
-	var text = exports.text = function text(str, x, y) {
-	    var stroke = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-	
-	    if (stroke) {
-	        _canvas.c2d.strokeText(str, x, y);
-	    } else {
-	        _canvas.c2d.fillText(str, x, y);
-	    }
-	};
-	var textWidth = exports.textWidth = function textWidth(str) {
-	    return _canvas.c2d.measureText(str).width;
-	};
-	
-	var image = exports.image = function image() {
-	    _canvas.c2d.drawImage.apply(_canvas.c2d, arguments);
-	};
-	
-	var sprite = exports.sprite = function sprite(spr, subimage, x, y) {
-	    _canvas.c2d.drawImage.apply(_canvas.c2d, [spr.image].concat(_toConsumableArray(spr.frames[subimage]), [x, y, spr.frames[subimage].h, spr.frames[subimage].w]));
-	};
-	
-	var pixelData = exports.pixelData = function pixelData(pd, x, y) {
-	    pd.draw(x, y);
-	};
-	
-	var clear = exports.clear = function clear() {
-	    return _canvas.c2d.clearRect(0, 0, _canvas.canvas.width, _canvas.canvas.height);
-	};
-	
-	var setColor = exports.setColor = function setColor(c) {
-	    _canvas.c2d.fillStyle = _canvas.c2d.strokeStyle = typeof c === 'number' ? '#' + (0, _util.pad)(c.toString(16), 6, '0') : c;
-	};
-	var setAlpha = exports.setAlpha = function setAlpha(a) {
-	    return _canvas.c2d.globalAlpha = (0, _util.range)(0, 1, 0).constrain(a);
-	};
-	var setComposite = exports.setComposite = function setComposite(o) {
-	    return _canvas.c2d.globalCompositeOperation = o;
-	};
-	
-	var setLine = exports.setLine = function setLine() {
-	    var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	
-	    var cap = _ref.cap;
-	    var join = _ref.join;
-	    var width = _ref.width;
-	    var miter = _ref.miter;
-	    var reset = _ref.reset;
-	
-	    if (reset === true) {
-	        return setLine({ cap: 'butt', join: 'miter', width: 1, miter: 10 });
-	    }
-	    if (cap !== undefined) {
-	        _canvas.c2d.lineCap = cap;
-	    }
-	    if (join !== undefined) {
-	        _canvas.c2d.lineJoin = join;
-	    }
-	    if (width !== undefined) {
-	        _canvas.c2d.lineWidth = width;
-	    }
-	    if (miter !== undefined) {
-	        _canvas.c2d.miterLimit = miter;
-	    }
-	};
-	var setShadow = exports.setShadow = function setShadow() {
-	    var _ref2 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	
-	    var x = _ref2.x;
-	    var y = _ref2.y;
-	    var blur = _ref2.blur;
-	    var color = _ref2.color;
-	    var reset = _ref2.reset;
-	
-	    if (reset === true) {
-	        return setShadow({ x: 0, y: 0, blur: 0, color: '#000000' });
-	    }
-	    if (x !== undefined) {
-	        _canvas.c2d.shadowOffsetX = x;
-	    }
-	    if (y !== undefined) {
-	        _canvas.c2d.shadowOffsetY = y;
-	    }
-	    if (blur !== undefined) {
-	        _canvas.c2d.shadowBlur = blur;
-	    }
-	    if (color !== undefined) {
-	        _canvas.c2d.shadowColor = typeof color === 'number' ? '#' + (0, _util.pad)(color.toString(16), 6, '0') : color;
-	    }
-	};
-	
-	var fontSize = 10;
-	var fontFamily = 'sans-serif';
-	var setFont = exports.setFont = function setFont() {
-	    var _ref3 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	
-	    var family = _ref3.family;
-	    var size = _ref3.size;
-	    var align = _ref3.align;
-	    var baseline = _ref3.baseline;
-	    var reset = _ref3.reset;
-	
-	    if (reset === true) {
-	        return setFont({ family: 'sans-serif', size: 10, align: 'start', baseline: 'alphabetic' });
-	    }
-	    if (family !== undefined) {
-	        fontFamily = family;
-	    }
-	    if (size !== undefined) {
-	        fontSize = size;
-	    }
-	    _canvas.c2d.font = fontSize + 'px ' + fontFamily;
-	    if (align !== undefined) {
-	        _canvas.c2d.textAlign = align;
-	    }
-	    if (baseline !== undefined) {
-	        _canvas.c2d.textBaseline = baseline;
-	    }
-	};
-	
-	// Transform the context and perform the given function(s)
-	var transformed = exports.transformed = function transformed(opts) {
-	    for (var _len = arguments.length, todo = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	        todo[_key - 1] = arguments[_key];
-	    }
-	
-	    _canvas.c2d.save();
-	
-	    if (opts) {
-	        if (opts.scale) {
-	            _canvas.c2d.scale(opts.scale.x || 1, opts.scale.y || 1);
-	        }
-	        if (opts.rotate) {
-	            _canvas.c2d.rotate(opts.rotate);
-	        }
-	        if (opts.translate) {
-	            _canvas.c2d.translate(opts.translate.x || 0, opts.translate.y || 0);
-	        }
-	        if (opts.transform) {
-	            _canvas.c2d.transform.apply(_canvas.c2d, _toConsumableArray(opts.transform));
-	        }
-	    }
-	
-	    var _iteratorNormalCompletion = true;
-	    var _didIteratorError = false;
-	    var _iteratorError = undefined;
-	
-	    try {
-	        for (var _iterator = todo[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	            var item = _step.value;
-	            item();
-	        }
-	    } catch (err) {
-	        _didIteratorError = true;
-	        _iteratorError = err;
-	    } finally {
-	        try {
-	            if (!_iteratorNormalCompletion && _iterator.return) {
-	                _iterator.return();
-	            }
-	        } finally {
-	            if (_didIteratorError) {
-	                throw _iteratorError;
-	            }
-	        }
-	    }
-	
-	    _canvas.c2d.restore();
-	};
-	
-	// Chained, saveable, easy to use context2d paths
-	var Path = exports.Path = (function () {
-	    function Path() {
-	        _classCallCheck(this, Path);
-	
-	        this[STACK] = [function () {
-	            return _canvas.c2d.beginPath();
-	        }];
-	    }
-	
-	    _createClass(Path, [{
-	        key: 'move',
-	        value: function move() {
-	            for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-	                args[_key2] = arguments[_key2];
-	            }
-	
-	            this[STACK].push(function () {
-	                return _canvas.c2d.moveTo.apply(_canvas.c2d, args);
-	            });
-	            return this;
-	        }
-	    }, {
-	        key: 'line',
-	        value: function line() {
-	            for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-	                args[_key3] = arguments[_key3];
-	            }
-	
-	            this[STACK].push(function () {
-	                return _canvas.c2d.lineTo.apply(_canvas.c2d, args);
-	            });
-	            return this;
-	        }
-	    }, {
-	        key: 'rect',
-	        value: function rect() {
-	            for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-	                args[_key4] = arguments[_key4];
-	            }
-	
-	            this[STACK].push(function () {
-	                return _canvas.c2d.rect.apply(_canvas.c2d, args);
-	            });
-	            return this;
-	        }
-	    }, {
-	        key: 'arc',
-	        value: function arc() {
-	            for (var _len5 = arguments.length, args = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
-	                args[_key5] = arguments[_key5];
-	            }
-	
-	            this[STACK].push(function () {
-	                return _canvas.c2d.arc.apply(_canvas.c2d, args);
-	            });
-	            return this;
-	        }
-	    }, {
-	        key: 'curve',
-	        value: function curve() {
-	            for (var _len6 = arguments.length, args = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
-	                args[_key6] = arguments[_key6];
-	            }
-	
-	            this[STACK].push(function () {
-	                return _canvas.c2d.arcTo.apply(_canvas.c2d, args);
-	            });
-	            return this;
-	        }
-	    }, {
-	        key: 'bezier',
-	        value: function bezier() {
-	            for (var _len7 = arguments.length, args = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
-	                args[_key7] = arguments[_key7];
-	            }
-	
-	            if (args.length === 6) {
-	                this[STACK].push(function () {
-	                    return _canvas.c2d.bezierCurveTo.apply(_canvas.c2d, args);
-	                });
-	            } else {
-	                this[STACK].push(function () {
-	                    return _canvas.c2d.quadraticCurveTo.apply(_canvas.c2d, args);
-	                });
-	            }
-	            return this;
-	        }
-	    }, {
-	        key: 'close',
-	        value: function close() {
-	            this[STACK].push(function () {
-	                return _canvas.c2d.closePath();
-	            });
-	            return this;
-	        }
-	    }, {
-	        key: 'do',
-	        value: function _do(fn) {
-	            var _this = this;
-	
-	            this[STACK].push(function () {
-	                return fn(_this);
-	            });
-	            return this;
-	        }
-	    }, {
-	        key: 'fill',
-	        value: function fill() {
-	            var _this2 = this;
-	
-	            var _ref4 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	
-	            var color = _ref4.color;
-	            var shadow = _ref4.shadow;
-	            var transform = _ref4.transform;
-	
-	            if (transform !== undefined) {
-	                transformed(transform, function () {
-	                    return _this2.fill({ color: color, shadow: shadow });
-	                });
-	                return this;
-	            }
-	
-	            _canvas.c2d.save();
-	
-	            if (color !== undefined) {
-	                setColor(color);
-	            }
-	            if (shadow !== undefined) {
-	                setShadow(shadow);
-	            }
-	
-	            this[GENERATE]();
-	            _canvas.c2d.fill();
-	
-	            _canvas.c2d.restore();
-	            return this;
-	        }
-	    }, {
-	        key: 'stroke',
-	        value: function stroke() {
-	            var _this3 = this;
-	
-	            var _ref5 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	
-	            var color = _ref5.color;
-	            var line = _ref5.line;
-	            var transform = _ref5.transform;
-	
-	            if (transform !== undefined) {
-	                transformed(transform, function () {
-	                    return _this3.stroke({ color: color, line: line });
-	                });
-	                return this;
-	            }
-	
-	            _canvas.c2d.save();
-	
-	            if (color !== undefined) {
-	                setColor(color);
-	            }
-	            if (line !== undefined) {
-	                setLine(line);
-	            }
-	
-	            this[GENERATE]();
-	            _canvas.c2d.stroke();
-	
-	            _canvas.c2d.restore();
-	            return this;
-	        }
-	    }, {
-	        key: 'doInside',
-	        value: function doInside(transform) {
-	            var _this4 = this;
-	
-	            for (var _len8 = arguments.length, todo = Array(_len8 > 1 ? _len8 - 1 : 0), _key8 = 1; _key8 < _len8; _key8++) {
-	                todo[_key8 - 1] = arguments[_key8];
-	            }
-	
-	            // Optional transform
-	            if (transform !== undefined && todo.length !== 0) {
-	                if (typeof transform !== 'function') {
-	                    transformed(transform, function () {
-	                        return _this4.doInside.apply(_this4, _toConsumableArray(todo));
-	                    });
-	                    return this;
-	                } else {
-	                    todo = [transform].concat(_toConsumableArray(todo));
-	                }
-	            }
-	
-	            _canvas.c2d.save();
-	            setShadow({ reset: true }); // Clip doesn't work if shadow is not default??
-	            this[GENERATE]();
-	            _canvas.c2d.clip();
-	
-	            var _iteratorNormalCompletion2 = true;
-	            var _didIteratorError2 = false;
-	            var _iteratorError2 = undefined;
-	
-	            try {
-	                for (var _iterator2 = todo[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-	                    var item = _step2.value;
-	                    item();
-	                }
-	            } catch (err) {
-	                _didIteratorError2 = true;
-	                _iteratorError2 = err;
-	            } finally {
-	                try {
-	                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-	                        _iterator2.return();
-	                    }
-	                } finally {
-	                    if (_didIteratorError2) {
-	                        throw _iteratorError2;
-	                    }
-	                }
-	            }
-	
-	            _canvas.c2d.restore();
-	            return this;
-	        }
-	    }, {
-	        key: 'contains',
-	        value: function contains() {
-	            this[GENERATE]();
-	            return _canvas.c2d.isPointInPath.apply(_canvas.c2d, arguments);
-	        }
-	    }, {
-	        key: 'copy',
-	        value: function copy() {
-	            var cp = new Path();
-	            cp[STACK] = [].concat(_toConsumableArray(this[STACK]));
-	            return cp;
-	        }
-	    }, {
-	        key: GENERATE,
-	        value: function value() {
-	            var _iteratorNormalCompletion3 = true;
-	            var _didIteratorError3 = false;
-	            var _iteratorError3 = undefined;
-	
-	            try {
-	                for (var _iterator3 = this[STACK][Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-	                    var item = _step3.value;
-	                    item();
-	                }
-	            } catch (err) {
-	                _didIteratorError3 = true;
-	                _iteratorError3 = err;
-	            } finally {
-	                try {
-	                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
-	                        _iterator3.return();
-	                    }
-	                } finally {
-	                    if (_didIteratorError3) {
-	                        throw _iteratorError3;
-	                    }
-	                }
-	            }
-	        }
-	    }, {
-	        key: 'length',
-	        get: function get() {
-	            return this[STACK].length - 1;
-	        }
-	    }]);
-	
-	    return Path;
-	})();
-	
-	// 2D array wrapper around ImageData's 1D array
-	var PixelData = exports.PixelData = (function () {
-	    function PixelData() {
-	        _classCallCheck(this, PixelData);
-	
-	        for (var _len9 = arguments.length, args = Array(_len9), _key9 = 0; _key9 < _len9; _key9++) {
-	            args[_key9] = arguments[_key9];
-	        }
-	
-	        this[IMAGE_DATA] = args.length === 4 ? _canvas.c2d.getImageData.apply(_canvas.c2d, args) : _canvas.c2d.createImageData.apply(_canvas.c2d, args);
-	    }
-	
-	    _createClass(PixelData, [{
-	        key: 'draw',
-	        value: function draw(x, y) {
-	            _canvas.c2d.putImageData(this[IMAGE_DATA], x, y);
-	        }
-	    }, {
-	        key: 'width',
-	        get: function get() {
-	            return this[IMAGE_DATA].width;
-	        }
-	    }, {
-	        key: 'height',
-	        get: function get() {
-	            return this[IMAGE_DATA].height;
-	        }
-	    }, {
-	        key: 'data',
-	        get: function get() {
-	            return new Proxy(this, {
-	                get: function get(target, x) {
-	                    x = parseInt(x);
-	                    return new Proxy(target, {
-	                        get: function get(target, y) {
-	                            var ind = 4 * (y * target[IMAGE_DATA].width + x);
-	                            return [].concat(_toConsumableArray(target[IMAGE_DATA].data.slice(ind, ind + 4)));
-	                        },
-	                        set: function set(target, y, value) {
-	                            var ind = 4 * (y * target[IMAGE_DATA].width + x);
-	
-	                            var _value = _slicedToArray(value, 4);
-	
-	                            target[IMAGE_DATA].data[ind] = _value[0];
-	                            target[IMAGE_DATA].data[ind + 1] = _value[1];
-	                            target[IMAGE_DATA].data[ind + 2] = _value[2];
-	                            target[IMAGE_DATA].data[ind + 3] = _value[3];
-	
-	                            return true;
-	                        }
-	                    });
-	                },
-	                set: function set() {
-	                    throw new TypeError('Cannot set pixel with only one coordinate');
-	                }
-	            });
-	        }
-	    }]);
-	
-	    return PixelData;
-	})();
-	
-	exports.default = {
-	    rect: rect, point: point, circle: circle, text: text, textWidth: textWidth, image: image, pixelData: pixelData, sprite: sprite, clear: clear,
-	    setColor: setColor, setAlpha: setAlpha, setComposite: setComposite, setLine: setLine, setShadow: setShadow, setFont: setFont, transformed: transformed,
-	    Path: Path, PixelData: PixelData
-	};
-
-/***/ },
-/* 296 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-	    Various structures to make things easier
-	*/
 	'use strict';
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -30784,280 +30206,13 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	exports.input = exports.InputState = undefined;
 	
-	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+	var _jquery = __webpack_require__(243);
 	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	var _jquery2 = _interopRequireDefault(_jquery);
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var ELEMENTS = Symbol('ELEMENTS');
-	var INDEX = Symbol('INDEX');
-	
-	// A sequence of values, which loops around on itself as you iterate over it
-	
-	var Sequence = exports.Sequence = new Proxy((function () {
-	    function _class() {
-	        _classCallCheck(this, _class);
-	    }
-	
-	    return _class;
-	})(), {
-	    construct: function construct(target, args) {
-	        var InnerSequence = (function () {
-	            function InnerSequence() {
-	                _classCallCheck(this, InnerSequence);
-	
-	                for (var _len = arguments.length, elements = Array(_len), _key = 0; _key < _len; _key++) {
-	                    elements[_key] = arguments[_key];
-	                }
-	
-	                this[ELEMENTS] = elements;
-	                this[INDEX] = 0;
-	            }
-	
-	            _createClass(InnerSequence, [{
-	                key: Symbol.iterator,
-	                value: regeneratorRuntime.mark(function value() {
-	                    return regeneratorRuntime.wrap(function value$(_context) {
-	                        while (1) {
-	                            switch (_context.prev = _context.next) {
-	                                case 0:
-	                                    return _context.delegateYield(this[ELEMENTS], 't0', 1);
-	
-	                                case 1:
-	                                case 'end':
-	                                    return _context.stop();
-	                            }
-	                        }
-	                    }, value, this);
-	                })
-	            }, {
-	                key: 'infinite',
-	                value: function infinite() {
-	                    var that = this;
-	                    return regeneratorRuntime.mark(function _callee() {
-	                        return regeneratorRuntime.wrap(function _callee$(_context2) {
-	                            while (1) {
-	                                switch (_context2.prev = _context2.next) {
-	                                    case 0:
-	                                        if (false) {
-	                                            _context2.next = 5;
-	                                            break;
-	                                        }
-	
-	                                        _context2.next = 3;
-	                                        return that.next().value;
-	
-	                                    case 3:
-	                                        _context2.next = 0;
-	                                        break;
-	
-	                                    case 5:
-	                                    case 'end':
-	                                        return _context2.stop();
-	                                }
-	                            }
-	                        }, _callee, this);
-	                    })();
-	                }
-	            }, {
-	                key: 'next',
-	                value: function next() {
-	                    return { done: false, value: this[ELEMENTS][this.index++] };
-	                }
-	            }, {
-	                key: 'length',
-	                get: function get() {
-	                    return this[ELEMENTS].length;
-	                }
-	            }, {
-	                key: 'current',
-	                get: function get() {
-	                    return this[ELEMENTS][this[INDEX]];
-	                }
-	            }, {
-	                key: 'index',
-	                get: function get() {
-	                    return this[INDEX];
-	                },
-	                set: function set(x) {
-	                    return this[INDEX] = x % this[ELEMENTS].length;
-	                }
-	            }]);
-	
-	            return InnerSequence;
-	        })();
-	        return new Proxy(new (Function.prototype.bind.apply(InnerSequence, [null].concat(_toConsumableArray(args))))(), {
-	            get: function get(target, prop) {
-	                return (typeof prop === 'undefined' ? 'undefined' : _typeof(prop)) !== 'symbol' && !isNaN(prop) ? target[ELEMENTS][(target.length + prop % target.length) % target.length] : target[prop];
-	            },
-	            set: function set(target, prop, value) {
-	                if ((typeof prop === 'undefined' ? 'undefined' : _typeof(prop)) !== 'symbol' && !isNaN(prop)) {
-	                    target[ELEMENTS][(target.length + prop % target.length) % target.length] = value;
-	                    return true;
-	                } else {
-	                    target[prop] = value;
-	                    return true;
-	                }
-	            }
-	        });
-	    }
-	});
-	
-	var MIN = Symbol('MIN');
-	var MAX = Symbol('MAX');
-	var STEP = Symbol('STEP');
-	// A range of values (similar to Python)
-	
-	var Range = exports.Range = new Proxy((function () {
-	    function _class2() {
-	        _classCallCheck(this, _class2);
-	    }
-	
-	    return _class2;
-	})(), {
-	    construct: function construct(target, args) {
-	        var InternalRange = (function () {
-	            function InternalRange(min, max) {
-	                var step = arguments.length <= 2 || arguments[2] === undefined ? 1 : arguments[2];
-	
-	                _classCallCheck(this, InternalRange);
-	
-	                this[MIN] = min;
-	                this[MAX] = max;
-	                this[STEP] = step;
-	            }
-	
-	            _createClass(InternalRange, [{
-	                key: Symbol.iterator,
-	                value: regeneratorRuntime.mark(function value() {
-	                    var i;
-	                    return regeneratorRuntime.wrap(function value$(_context3) {
-	                        while (1) {
-	                            switch (_context3.prev = _context3.next) {
-	                                case 0:
-	                                    if (!(this[STEP] === 0)) {
-	                                        _context3.next = 2;
-	                                        break;
-	                                    }
-	
-	                                    throw new TypeError('Cannot iterate with 0 step');
-	
-	                                case 2:
-	                                    i = this[MIN];
-	
-	                                case 3:
-	                                    if (!(i < this[MAX])) {
-	                                        _context3.next = 9;
-	                                        break;
-	                                    }
-	
-	                                    _context3.next = 6;
-	                                    return i;
-	
-	                                case 6:
-	                                    i += this[STEP];
-	                                    _context3.next = 3;
-	                                    break;
-	
-	                                case 9:
-	                                case 'end':
-	                                    return _context3.stop();
-	                            }
-	                        }
-	                    }, value, this);
-	                })
-	            }, {
-	                key: 'constrain',
-	                value: function constrain(x) {
-	                    if (this[STEP] !== 0) {
-	                        x = this[MIN] + Math.round((x - this[MIN]) / this[STEP]) * this[STEP];
-	                    }
-	                    return Math.min(Math.max(x, this[MIN]), this[MAX]);
-	                }
-	            }, {
-	                key: 'min',
-	                get: function get() {
-	                    return this[MIN];
-	                },
-	                set: function set(x) {
-	                    return this[MIN] = x;
-	                }
-	            }, {
-	                key: 'max',
-	                get: function get() {
-	                    return this[MAX];
-	                },
-	                set: function set(x) {
-	                    return this[MAX] = x;
-	                }
-	            }, {
-	                key: 'step',
-	                get: function get() {
-	                    return this[STEP];
-	                },
-	                set: function set(x) {
-	                    return this[STEP] = x;
-	                }
-	            }, {
-	                key: 'length',
-	                get: function get() {
-	                    return Math.ceil((this[MAX] - this[MIN]) / this[STEP]);
-	                }
-	            }]);
-	
-	            return InternalRange;
-	        })();
-	        return new Proxy(new (Function.prototype.bind.apply(InternalRange, [null].concat(_toConsumableArray(args))))(), {
-	            has: function has(target, x) {
-	                return x >= target.min && x < target.max && (target.step === 0 || (x - target.min) % target.step === 0);
-	            }
-	        });
-	    }
-	});
-	
-	// Function produces a range in array form
-	var range = exports.range = function range() {
-	    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-	        args[_key2] = arguments[_key2];
-	    }
-	
-	    return new (Function.prototype.bind.apply(Range, [null].concat(args)))();
-	};
-	
-	// Pads str with char until its length is len
-	var pad = exports.pad = function pad(str) {
-	    var len = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
-	    var char = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
-	
-	    if (char === '') {
-	        throw new TypeError('Cannot pad with no character');
-	    }
-	    return str.length >= len ? str : pad(char + str, len, char);
-	};
-	
-	exports.default = { Sequence: Sequence, Range: Range, range: range, pad: pad };
-
-/***/ },
-/* 297 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-	    Breaks up an image into predefined sections
-	*/
-	'use strict';
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.Sprite = undefined;
-	
-	var _draw2 = __webpack_require__(295);
-	
-	var _draw3 = _interopRequireDefault(_draw2);
+	var _canvas = __webpack_require__(242);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -31065,85 +30220,205 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	__webpack_require__(52);
+	var KEYS = Symbol('KEYS');
+	var MOUSE = Symbol('MOUSE');
+	var CONVERT_KEYCODE = Symbol('CONVERT_KEYCODE');
+	var CONVERT_MOUSEBUTTON = Symbol('CONVERT_MOUSEBUTTON');
+	var InputState = exports.InputState = (function () {
+	    function InputState() {
+	        _classCallCheck(this, InputState);
 	
-	var WIDTH = Symbol('WIDTH');
-	var HEIGHT = Symbol('HEIGHT');
-	var IMAGE = Symbol('IMAGE');
-	var FRAMES = Symbol('FRAMES');
-	var Sprite = exports.Sprite = (function () {
-	    function Sprite(image, frameWidth, frameHeight, frames) {
-	        _classCallCheck(this, Sprite);
-	
-	        this[IMAGE] = image;
-	        if (typeof image === 'string') {
-	            this[IMAGE] = new Image();
-	            this[IMAGE].src = image;
-	        }
-	        this[FRAMES] = frames;
-	        this[WIDTH] = frameWidth;
-	        this[HEIGHT] = frameHeight;
+	        this[KEYS] = [[], []];
+	        this[MOUSE] = [[], []];
 	    }
 	
-	    _createClass(Sprite, [{
-	        key: 'draw',
-	        value: function draw(subimage, x, y) {
-	            _draw3.default.sprite(this, subimage, x, y);
+	    _createClass(InputState, [{
+	        key: 'mousedown',
+	        value: function mousedown(button) {
+	            if (isNaN(button) && typeof button === 'string') {
+	                button = this[CONVERT_MOUSEBUTTON](button);
+	            }
+	            return this[MOUSE][1][button] && !this[MOUSE][0][button];
 	        }
 	    }, {
-	        key: 'width',
-	        get: function get() {
-	            return this[WIDTH];
+	        key: 'mouseup',
+	        value: function mouseup(button) {
+	            if (isNaN(button) && typeof button === 'string') {
+	                button = this[CONVERT_MOUSEBUTTON](button);
+	            }
+	            return !this[MOUSE][1][button] && this[MOUSE][0][button];
 	        }
 	    }, {
-	        key: 'height',
-	        get: function get() {
-	            return this[HEIGHT];
+	        key: 'keydown',
+	        value: function keydown(key) {
+	            if (isNaN(key) && typeof key === 'string') {
+	                key = this[CONVERT_KEYCODE](key);
+	            }
+	            return this[KEYS][1][key] && !this[KEYS][0][key];
 	        }
 	    }, {
-	        key: 'image',
-	        get: function get() {
-	            return this[IMAGE];
+	        key: 'keyup',
+	        value: function keyup(key) {
+	            if (isNaN(key) && typeof key === 'string') {
+	                key = this[CONVERT_KEYCODE](key);
+	            }
+	            return !this[KEYS][1][key] && this[KEYS][0][key];
 	        }
 	    }, {
-	        key: 'frames',
+	        key: 'refresh',
+	        value: function refresh() {
+	            this[KEYS][0] = [].concat(_toConsumableArray(this[KEYS][1]));
+	            this[MOUSE][0] = [].concat(_toConsumableArray(this[MOUSE][1]));
+	        }
+	    }, {
+	        key: CONVERT_MOUSEBUTTON,
+	        value: function value(str) {
+	            str = str.toUpperCase();
+	            switch (str) {
+	                case 'LEFT':
+	                    str = 1;break;
+	                case 'MIDDLE':
+	                    str = 2;break;
+	                case 'RIGHT':
+	                    str = 3;break;
+	                default:
+	                    throw new TypeError('There is no button ' + str);
+	            }
+	            return str;
+	        }
+	    }, {
+	        key: CONVERT_KEYCODE,
+	        value: function value(str) {
+	            str = str.toUpperCase();
+	            switch (str) {
+	                case 'BACKSPACE':
+	                    str = 8;break;
+	                case 'ENTER':
+	                    str = 13;break;
+	                case 'SHIFT':
+	                    str = 16;break;
+	                case 'CONTROL':
+	                case 'CTRL':
+	                    str = 17;break;
+	                case 'ALT':
+	                    str = 18;break;
+	                case 'ESCAPE':
+	                    str = 27;break;
+	                case 'LEFT':
+	                    str = 37;break;
+	                case 'UP':
+	                    str = 38;break;
+	                case 'RIGHT':
+	                    str = 39;break;
+	                case 'DOWN':
+	                    str = 40;break;
+	                default:
+	                    if (str.length === 1) {
+	                        str = str.charCodeAt(0);
+	                    } else if (str[0] === 'F') {
+	                        // Function keys
+	                        str = 111 + parseInt(str[1]);
+	                    } else if (str[0] === 'N') {
+	                        // Numpad
+	                        str = 96 + parseInt(str[1]);
+	                    } else {
+	                        throw new TypeError('There is no key ' + str);
+	                    }
+	            }
+	            return str;
+	        }
+	    }, {
+	        key: 'mousestate',
 	        get: function get() {
 	            return new Proxy(this, {
-	                get: function get(target, index) {
-	                    if (index === 'length') {
-	                        return target[FRAMES][index];
+	                get: function get(target, prop) {
+	                    if (prop === Symbol.iterator) {
+	                        return target[MOUSE][1][Symbol.iterator];
 	                    }
-	                    return new Proxy([].concat(_toConsumableArray(target[FRAMES][index]), [target[WIDTH], target[HEIGHT]]), {
-	                        get: function get(target, prop) {
-	                            if (['x', 'y', 'w', 'h'].indexOf(prop) !== -1) {
-	                                prop = ['x', 'y', 'w', 'h'].indexOf(prop);
-	                            }
-	                            return target[prop];
-	                        }
-	                    });
+	                    if (prop === 'length') {
+	                        return target[MOUSE][1].length;
+	                    }
+	                    if (isNaN(prop) && typeof prop === 'string') {
+	                        prop = target[CONVERT_MOUSEBUTTON](prop);
+	                    }
+	                    return !!target[MOUSE][1][prop];
 	                },
-	                set: function set() {
-	                    throw new TypeError('Sprite frames are read-only');
+	                set: function set(target, prop, value) {
+	                    if (isNaN(prop) && typeof prop === 'string') {
+	                        prop = target[CONVERT_MOUSEBUTTON](prop);
+	                    }
+	                    target[MOUSE][1][prop] = value;
+	                    return true;
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'keystate',
+	        get: function get() {
+	            return new Proxy(this, {
+	                get: function get(target, prop) {
+	                    if (prop === Symbol.iterator) {
+	                        return target[KEYS][1][Symbol.iterator];
+	                    }
+	                    if (prop === 'length') {
+	                        return target[KEYS][1].length;
+	                    }
+	                    if (isNaN(prop) && typeof prop === 'string') {
+	                        prop = target[CONVERT_KEYCODE](prop);
+	                    }
+	                    return !!target[KEYS][1][prop];
+	                },
+	                set: function set(target, prop, value) {
+	                    if (isNaN(prop) && typeof prop === 'string') {
+	                        prop = target[CONVERT_KEYCODE](prop);
+	                    }
+	                    target[KEYS][1][prop] = value;
+	                    return true;
 	                }
 	            });
 	        }
 	    }]);
 	
-	    return Sprite;
+	    return InputState;
 	})();
 	
-	exports.default = { Sprite: Sprite };
+	var input = exports.input = new InputState();
+	
+	_canvas.$canvas.mousedown(function () {
+	    var _ref = arguments.length <= 0 || arguments[0] === undefined ? { which: 0 } : arguments[0];
+	
+	    var which = _ref.which;
+	    return input.mousestate[which] = true;
+	}).keydown(function () {
+	    var _ref2 = arguments.length <= 0 || arguments[0] === undefined ? { which: 0 } : arguments[0];
+	
+	    var which = _ref2.which;
+	    return input.keystate[which] = true;
+	});
+	(0, _jquery2.default)(window).mouseup(function () {
+	    var _ref3 = arguments.length <= 0 || arguments[0] === undefined ? { which: 0 } : arguments[0];
+	
+	    var which = _ref3.which;
+	    return input.mousestate[which] = false;
+	}).keyup(function () {
+	    var _ref4 = arguments.length <= 0 || arguments[0] === undefined ? { which: 0 } : arguments[0];
+	
+	    var which = _ref4.which;
+	    return input.keystate[which] = false;
+	});
+	
+	exports.default = { input: input, InputState: InputState };
 
 /***/ },
-/* 298 */
+/* 296 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
 	__webpack_require__(1);
 	mocha.setup("bdd");
-	__webpack_require__(299);
-	__webpack_require__(300);
+	__webpack_require__(297);
+	__webpack_require__(298);
 	if (false) {
 		module.hot.accept();
 		module.hot.dispose(function () {
@@ -31156,18 +30431,18 @@
 	}
 
 /***/ },
-/* 299 */
+/* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	var _chai = __webpack_require__(10);
 	
-	var _jquery = __webpack_require__(242);
+	var _jquery = __webpack_require__(243);
 	
 	var _jquery2 = _interopRequireDefault(_jquery);
 	
-	var _canvas = __webpack_require__(243);
+	var _canvas = __webpack_require__(242);
 	
 	var _canvas2 = _interopRequireDefault(_canvas);
 	
@@ -31190,7 +30465,7 @@
 	});
 
 /***/ },
-/* 300 */
+/* 298 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {process.nextTick(function() {
@@ -31204,15 +30479,15 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(241)))
 
 /***/ },
-/* 301 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
 	__webpack_require__(1);
 	mocha.setup("bdd");
-	__webpack_require__(302);
 	__webpack_require__(300);
+	__webpack_require__(298);
 	if (false) {
 		module.hot.accept();
 		module.hot.dispose(function () {
@@ -31225,7 +30500,7 @@
 	}
 
 /***/ },
-/* 302 */
+/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31249,15 +30524,15 @@
 	});
 
 /***/ },
-/* 303 */
+/* 301 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
 	__webpack_require__(1);
 	mocha.setup("bdd");
-	__webpack_require__(304);
-	__webpack_require__(300);
+	__webpack_require__(302);
+	__webpack_require__(298);
 	if (false) {
 		module.hot.accept();
 		module.hot.dispose(function () {
@@ -31270,103 +30545,366 @@
 	}
 
 /***/ },
-/* 304 */
+/* 302 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	var _chai = __webpack_require__(10);
 	
-	var _sinon = __webpack_require__(305);
+	var _sinon = __webpack_require__(303);
 	
-	var _sprite = __webpack_require__(297);
+	var _jquery = __webpack_require__(243);
 	
-	var _draw = __webpack_require__(295);
+	var _jquery2 = _interopRequireDefault(_jquery);
 	
-	var _draw2 = _interopRequireDefault(_draw);
+	var _input = __webpack_require__(295);
+	
+	var _input2 = _interopRequireDefault(_input);
+	
+	var _canvas = __webpack_require__(242);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	describe('sprite.es6', function () {
-	    var img = new Image();
-	    img.src = 'image.png';
-	    var spr = new _sprite.Sprite(img, 32, 64, [[0, 0], [32, 0], [64, 0], [0, 64], [32, 64], [64, 64]]);
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 	
-	    describe('Sprite', function () {
-	        it('should be constructed with new Sprite(image, frameWidth, frameHeight, frames)', function () {
-	            (0, _chai.expect)(new _sprite.Sprite('image.png', 32, 32, [[0, 0], [32, 0], [64, 0], [0, 32], [32, 32], [64, 32]])).to.be.an.instanceof(_sprite.Sprite);
-	            (0, _chai.expect)(new _sprite.Sprite(img, 32, 64, [[0, 0], [32, 0], [64, 0], [0, 64], [32, 64], [64, 64]])).to.deep.equal(spr);
+	describe('input.es6', function () {
+	    describe('InputState', function () {
+	        var inp = new _input2.default.InputState();
+	        inp.keystate.escape = true;
+	        inp.mousestate.left = true;
+	        inp.mousestate.right = false;
+	        inp.refresh();
+	
+	        it('should be constructed with new InputState()', function () {
+	            (0, _chai.expect)(function () {
+	                return _input2.default.InputState();
+	            }).to.throw();
+	            (0, _chai.expect)(new _input2.default.InputState()).to.be.an.instanceof(_input2.default.InputState);
 	        });
-	        it('should convert a URL for img to an Image object when constructed', function () {
-	            (0, _chai.expect)(new _sprite.Sprite('image.png', 32, 32, [[0, 0], [32, 0], [64, 0], [0, 32], [32, 32], [32, 64]]).image).to.be.an.instanceof(Image);
-	        });
-	        describe('#width', function () {
-	            it('should return the width of the Sprite', function () {
-	                (0, _chai.expect)(spr.width).to.equal(32);
+	        describe('#keystate', function () {
+	            it('note: is not an array - when possible make it one');
+	            it('should be iterable', function () {
+	                (0, _chai.expect)([].concat(_toConsumableArray(inp.keystate))).to.be.an('array');
+	                (0, _chai.expect)([].concat(_toConsumableArray(inp.keystate)).length).to.equal(28);
 	            });
-	            it('should be read only', function () {
-	                (0, _chai.expect)(function () {
-	                    return spr.width = 3;
-	                }).to.throw(TypeError);
-	            });
-	        });
-	        describe('#height', function () {
-	            it('should return the height of the Sprite', function () {
-	                (0, _chai.expect)(spr.height).to.equal(64);
-	            });
-	            it('should be read only', function () {
-	                (0, _chai.expect)(function () {
-	                    return spr.height = 3;
-	                }).to.throw(TypeError);
-	            });
-	        });
-	        describe('#image', function () {
-	            it('should return the image that the Sprite uses', function () {
-	                (0, _chai.expect)(spr.image).to.be.an.instanceof(Image);
-	                (0, _chai.expect)(spr.image).to.equal(img);
-	            });
-	            it('should be read only', function () {
-	                (0, _chai.expect)(function () {
-	                    return spr.height = new Image();
-	                }).to.throw(TypeError);
-	            });
-	        });
-	        describe('#frames', function () {
 	            describe('#length', function () {
-	                it('should return the number of frames', function () {
-	                    (0, _chai.expect)(spr.frames.length).to.equal(6);
+	                it('should return the length (1 + highest used key index)', function () {
+	                    (0, _chai.expect)(inp.keystate.length).to.equal(28);
+	                    inp.keystate.F1 = false;
+	                    (0, _chai.expect)(inp.keystate.length).to.equal(113);
 	                });
-	                it('should be read only', function () {
+	            });
+	            describe('#operator[k]', function () {
+	                it('should return the state of the given key', function () {
+	                    (0, _chai.expect)(inp.keystate[13]).to.be.false;
+	                    (0, _chai.expect)(inp.keystate[27]).to.be.true;
+	                });
+	                it('should allow name access to certain keys', function () {
+	                    (0, _chai.expect)(inp.keystate.enter).to.be.false;
+	                    (0, _chai.expect)(inp.keystate.escape).to.be.true;
+	                });
+	                it('should throw if a key is not defined', function () {
 	                    (0, _chai.expect)(function () {
-	                        return spr.frames.length = 3;
+	                        return inp.keystate.asdf;
 	                    }).to.throw(TypeError);
 	                });
 	            });
-	            describe('#operator[i]', function () {
-	                it('should return the i-th frame: [x, y, w, h]', function () {
-	                    (0, _chai.expect)(spr.frames[0]).to.deep.equal([0, 0, 32, 64]);
-	                    (0, _chai.expect)(spr.frames[4]).to.deep.equal([32, 64, 32, 64]);
+	            describe('#operator[k]=', function () {
+	                it('should set the keystate of the given key', function () {
+	                    (0, _chai.expect)(inp.keystate[13]).to.be.false;
+	                    inp.keystate[13] = true;
+	                    (0, _chai.expect)(inp.keystate[13]).to.be.true;
+	                    inp.keystate[13] = false;
+	                    (0, _chai.expect)(inp.keystate[13]).to.be.false;
 	                });
-	                it('should be read only', function () {
+	                it('should allow name access to certain keys', function () {
+	                    (0, _chai.expect)(inp.keystate[13]).to.be.false;
+	                    inp.keystate.enter = true;
+	                    (0, _chai.expect)(inp.keystate[13]).to.be.true;
+	                    inp.keystate.enter = false;
+	                    (0, _chai.expect)(inp.keystate[13]).to.be.false;
+	
+	                    (0, _chai.expect)(inp.keystate[27]).to.be.true;
+	                    inp.keystate.escape = false;
+	                    (0, _chai.expect)(inp.keystate[27]).to.be.false;
+	                    inp.keystate.escape = true;
+	                    (0, _chai.expect)(inp.keystate[27]).to.be.true;
+	                });
+	                it('should throw if a key is not defined', function () {
 	                    (0, _chai.expect)(function () {
-	                        return spr.frames[0] = 5;
+	                        return inp.keystate.asdf = 5;
 	                    }).to.throw(TypeError);
 	                });
 	            });
 	        });
-	        describe('#draw(subimage, x, y)', function () {
-	            it('should be an alias for draw.sprite(this, subimage, x, y)', function () {
-	                var drawSprite = (0, _sinon.stub)(_draw2.default, 'sprite');
-	                spr.draw(1, 32, 32);
-	                (0, _chai.expect)(drawSprite).to.have.been.calledWith(spr, 1, 32, 32);
-	                drawSprite.restore();
+	        describe('#keydown(key)', function () {
+	            it('should return true when the key was just pressed', function () {
+	                (0, _chai.expect)(inp.keydown(13)).to.be.false;
+	                inp.keystate[13] = true;
+	                (0, _chai.expect)(inp.keydown(13)).to.be.true;
+	                inp.keystate[13] = false;
+	                (0, _chai.expect)(inp.keydown(13)).to.be.false;
 	            });
+	            it('should not return true when the key was pressed before it was refreshed', function () {
+	                (0, _chai.expect)(inp.keydown(13)).to.be.false;
+	                inp.keystate[13] = true;
+	                (0, _chai.expect)(inp.keydown(13)).to.be.true;
+	                inp.refresh();
+	                (0, _chai.expect)(inp.keydown(13)).to.be.false;
+	                inp.keystate[13] = false;
+	                (0, _chai.expect)(inp.keydown(13)).to.be.false;
+	                inp.refresh();
+	                (0, _chai.expect)(inp.keydown(13)).to.be.false;
+	            });
+	            it('should accept name access to certain keys', function () {
+	                inp.keystate[13] = true;
+	                (0, _chai.expect)(inp.keydown('enter')).to.be.true;
+	                inp.keystate.enter = false;
+	                (0, _chai.expect)(inp.keydown('enter')).to.be.false;
+	            });
+	            it('should throw with an invalid name', function () {
+	                (0, _chai.expect)(function () {
+	                    return inp.keydown('cat?');
+	                }).to.throw(TypeError);
+	            });
+	        });
+	        describe('#keyup(key)', function () {
+	            it('should return true when the key was just released', function () {
+	                (0, _chai.expect)(inp.keyup(27)).to.be.false;
+	                inp.keystate[27] = false;
+	                (0, _chai.expect)(inp.keyup(27)).to.be.true;
+	                inp.keystate[27] = true;
+	                (0, _chai.expect)(inp.keyup(27)).to.be.false;
+	            });
+	            it('should not return true when the key was pressed before it was refreshed', function () {
+	                (0, _chai.expect)(inp.keyup(27)).to.be.false;
+	                inp.keystate[27] = false;
+	                (0, _chai.expect)(inp.keyup(27)).to.be.true;
+	                inp.refresh();
+	                (0, _chai.expect)(inp.keyup(27)).to.be.false;
+	                inp.keystate[27] = true;
+	                (0, _chai.expect)(inp.keyup(27)).to.be.false;
+	                inp.refresh();
+	                (0, _chai.expect)(inp.keyup(27)).to.be.false;
+	            });
+	            it('should accept name access to certain keys', function () {
+	                inp.keystate[27] = false;
+	                (0, _chai.expect)(inp.keyup('escape')).to.be.true;
+	                inp.keystate.escape = true;
+	                (0, _chai.expect)(inp.keyup('escape')).to.be.false;
+	            });
+	            it('should throw with an invalid name', function () {
+	                (0, _chai.expect)(function () {
+	                    return inp.keyup('cat?');
+	                }).to.throw(TypeError);
+	            });
+	        });
+	
+	        describe('#mousestate', function () {
+	            it('note: is not an array - when possible make it one');
+	            it('should be iterable', function () {
+	                (0, _chai.expect)([].concat(_toConsumableArray(inp.mousestate))).to.deep.equal([false, true, false, false]);
+	            });
+	            describe('#length', function () {
+	                it('should return the length (1 + highest used button index)', function () {
+	                    (0, _chai.expect)(inp.mousestate.length).to.equal(4);
+	                });
+	            });
+	            describe('#operator[b]', function () {
+	                it('should return the state of the given button', function () {
+	                    (0, _chai.expect)(inp.mousestate[3]).to.be.false;
+	                    (0, _chai.expect)(inp.mousestate[1]).to.be.true;
+	                });
+	                it('should allow name access to certain buttons', function () {
+	                    (0, _chai.expect)(inp.mousestate.right).to.be.false;
+	                    (0, _chai.expect)(inp.mousestate.left).to.be.true;
+	                });
+	                it('should throw if a key is not defined', function () {
+	                    (0, _chai.expect)(function () {
+	                        return inp.mousestate.asdf;
+	                    }).to.throw(TypeError);
+	                });
+	            });
+	            describe('#operator[b]=', function () {
+	                it('should set the mousestate of the given button', function () {
+	                    (0, _chai.expect)(inp.mousestate[3]).to.be.false;
+	                    inp.mousestate[3] = true;
+	                    (0, _chai.expect)(inp.mousestate[3]).to.be.true;
+	                    inp.mousestate[3] = false;
+	                    (0, _chai.expect)(inp.mousestate[3]).to.be.false;
+	                });
+	                it('should allow name access to certain keys', function () {
+	                    (0, _chai.expect)(inp.mousestate[3]).to.be.false;
+	                    inp.mousestate.right = true;
+	                    (0, _chai.expect)(inp.mousestate[3]).to.be.true;
+	                    inp.mousestate.right = false;
+	                    (0, _chai.expect)(inp.mousestate[3]).to.be.false;
+	
+	                    (0, _chai.expect)(inp.mousestate[1]).to.be.true;
+	                    inp.mousestate.left = false;
+	                    (0, _chai.expect)(inp.mousestate[1]).to.be.false;
+	                    inp.mousestate.left = true;
+	                    (0, _chai.expect)(inp.mousestate[1]).to.be.true;
+	                });
+	                it('should throw if a button is not defined', function () {
+	                    (0, _chai.expect)(function () {
+	                        return inp.mousestate.asdf = 5;
+	                    }).to.throw(TypeError);
+	                });
+	            });
+	        });
+	
+	        describe('#mousedown(button)', function () {
+	            it('should return true when the button was just pressed', function () {
+	                (0, _chai.expect)(inp.mousedown(3)).to.be.false;
+	                inp.mousestate[3] = true;
+	                (0, _chai.expect)(inp.mousedown(3)).to.be.true;
+	                inp.mousestate[3] = false;
+	                (0, _chai.expect)(inp.mousedown(3)).to.be.false;
+	            });
+	            it('should not return true when the button was pressed before it was refreshed', function () {
+	                (0, _chai.expect)(inp.mousedown(3)).to.be.false;
+	                inp.mousestate[3] = true;
+	                (0, _chai.expect)(inp.mousedown(3)).to.be.true;
+	                inp.refresh();
+	                (0, _chai.expect)(inp.mousedown(3)).to.be.false;
+	                inp.mousestate[3] = false;
+	                (0, _chai.expect)(inp.mousedown(3)).to.be.false;
+	                inp.refresh();
+	                (0, _chai.expect)(inp.mousedown(3)).to.be.false;
+	            });
+	            it('should accept name access to certain buttons', function () {
+	                inp.mousestate[3] = true;
+	                (0, _chai.expect)(inp.mousedown('right')).to.be.true;
+	                inp.mousestate.right = false;
+	                (0, _chai.expect)(inp.mousedown('right')).to.be.false;
+	            });
+	            it('should throw with an invalid name', function () {
+	                (0, _chai.expect)(function () {
+	                    return inp.mousedown('cat?');
+	                }).to.throw(TypeError);
+	            });
+	        });
+	        describe('#mouseup(button)', function () {
+	            it('should return true when the button was just released', function () {
+	                (0, _chai.expect)(inp.mouseup(1)).to.be.false;
+	                inp.mousestate[1] = false;
+	                (0, _chai.expect)(inp.mouseup(1)).to.be.true;
+	                inp.mousestate[1] = true;
+	                (0, _chai.expect)(inp.mouseup(1)).to.be.false;
+	            });
+	            it('should not return true when the button was pressed before it was refreshed', function () {
+	                (0, _chai.expect)(inp.mouseup(1)).to.be.false;
+	                inp.mousestate[1] = false;
+	                (0, _chai.expect)(inp.mouseup(1)).to.be.true;
+	                inp.refresh();
+	                (0, _chai.expect)(inp.mouseup(1)).to.be.false;
+	                inp.mousestate[1] = true;
+	                (0, _chai.expect)(inp.mouseup(1)).to.be.false;
+	                inp.refresh();
+	                (0, _chai.expect)(inp.mouseup(1)).to.be.false;
+	            });
+	            it('should accept name access to certain buttons', function () {
+	                inp.mousestate[1] = false;
+	                (0, _chai.expect)(inp.mouseup('left')).to.be.true;
+	                inp.mousestate.left = true;
+	                (0, _chai.expect)(inp.mouseup('left')).to.be.false;
+	            });
+	            it('should throw with an invalid name', function () {
+	                (0, _chai.expect)(function () {
+	                    return inp.mouseup('cat?');
+	                }).to.throw(TypeError);
+	            });
+	        });
+	
+	        describe('#refresh()', function () {
+	            it('should update the previous keystate', function () {
+	                inp.keystate.escape = false;
+	                inp.keystate.enter = true;
+	                (0, _chai.expect)(inp.keydown('enter')).to.be.true;
+	                (0, _chai.expect)(inp.keyup('escape')).to.be.true;
+	                inp.refresh();
+	                (0, _chai.expect)(inp.keydown('enter')).to.be.false;
+	                (0, _chai.expect)(inp.keyup('escape')).to.be.false;
+	                inp.keystate.escape = true;
+	                inp.keystate.enter = false;
+	                (0, _chai.expect)(inp.keyup('enter')).to.be.true;
+	                (0, _chai.expect)(inp.keydown('escape')).to.be.true;
+	                inp.refresh();
+	                (0, _chai.expect)(inp.keyup('enter')).to.be.false;
+	                (0, _chai.expect)(inp.keydown('escape')).to.be.false;
+	            });
+	            it('should not change the current keystate', function () {
+	                var list = [];
+	                for (var i = 0; i < 255; i++) {
+	                    list.push(inp.keystate[i]);
+	                }
+	                inp.refresh();
+	                for (var i = 0; i < 255; i++) {
+	                    (0, _chai.expect)(inp.keystate[i]).to.equal(list[i]);
+	                }
+	            });
+	            it('should update the previous mousestate', function () {
+	                inp.mousestate.left = false;
+	                inp.mousestate.right = true;
+	                (0, _chai.expect)(inp.mousedown('right')).to.be.true;
+	                (0, _chai.expect)(inp.mouseup('left')).to.be.true;
+	                inp.refresh();
+	                (0, _chai.expect)(inp.mousedown('right')).to.be.false;
+	                (0, _chai.expect)(inp.mouseup('left')).to.be.false;
+	                inp.mousestate.left = true;
+	                inp.mousestate.right = false;
+	                (0, _chai.expect)(inp.mouseup('right')).to.be.true;
+	                (0, _chai.expect)(inp.mousedown('left')).to.be.true;
+	                inp.refresh();
+	                (0, _chai.expect)(inp.mouseup('right')).to.be.false;
+	                (0, _chai.expect)(inp.mousedown('left')).to.be.false;
+	            });
+	            it('should not change the current mousestate', function () {
+	                var list = [];
+	                for (var i = 0; i <= 3; i++) {
+	                    list.push(inp.mousestate[i]);
+	                }
+	                inp.refresh();
+	                for (var i = 0; i <= 3; i++) {
+	                    (0, _chai.expect)(inp.mousestate[i]).to.equal(list[i]);
+	                }
+	            });
+	        });
+	    });
+	    describe('input', function () {
+	        it('should be an InputState', function () {
+	            (0, _chai.expect)(_input2.default.input).to.be.an.instanceof(_input2.default.InputState);
+	        });
+	        it('should automatically track the keyboard state (based on canvas interaction)', function () {
+	            _canvas.$canvas.trigger(_jquery2.default.Event('keydown', { which: 13 }));
+	            (0, _chai.expect)(_input2.default.input.keystate[13]).to.be.true;
+	            _canvas.$canvas.trigger(_jquery2.default.Event('keyup', { which: 13 }));
+	            (0, _chai.expect)(_input2.default.input.keystate[13]).to.be.false;
+	        });
+	        it('should automatically track the mouse state (based on canvas interaction)', function () {
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mousedown', { which: 2 }));
+	            (0, _chai.expect)(_input2.default.input.mousestate[2]).to.be.true;
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mouseup', { which: 2 }));
+	            (0, _chai.expect)(_input2.default.input.mousestate[2]).to.be.false;
+	        });
+	        it('should count as released even when not on the canvas', function () {
+	            _canvas.$canvas.trigger(_jquery2.default.Event('keydown', { which: 13 }));
+	            (0, _chai.expect)(_input2.default.input.keystate[13]).to.be.true;
+	            (0, _jquery2.default)(window).trigger(_jquery2.default.Event('keyup', { which: 13 }));
+	            (0, _chai.expect)(_input2.default.input.keystate[13]).to.be.false;
+	
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mousedown', { which: 2 }));
+	            (0, _chai.expect)(_input2.default.input.mousestate[2]).to.be.true;
+	            (0, _jquery2.default)(window).trigger(_jquery2.default.Event('mouseup', { which: 2 }));
+	            (0, _chai.expect)(_input2.default.input.mousestate[2]).to.be.false;
 	        });
 	    });
 	});
 
 /***/ },
-/* 305 */
+/* 303 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31379,48 +30917,48 @@
 	 */
 	"use strict";
 	
-	var match = __webpack_require__(306);
+	var match = __webpack_require__(304);
 	
-	module.exports = exports = __webpack_require__(311);
+	module.exports = exports = __webpack_require__(309);
 	
-	exports.assert = __webpack_require__(326);
-	exports.collection = __webpack_require__(327);
-	exports.extend = __webpack_require__(329);
+	exports.assert = __webpack_require__(324);
+	exports.collection = __webpack_require__(325);
+	exports.extend = __webpack_require__(327);
 	exports.match = match;
-	exports.spy = __webpack_require__(328);
-	exports.spyCall = __webpack_require__(330);
-	exports.stub = __webpack_require__(331);
-	exports.mock = __webpack_require__(334);
-	exports.expectation = __webpack_require__(335);
-	exports.createStubInstance = __webpack_require__(331).createStubInstance;
-	exports.typeOf = __webpack_require__(310);
+	exports.spy = __webpack_require__(326);
+	exports.spyCall = __webpack_require__(328);
+	exports.stub = __webpack_require__(329);
+	exports.mock = __webpack_require__(332);
+	exports.expectation = __webpack_require__(333);
+	exports.createStubInstance = __webpack_require__(329).createStubInstance;
+	exports.typeOf = __webpack_require__(308);
 	
 	exports.log = function () {};
-	exports.logError = __webpack_require__(336);
+	exports.logError = __webpack_require__(334);
 	
-	var event = __webpack_require__(337);
+	var event = __webpack_require__(335);
 	exports.Event = event.Event;
 	exports.CustomEvent = event.CustomEvent;
 	exports.ProgressEvent = event.ProgressEvent;
 	exports.EventTarget = event.EventTarget;
 	
-	var fakeTimers = __webpack_require__(338);
+	var fakeTimers = __webpack_require__(336);
 	exports.useFakeTimers = fakeTimers.useFakeTimers;
 	exports.clock = fakeTimers.clock;
 	exports.timers = fakeTimers.timers;
 	
-	var fakeXdr = __webpack_require__(340);
+	var fakeXdr = __webpack_require__(338);
 	exports.xdr = fakeXdr.xdr;
 	exports.FakeXDomainRequest = fakeXdr.FakeXDomainRequest;
 	exports.useFakeXDomainRequest = fakeXdr.useFakeXDomainRequest;
 	
-	var fakeXhr = __webpack_require__(341);
+	var fakeXhr = __webpack_require__(339);
 	exports.xhr = fakeXhr.xhr;
 	exports.FakeXMLHttpRequest = fakeXhr.FakeXMLHttpRequest;
 	exports.useFakeXMLHttpRequest = fakeXhr.useFakeXMLHttpRequest;
 	
-	exports.fakeServer = __webpack_require__(345);
-	exports.fakeServerWithClock = __webpack_require__(346);
+	exports.fakeServer = __webpack_require__(343);
+	exports.fakeServerWithClock = __webpack_require__(344);
 	
 	/*
 	 * allow deepEqual to check equality of matchers through
@@ -31432,11 +30970,11 @@
 	// Modifying exports of another modules is not the right
 	// way to handle exports in CommonJS but this is a minimal
 	// change to how sinon was built before.
-	__webpack_require__(347);
+	__webpack_require__(345);
 
 
 /***/ },
-/* 306 */
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31449,10 +30987,10 @@
 	 */
 	"use strict";
 	
-	var create = __webpack_require__(307);
-	var deepEqual = __webpack_require__(308).use(match); // eslint-disable-line no-use-before-define
-	var functionName = __webpack_require__(309);
-	var typeOf = __webpack_require__(310);
+	var create = __webpack_require__(305);
+	var deepEqual = __webpack_require__(306).use(match); // eslint-disable-line no-use-before-define
+	var functionName = __webpack_require__(307);
+	var typeOf = __webpack_require__(308);
 	
 	function assertType(value, type, name) {
 	    var actual = typeOf(value);
@@ -31672,7 +31210,7 @@
 
 
 /***/ },
-/* 307 */
+/* 305 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -31686,7 +31224,7 @@
 
 
 /***/ },
-/* 308 */
+/* 306 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -31795,7 +31333,7 @@
 
 
 /***/ },
-/* 309 */
+/* 307 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -31818,7 +31356,7 @@
 
 
 /***/ },
-/* 310 */
+/* 308 */
 /***/ function(module, exports) {
 
 	/**
@@ -31843,7 +31381,7 @@
 
 
 /***/ },
-/* 311 */
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31856,45 +31394,45 @@
 	 */
 	"use strict";
 	
-	exports.wrapMethod = __webpack_require__(312);
+	exports.wrapMethod = __webpack_require__(310);
 	
-	exports.create = __webpack_require__(307);
+	exports.create = __webpack_require__(305);
 	
-	exports.deepEqual = __webpack_require__(308);
+	exports.deepEqual = __webpack_require__(306);
 	
-	exports.format = __webpack_require__(315);
+	exports.format = __webpack_require__(313);
 	
-	exports.functionName = __webpack_require__(309);
+	exports.functionName = __webpack_require__(307);
 	
-	exports.functionToString = __webpack_require__(318);
+	exports.functionToString = __webpack_require__(316);
 	
-	exports.objectKeys = __webpack_require__(314);
+	exports.objectKeys = __webpack_require__(312);
 	
-	exports.getPropertyDescriptor = __webpack_require__(313);
+	exports.getPropertyDescriptor = __webpack_require__(311);
 	
-	exports.getConfig = __webpack_require__(319);
+	exports.getConfig = __webpack_require__(317);
 	
-	exports.defaultConfig = __webpack_require__(320);
+	exports.defaultConfig = __webpack_require__(318);
 	
-	exports.timesInWords = __webpack_require__(321);
+	exports.timesInWords = __webpack_require__(319);
 	
-	exports.calledInOrder = __webpack_require__(322);
+	exports.calledInOrder = __webpack_require__(320);
 	
-	exports.orderByFirstCall = __webpack_require__(323);
+	exports.orderByFirstCall = __webpack_require__(321);
 	
-	exports.walk = __webpack_require__(324);
+	exports.walk = __webpack_require__(322);
 	
-	exports.restore = __webpack_require__(325);
+	exports.restore = __webpack_require__(323);
 
 
 /***/ },
-/* 312 */
+/* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
-	var getPropertyDescriptor = __webpack_require__(313);
-	var objectKeys = __webpack_require__(314);
+	var getPropertyDescriptor = __webpack_require__(311);
+	var objectKeys = __webpack_require__(312);
 	
 	var hasOwn = Object.prototype.hasOwnProperty;
 	
@@ -32031,7 +31569,7 @@
 
 
 /***/ },
-/* 313 */
+/* 311 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32048,7 +31586,7 @@
 
 
 /***/ },
-/* 314 */
+/* 312 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32073,7 +31611,7 @@
 
 
 /***/ },
-/* 315 */
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32086,7 +31624,7 @@
 	 */
 	"use strict";
 	
-	var formatio = __webpack_require__(316);
+	var formatio = __webpack_require__(314);
 	
 	var formatter = formatio.configure({
 	    quoteStrings: false,
@@ -32099,13 +31637,13 @@
 
 
 /***/ },
-/* 316 */
+/* 314 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {(("function" === "function" && __webpack_require__(253) && function (m) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(317)], __WEBPACK_AMD_DEFINE_FACTORY__ = (m), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(315)], __WEBPACK_AMD_DEFINE_FACTORY__ = (m), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	}) || (typeof module === "object" && function (m) {
-	    module.exports = m(__webpack_require__(317));
+	    module.exports = m(__webpack_require__(315));
 	}) || function (m) { this.formatio = m(this.samsam); }
 	)(function (samsam) {
 	    "use strict";
@@ -32319,7 +31857,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 317 */
+/* 315 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(("function" === "function" && __webpack_require__(253) && function (m) { !(__WEBPACK_AMD_DEFINE_FACTORY__ = (m), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)); }) ||
@@ -32724,7 +32262,7 @@
 
 
 /***/ },
-/* 318 */
+/* 316 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32750,12 +32288,12 @@
 
 
 /***/ },
-/* 319 */
+/* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
-	var defaultConfig = __webpack_require__(320);
+	var defaultConfig = __webpack_require__(318);
 	
 	module.exports = function getConfig(custom) {
 	    var config = {};
@@ -32774,7 +32312,7 @@
 
 
 /***/ },
-/* 320 */
+/* 318 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32789,7 +32327,7 @@
 
 
 /***/ },
-/* 321 */
+/* 319 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32802,7 +32340,7 @@
 
 
 /***/ },
-/* 322 */
+/* 320 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32819,7 +32357,7 @@
 
 
 /***/ },
-/* 323 */
+/* 321 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32838,7 +32376,7 @@
 
 
 /***/ },
-/* 324 */
+/* 322 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32889,7 +32427,7 @@
 
 
 /***/ },
-/* 325 */
+/* 323 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32912,7 +32450,7 @@
 
 
 /***/ },
-/* 326 */
+/* 324 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -32925,11 +32463,11 @@
 	 */
 	"use strict";
 	
-	var calledInOrder = __webpack_require__(322);
-	var orderByFirstCall = __webpack_require__(323);
-	var timesInWords = __webpack_require__(321);
-	var format = __webpack_require__(315);
-	var sinonMatch = __webpack_require__(306);
+	var calledInOrder = __webpack_require__(320);
+	var orderByFirstCall = __webpack_require__(321);
+	var timesInWords = __webpack_require__(319);
+	var format = __webpack_require__(313);
+	var sinonMatch = __webpack_require__(304);
 	
 	var slice = Array.prototype.slice;
 	
@@ -33113,7 +32651,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 327 */
+/* 325 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -33126,8 +32664,8 @@
 	 */
 	"use strict";
 	
-	var sinon = __webpack_require__(311);
-	var sinonSpy = __webpack_require__(328);
+	var sinon = __webpack_require__(309);
+	var sinonSpy = __webpack_require__(326);
 	
 	var push = [].push;
 	var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -33262,7 +32800,7 @@
 
 
 /***/ },
-/* 328 */
+/* 326 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -33275,15 +32813,15 @@
 	  */
 	"use strict";
 	
-	var extend = __webpack_require__(329);
-	var deepEqual = __webpack_require__(308);
-	var functionName = __webpack_require__(309);
-	var functionToString = __webpack_require__(318);
-	var getPropertyDescriptor = __webpack_require__(313);
-	var sinon = __webpack_require__(311);
-	var spyCall = __webpack_require__(330);
-	var timesInWords = __webpack_require__(321);
-	var wrapMethod = __webpack_require__(312);
+	var extend = __webpack_require__(327);
+	var deepEqual = __webpack_require__(306);
+	var functionName = __webpack_require__(307);
+	var functionToString = __webpack_require__(316);
+	var getPropertyDescriptor = __webpack_require__(311);
+	var sinon = __webpack_require__(309);
+	var spyCall = __webpack_require__(328);
+	var timesInWords = __webpack_require__(319);
+	var wrapMethod = __webpack_require__(310);
 	
 	var push = Array.prototype.push;
 	var slice = Array.prototype.slice;
@@ -33705,7 +33243,7 @@
 
 
 /***/ },
-/* 329 */
+/* 327 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -33787,7 +33325,7 @@
 
 
 /***/ },
-/* 330 */
+/* 328 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -33802,11 +33340,11 @@
 	  */
 	"use strict";
 	
-	var sinon = __webpack_require__(311);
-	var sinonMatch = __webpack_require__(306);
-	var deepEqual = __webpack_require__(308).use(sinonMatch);
-	var functionName = __webpack_require__(309);
-	var createInstance = __webpack_require__(307);
+	var sinon = __webpack_require__(309);
+	var sinonMatch = __webpack_require__(304);
+	var deepEqual = __webpack_require__(306).use(sinonMatch);
+	var functionName = __webpack_require__(307);
+	var createInstance = __webpack_require__(305);
 	var slice = Array.prototype.slice;
 	
 	function throwYieldError(proxy, text, args) {
@@ -33997,7 +33535,7 @@
 
 
 /***/ },
-/* 331 */
+/* 329 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -34010,15 +33548,15 @@
 	 */
 	"use strict";
 	
-	var behavior = __webpack_require__(332);
-	var spy = __webpack_require__(328);
-	var extend = __webpack_require__(329);
-	var walk = __webpack_require__(324);
-	var objectKeys = __webpack_require__(314);
-	var getPropertyDescriptor = __webpack_require__(313);
-	var createInstance = __webpack_require__(307);
-	var functionToString = __webpack_require__(318);
-	var wrapMethod = __webpack_require__(312);
+	var behavior = __webpack_require__(330);
+	var spy = __webpack_require__(326);
+	var extend = __webpack_require__(327);
+	var walk = __webpack_require__(322);
+	var objectKeys = __webpack_require__(312);
+	var getPropertyDescriptor = __webpack_require__(311);
+	var createInstance = __webpack_require__(305);
+	var functionToString = __webpack_require__(316);
+	var wrapMethod = __webpack_require__(310);
 	
 	function stub(object, property, func) {
 	    if (!!func && typeof func !== "function" && typeof func !== "object") {
@@ -34192,7 +33730,7 @@
 
 
 /***/ },
-/* 332 */
+/* 330 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process, setImmediate) {/**
@@ -34206,8 +33744,8 @@
 	 */
 	"use strict";
 	
-	var extend = __webpack_require__(329);
-	var functionName = __webpack_require__(309);
+	var extend = __webpack_require__(327);
+	var functionName = __webpack_require__(307);
 	
 	var slice = Array.prototype.slice;
 	var join = Array.prototype.join;
@@ -34522,10 +34060,10 @@
 	
 	module.exports = proto;
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(241), __webpack_require__(333).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(241), __webpack_require__(331).setImmediate))
 
 /***/ },
-/* 333 */
+/* 331 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(241).nextTick;
@@ -34604,10 +34142,10 @@
 	exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 	  delete immediateIds[id];
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(333).setImmediate, __webpack_require__(333).clearImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(331).setImmediate, __webpack_require__(331).clearImmediate))
 
 /***/ },
-/* 334 */
+/* 332 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -34620,12 +34158,12 @@
 	 */
 	"use strict";
 	
-	var mockExpectation = __webpack_require__(335);
-	var spyCallToString = __webpack_require__(330).toString;
-	var extend = __webpack_require__(329);
-	var match = __webpack_require__(306);
-	var deepEqual = __webpack_require__(308).use(match);
-	var wrapMethod = __webpack_require__(312);
+	var mockExpectation = __webpack_require__(333);
+	var spyCallToString = __webpack_require__(328).toString;
+	var extend = __webpack_require__(327);
+	var match = __webpack_require__(304);
+	var deepEqual = __webpack_require__(306).use(match);
+	var wrapMethod = __webpack_require__(310);
 	
 	var push = Array.prototype.push;
 	
@@ -34792,7 +34330,7 @@
 
 
 /***/ },
-/* 335 */
+/* 333 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -34805,15 +34343,15 @@
 	 */
 	"use strict";
 	
-	var spyInvoke = __webpack_require__(328).invoke;
-	var spyCallToString = __webpack_require__(330).toString;
-	var timesInWords = __webpack_require__(321);
-	var extend = __webpack_require__(329);
-	var match = __webpack_require__(306);
-	var stub = __webpack_require__(331);
-	var assert = __webpack_require__(326);
-	var deepEqual = __webpack_require__(308).use(match);
-	var format = __webpack_require__(315);
+	var spyInvoke = __webpack_require__(326).invoke;
+	var spyCallToString = __webpack_require__(328).toString;
+	var timesInWords = __webpack_require__(319);
+	var extend = __webpack_require__(327);
+	var match = __webpack_require__(304);
+	var stub = __webpack_require__(329);
+	var assert = __webpack_require__(324);
+	var deepEqual = __webpack_require__(306).use(match);
+	var format = __webpack_require__(313);
 	
 	var slice = Array.prototype.slice;
 	var push = Array.prototype.push;
@@ -35090,7 +34628,7 @@
 
 
 /***/ },
-/* 336 */
+/* 334 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -35103,7 +34641,7 @@
 	 */
 	"use strict";
 	
-	var sinon = __webpack_require__(311);
+	var sinon = __webpack_require__(309);
 	
 	// cache a reference to setTimeout, so that our reference won't be stubbed out
 	// when using fake timers and errors will still get logged
@@ -35144,7 +34682,7 @@
 
 
 /***/ },
-/* 337 */
+/* 335 */
 /***/ function(module, exports) {
 
 	/**
@@ -35244,7 +34782,7 @@
 
 
 /***/ },
-/* 338 */
+/* 336 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {/**
@@ -35266,7 +34804,7 @@
 	 */
 	"use strict";
 	
-	var llx = __webpack_require__(339);
+	var llx = __webpack_require__(337);
 	
 	exports.useFakeTimers = function () {
 	    var now;
@@ -35299,10 +34837,10 @@
 	    Date: Date
 	};
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(333).setImmediate, __webpack_require__(333).clearImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(331).setImmediate, __webpack_require__(331).clearImmediate))
 
 /***/ },
-/* 339 */
+/* 337 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*global global, window*/
@@ -35828,7 +35366,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 340 */
+/* 338 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -35837,9 +35375,9 @@
 	
 	"use strict";
 	
-	var event = __webpack_require__(337);
-	var extend = __webpack_require__(329);
-	var logError = __webpack_require__(336);
+	var event = __webpack_require__(335);
+	var extend = __webpack_require__(327);
+	var logError = __webpack_require__(334);
 	
 	var xdr = { XDomainRequest: global.XDomainRequest };
 	xdr.GlobalXDomainRequest = global.XDomainRequest;
@@ -36030,7 +35568,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 341 */
+/* 339 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -36043,11 +35581,11 @@
 	 */
 	"use strict";
 	
-	var TextEncoder = __webpack_require__(342).TextEncoder;
+	var TextEncoder = __webpack_require__(340).TextEncoder;
 	
-	var sinon = __webpack_require__(311);
-	var sinonEvent = __webpack_require__(337);
-	var extend = __webpack_require__(329);
+	var sinon = __webpack_require__(309);
+	var sinonEvent = __webpack_require__(335);
+	var extend = __webpack_require__(327);
 	
 	function getWorkingXHR(globalScope) {
 	    var supportsXHR = typeof globalScope.XMLHttpRequest !== "undefined";
@@ -36715,7 +36253,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 342 */
+/* 340 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright 2014 Joshua Bell. All rights reserved.
@@ -36732,7 +36270,7 @@
 	// See the License for the specific language governing permissions and
 	// limitations under the License.
 	
-	var encoding = __webpack_require__(343);
+	var encoding = __webpack_require__(341);
 	
 	module.exports = {
 	  TextEncoder: encoding.TextEncoder,
@@ -36741,7 +36279,7 @@
 
 
 /***/ },
-/* 343 */
+/* 341 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright 2014 Joshua Bell. All rights reserved.
@@ -36765,7 +36303,7 @@
 	 */
 	if (typeof module !== "undefined" && module.exports) {
 	  this["encoding-indexes"] =
-	    __webpack_require__(344)["encoding-indexes"];
+	    __webpack_require__(342)["encoding-indexes"];
 	}
 	
 	(function(global) {
@@ -39815,7 +39353,7 @@
 
 
 /***/ },
-/* 344 */
+/* 342 */
 /***/ function(module, exports) {
 
 	// Copyright 2014 Joshua Bell. All rights reserved.
@@ -39875,7 +39413,7 @@
 
 
 /***/ },
-/* 345 */
+/* 343 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -39892,9 +39430,9 @@
 	"use strict";
 	
 	var push = [].push;
-	var sinon = __webpack_require__(311);
-	var createInstance = __webpack_require__(307);
-	var format = __webpack_require__(315);
+	var sinon = __webpack_require__(309);
+	var createInstance = __webpack_require__(305);
+	var format = __webpack_require__(313);
 	
 	function responseArray(handler) {
 	    var response = handler;
@@ -40103,7 +39641,7 @@
 
 
 /***/ },
-/* 346 */
+/* 344 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -40122,8 +39660,8 @@
 	 */
 	"use strict";
 	
-	var fakeServer = __webpack_require__(345);
-	var fakeTimers = __webpack_require__(338);
+	var fakeServer = __webpack_require__(343);
+	var fakeTimers = __webpack_require__(336);
 	
 	function Server() {}
 	Server.prototype = fakeServer;
@@ -40189,7 +39727,7 @@
 
 
 /***/ },
-/* 347 */
+/* 345 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -40202,8 +39740,8 @@
 	 */
 	"use strict";
 	
-	__webpack_require__(348);
-	var sinon = __webpack_require__(311);
+	__webpack_require__(346);
+	var sinon = __webpack_require__(309);
 	
 	function createTest(property, setUp, tearDown) {
 	    return function () {
@@ -40270,7 +39808,7 @@
 
 
 /***/ },
-/* 348 */
+/* 346 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -40283,8 +39821,8 @@
 	 */
 	"use strict";
 	
-	__webpack_require__(349);
-	var sinon = __webpack_require__(311);
+	__webpack_require__(347);
+	var sinon = __webpack_require__(309);
 	
 	var slice = Array.prototype.slice;
 	
@@ -40353,7 +39891,7 @@
 
 
 /***/ },
-/* 349 */
+/* 347 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -40367,11 +39905,11 @@
 	 */
 	"use strict";
 	
-	__webpack_require__(329);
 	__webpack_require__(327);
-	__webpack_require__(346);
-	__webpack_require__(338);
-	var sinon = __webpack_require__(311);
+	__webpack_require__(325);
+	__webpack_require__(344);
+	__webpack_require__(336);
+	var sinon = __webpack_require__(309);
 	
 	var push = [].push;
 	
@@ -40494,15 +40032,15 @@
 
 
 /***/ },
-/* 350 */
+/* 348 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
 	__webpack_require__(1);
 	mocha.setup("bdd");
-	__webpack_require__(351);
-	__webpack_require__(300);
+	__webpack_require__(349);
+	__webpack_require__(298);
 	if (false) {
 		module.hot.accept();
 		module.hot.dispose(function () {
@@ -40515,22 +40053,2553 @@
 	}
 
 /***/ },
-/* 351 */
+/* 349 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	var _chai = __webpack_require__(10);
 	
-	var _sinon = __webpack_require__(305);
+	var _sinon = __webpack_require__(303);
 	
-	var _canvas = __webpack_require__(243);
+	var _jquery = __webpack_require__(243);
 	
-	var _draw = __webpack_require__(295);
+	var _jquery2 = _interopRequireDefault(_jquery);
+	
+	var _canvas = __webpack_require__(242);
+	
+	var _input = __webpack_require__(295);
+	
+	var _event = __webpack_require__(350);
+	
+	var _event2 = _interopRequireDefault(_event);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	describe('event.es6', function () {
+	    describe('on(event, ...handlers)', function () {
+	        it('should add the handlers to the event', function () {
+	            var a = (0, _sinon.spy)();
+	            var b = (0, _sinon.spy)();
+	            var c = (0, _sinon.spy)();
+	
+	            _event2.default.on('mousedown', a, b, c);
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mousedown', { which: 2 }));
+	            _event2.default.trigger();
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mouseup', { which: 2 }));
+	            _event2.default.trigger();
+	            (0, _chai.expect)(b).to.have.been.calledOnce;
+	            (0, _chai.expect)(a).to.have.been.calledOnce;
+	            (0, _chai.expect)(c).to.have.been.calledOnce;
+	            _event2.default.off('mousedown', a, b, c);
+	        });
+	        it('should not call any of the handlers', function () {
+	            var a = (0, _sinon.spy)();
+	            var b = (0, _sinon.spy)();
+	            var c = (0, _sinon.spy)();
+	
+	            _event2.default.on('mousedown', a);
+	            _event2.default.on('mousedown', b, c);
+	            (0, _chai.expect)(a).to.have.not.been.called;
+	            (0, _chai.expect)(b).to.have.not.been.called;
+	            (0, _chai.expect)(c).to.have.not.been.called;
+	            _event2.default.off('mousedown', a, b, c);
+	        });
+	        it('should be recallable', function () {
+	            var a = function a() {};
+	
+	            var b = function b() {};
+	
+	            var c = function c() {};
+	
+	            (0, _chai.expect)(function () {
+	                return _event2.default.on('mousedown', a)('mousedown', b, c);
+	            }).to.not.throw();
+	            _event2.default.off('mousedown', a, b, c);
+	        });
+	    });
+	    describe('off(event, ...handlers)', function () {
+	        it('should remove the handlers from the event', function () {
+	            var a = (0, _sinon.spy)();
+	            var b = (0, _sinon.spy)();
+	            var c = (0, _sinon.spy)();
+	
+	            _event2.default.on('mousedown', a, b, c);
+	            _event2.default.off('mousedown', a, b, c);
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mousedown', { which: 2 }));
+	            _event2.default.trigger();
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mouseup', { which: 2 }));
+	            _event2.default.trigger();
+	            (0, _chai.expect)(b).to.have.not.been.called;
+	            (0, _chai.expect)(a).to.have.not.been.called;
+	            (0, _chai.expect)(c).to.have.not.been.called;
+	        });
+	        it('should not call any of the handlers', function () {
+	            var a = (0, _sinon.spy)();
+	            var b = (0, _sinon.spy)();
+	            var c = (0, _sinon.spy)();
+	
+	            _event2.default.on('mousedown', a, b, c);
+	            _event2.default.off('mousedown', a);
+	            _event2.default.off('mousedown', b, c);
+	            (0, _chai.expect)(a).to.have.not.been.called;
+	            (0, _chai.expect)(b).to.have.not.been.called;
+	            (0, _chai.expect)(c).to.have.not.been.called;
+	        });
+	        it('should be recallable', function () {
+	            (0, _chai.expect)(function () {
+	                return _event2.default.off('mousedown', function () {})('mousedown', function () {}, function () {});
+	            }).to.not.throw();
+	        });
+	    });
+	    describe('trigger()', function () {
+	        it('should trigger all the handlers for events that have happened', function () {
+	            var a = (0, _sinon.spy)();
+	            var b = (0, _sinon.spy)();
+	            var c = (0, _sinon.spy)();
+	
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mousedown', { which: 1 })).trigger(_jquery2.default.Event('mouseup', { which: 3 })).trigger(_jquery2.default.Event('keydown', { which: 13 })).trigger(_jquery2.default.Event('keydown', { which: 27 }));
+	            _event2.default.trigger();
+	            (0, _chai.expect)(a).to.have.not.been.called;
+	            (0, _chai.expect)(b).to.have.not.been.called;
+	            (0, _chai.expect)(c).to.have.not.been.called;
+	            _event2.default.on('mousedown', a)('mouseup', b)('keyheld', c);
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mousedown', { which: 2 })).trigger(_jquery2.default.Event('mousedown', { which: 3 })).trigger(_jquery2.default.Event('mouseup', { which: 1 }));
+	            _event2.default.trigger();
+	            (0, _chai.expect)(a).to.have.been.calledWith(2);
+	            (0, _chai.expect)(a).to.have.been.calledWith(3);
+	            (0, _chai.expect)(a).to.have.been.calledTwice;
+	            (0, _chai.expect)(b).to.have.been.calledWith(1);
+	            (0, _chai.expect)(b).to.have.been.calledOnce;
+	            (0, _chai.expect)(c).to.have.been.calledWith(13);
+	            (0, _chai.expect)(c).to.have.been.calledWith(27);
+	            (0, _chai.expect)(c).to.have.been.calledTwice;
+	            a.reset(), b.reset(), c.reset();
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mouseup', { which: 2 })).trigger(_jquery2.default.Event('mouseup', { which: 3 })).trigger(_jquery2.default.Event('keyup', { which: 27 }));
+	            _event2.default.trigger();
+	            (0, _chai.expect)(a).to.not.have.been.called;
+	            (0, _chai.expect)(b).to.have.been.calledWith(2);
+	            (0, _chai.expect)(b).to.have.been.calledWith(3);
+	            (0, _chai.expect)(b).to.have.been.calledTwice;
+	            (0, _chai.expect)(c).to.have.been.calledWith(13);
+	            (0, _chai.expect)(c).to.have.been.calledOnce;
+	            a.reset(), b.reset(), c.reset();
+	            _canvas.$canvas.trigger(_jquery2.default.Event('keyup', { which: 13 }));
+	            _event2.default.trigger();
+	            (0, _chai.expect)(a).to.have.not.been.called;
+	            (0, _chai.expect)(b).to.have.not.been.called;
+	            (0, _chai.expect)(c).to.have.not.been.called;
+	            _event2.default.off('mousedown', a)('mouseup', b)('keyheld', c);
+	        });
+	        it('should refresh the standard input', function () {
+	            var refresh = (0, _sinon.stub)(_input.input, 'refresh');
+	            _event2.default.trigger();
+	            (0, _chai.expect)(refresh).to.have.been.called;
+	            refresh.restore();
+	        });
+	    });
+	    describe('event:mousedown', function () {
+	        it('should be triggered only the first frame the mouse is pressed', function () {
+	            var a = (0, _sinon.spy)();
+	            _event2.default.on('mousedown', a);
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mousedown', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.trigger();
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mouseup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('mousedown', a);
+	            (0, _chai.expect)(a).to.have.been.calledOnce;
+	        });
+	        it('should call all handlers', function () {
+	            var a = (0, _sinon.spy)();
+	            var b = (0, _sinon.spy)();
+	            var c = (0, _sinon.spy)();
+	
+	            _event2.default.on('mousedown', a)('mousedown', b, c);
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mousedown', { which: 1 }));
+	            _event2.default.trigger();
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mouseup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('mousedown', a, b, c);
+	            (0, _chai.expect)(a).to.have.been.calledOnce;
+	            (0, _chai.expect)(b).to.have.been.calledOnce;
+	            (0, _chai.expect)(c).to.have.been.calledOnce;
+	        });
+	        it('should ignore events off canvas', function () {
+	            var a = (0, _sinon.spy)();
+	            _event2.default.on('mousedown', a);
+	            (0, _jquery2.default)(window).trigger(_jquery2.default.Event('mousedown', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.trigger();
+	            (0, _jquery2.default)(window).trigger(_jquery2.default.Event('mouseup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('mousedown', a);
+	            (0, _chai.expect)(a).to.not.have.been.called;
+	        });
+	    });
+	    describe('event:mouseheld', function () {
+	        it('should be triggered every frame the mouse is pressed', function () {
+	            var a = (0, _sinon.spy)();
+	            _event2.default.on('mouseheld', a);
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mousedown', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.trigger();
+	            _event2.default.trigger();
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mouseup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('mouseheld', a);
+	            (0, _chai.expect)(a).to.have.been.calledThrice;
+	        });
+	        it('should call all handlers', function () {
+	            var a = (0, _sinon.spy)();
+	            var b = (0, _sinon.spy)();
+	            var c = (0, _sinon.spy)();
+	
+	            _event2.default.on('mouseheld', a)('mouseheld', b, c);
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mousedown', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.trigger();
+	            _event2.default.trigger();
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mouseup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('mouseheld', a, b, c);
+	            (0, _chai.expect)(a).to.have.been.calledThrice;
+	            (0, _chai.expect)(b).to.have.been.calledThrice;
+	            (0, _chai.expect)(c).to.have.been.calledThrice;
+	        });
+	        it('should ignore events off canvas', function () {
+	            var a = (0, _sinon.spy)();
+	            _event2.default.on('mouseheld', a);
+	            (0, _jquery2.default)(window).trigger(_jquery2.default.Event('mousedown', { which: 1 }));
+	            _event2.default.trigger();
+	            (0, _jquery2.default)(window).trigger(_jquery2.default.Event('mouseup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('mouseheld', a);
+	            (0, _chai.expect)(a).to.not.have.been.called;
+	        });
+	    });
+	    describe('event:mouseup', function () {
+	        it('should be triggered only the first frame the mouse is released', function () {
+	            var a = (0, _sinon.spy)();
+	            _event2.default.on('mouseup', a);
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mousedown', { which: 1 }));
+	            _event2.default.trigger();
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mouseup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.trigger();
+	            _event2.default.off('mouseup', a);
+	            (0, _chai.expect)(a).to.have.been.calledOnce;
+	        });
+	        it('should call all handlers', function () {
+	            var a = (0, _sinon.spy)();
+	            var b = (0, _sinon.spy)();
+	            var c = (0, _sinon.spy)();
+	
+	            _event2.default.on('mouseup', a)('mouseup', b, c);
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mousedown', { which: 1 }));
+	            _event2.default.trigger();
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mouseup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('mouseup', a, b, c);
+	            (0, _chai.expect)(a).to.have.been.calledOnce;
+	            (0, _chai.expect)(b).to.have.been.calledOnce;
+	            (0, _chai.expect)(c).to.have.been.calledOnce;
+	        });
+	        it('should ignore events off canvas', function () {
+	            var a = (0, _sinon.spy)();
+	            _event2.default.on('mouseup', a);
+	            (0, _jquery2.default)(window).trigger(_jquery2.default.Event('mousedown', { which: 1 }));
+	            _event2.default.trigger();
+	            (0, _jquery2.default)(window).trigger(_jquery2.default.Event('mouseup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('mouseup', a);
+	            (0, _chai.expect)(a).to.not.have.been.called;
+	        });
+	        it('should not ignore events off canvas if they started on canvas', function () {
+	            var a = (0, _sinon.spy)();
+	            _event2.default.on('mouseup', a);
+	            _canvas.$canvas.trigger(_jquery2.default.Event('mousedown', { which: 1 }));
+	            _event2.default.trigger();
+	            (0, _jquery2.default)(window).trigger(_jquery2.default.Event('mouseup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('mouseup', a);
+	            (0, _chai.expect)(a).to.have.been.calledOnce;
+	        });
+	    });
+	    describe('event:keydown', function () {
+	        it('should be triggered only the first frame the key is pressed', function () {
+	            var a = (0, _sinon.spy)();
+	            _event2.default.on('keydown', a);
+	            _canvas.$canvas.trigger(_jquery2.default.Event('keydown', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.trigger();
+	            _canvas.$canvas.trigger(_jquery2.default.Event('keyup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('keydown', a);
+	            (0, _chai.expect)(a).to.have.been.calledOnce;
+	        });
+	        it('should call all handlers', function () {
+	            var a = (0, _sinon.spy)();
+	            var b = (0, _sinon.spy)();
+	            var c = (0, _sinon.spy)();
+	
+	            _event2.default.on('keydown', a)('keydown', b, c);
+	            _canvas.$canvas.trigger(_jquery2.default.Event('keydown', { which: 1 }));
+	            _event2.default.trigger();
+	            _canvas.$canvas.trigger(_jquery2.default.Event('keyup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('keydown', a, b, c);
+	            (0, _chai.expect)(a).to.have.been.calledOnce;
+	            (0, _chai.expect)(b).to.have.been.calledOnce;
+	            (0, _chai.expect)(c).to.have.been.calledOnce;
+	        });
+	        it('should ignore events off canvas', function () {
+	            var a = (0, _sinon.spy)();
+	            _event2.default.on('keydown', a);
+	            (0, _jquery2.default)(window).trigger(_jquery2.default.Event('keydown', { which: 1 }));
+	            _event2.default.trigger();
+	            (0, _jquery2.default)(window).trigger(_jquery2.default.Event('keyup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('keydown', a);
+	            (0, _chai.expect)(a).to.not.have.been.called;
+	        });
+	    });
+	    describe('event:keyheld', function () {
+	        it('should be triggered every frame the key is pressed', function () {
+	            var a = (0, _sinon.spy)();
+	            _event2.default.on('keyheld', a);
+	            _canvas.$canvas.trigger(_jquery2.default.Event('keydown', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.trigger();
+	            _event2.default.trigger();
+	            _canvas.$canvas.trigger(_jquery2.default.Event('keyup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('keyheld', a);
+	            (0, _chai.expect)(a).to.have.been.calledThrice;
+	        });
+	        it('should call all handlers', function () {
+	            var a = (0, _sinon.spy)();
+	            var b = (0, _sinon.spy)();
+	            var c = (0, _sinon.spy)();
+	
+	            _event2.default.on('keyheld', a)('keyheld', b, c);
+	            _canvas.$canvas.trigger(_jquery2.default.Event('keydown', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.trigger();
+	            _event2.default.trigger();
+	            _canvas.$canvas.trigger(_jquery2.default.Event('keyup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('keyheld', a, b, c);
+	            (0, _chai.expect)(a).to.have.been.calledThrice;
+	            (0, _chai.expect)(b).to.have.been.calledThrice;
+	            (0, _chai.expect)(c).to.have.been.calledThrice;
+	        });
+	        it('should ignore events off canvas', function () {
+	            var a = (0, _sinon.spy)();
+	            _event2.default.on('keyheld', a);
+	            (0, _jquery2.default)(window).trigger(_jquery2.default.Event('keydown', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.trigger();
+	            _event2.default.trigger();
+	            (0, _jquery2.default)(window).trigger(_jquery2.default.Event('keyup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('keyheld', a);
+	            (0, _chai.expect)(a).to.not.have.been.called;
+	        });
+	    });
+	    describe('event:keyup', function () {
+	        it('should be triggered only the first frame the key is released', function () {
+	            var a = (0, _sinon.spy)();
+	            _event2.default.on('keyup', a);
+	            _canvas.$canvas.trigger(_jquery2.default.Event('keydown', { which: 1 }));
+	            _event2.default.trigger();
+	            _canvas.$canvas.trigger(_jquery2.default.Event('keyup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.trigger();
+	            _event2.default.off('keyup', a);
+	            (0, _chai.expect)(a).to.have.been.calledOnce;
+	        });
+	        it('should call all handlers', function () {
+	            var a = (0, _sinon.spy)();
+	            var b = (0, _sinon.spy)();
+	            var c = (0, _sinon.spy)();
+	
+	            _event2.default.on('keyup', a)('keyup', b, c);
+	            _canvas.$canvas.trigger(_jquery2.default.Event('keydown', { which: 1 }));
+	            _event2.default.trigger();
+	            _canvas.$canvas.trigger(_jquery2.default.Event('keyup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('keyup', a, b, c);
+	            (0, _chai.expect)(a).to.have.been.calledOnce;
+	            (0, _chai.expect)(b).to.have.been.calledOnce;
+	            (0, _chai.expect)(c).to.have.been.calledOnce;
+	        });
+	        it('should ignore events off canvas', function () {
+	            var a = (0, _sinon.spy)();
+	            _event2.default.on('keyup', a);
+	            (0, _jquery2.default)(window).trigger(_jquery2.default.Event('keydown', { which: 1 }));
+	            _event2.default.trigger();
+	            (0, _jquery2.default)(window).trigger(_jquery2.default.Event('keyup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('keyup', a);
+	            (0, _chai.expect)(a).to.not.have.been.called;
+	        });
+	        it('should not ignore events off canvas if the event started on canvas', function () {
+	            var a = (0, _sinon.spy)();
+	            _event2.default.on('keyup', a);
+	            _canvas.$canvas.trigger(_jquery2.default.Event('keydown', { which: 1 }));
+	            _event2.default.trigger();
+	            (0, _jquery2.default)(window).trigger(_jquery2.default.Event('keyup', { which: 1 }));
+	            _event2.default.trigger();
+	            _event2.default.off('keyup', a);
+	            (0, _chai.expect)(a).to.have.been.calledOnce;
+	        });
+	    });
+	});
+
+/***/ },
+/* 350 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.trigger = exports.off = exports.on = undefined;
+	
+	var _input = __webpack_require__(295);
+	
+	var _util = __webpack_require__(351);
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	var events = {
+	    'mouseheld': {
+	        trigger: function trigger() {
+	            var _this = this;
+	
+	            [].concat(_toConsumableArray(_input.input.mousestate)).forEach(function (is, button) {
+	                if (is) {
+	                    var _iteratorNormalCompletion = true;
+	                    var _didIteratorError = false;
+	                    var _iteratorError = undefined;
+	
+	                    try {
+	                        for (var _iterator = _this.callbacks[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                            var cb = _step.value;
+	
+	                            cb(button);
+	                        }
+	                    } catch (err) {
+	                        _didIteratorError = true;
+	                        _iteratorError = err;
+	                    } finally {
+	                        try {
+	                            if (!_iteratorNormalCompletion && _iterator.return) {
+	                                _iterator.return();
+	                            }
+	                        } finally {
+	                            if (_didIteratorError) {
+	                                throw _iteratorError;
+	                            }
+	                        }
+	                    }
+	                }
+	            });
+	        }
+	    },
+	    'mousedown': {
+	        trigger: function trigger() {
+	            var _iteratorNormalCompletion2 = true;
+	            var _didIteratorError2 = false;
+	            var _iteratorError2 = undefined;
+	
+	            try {
+	                for (var _iterator2 = (0, _util.range)(0, _input.input.mousestate.length)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	                    var i = _step2.value;
+	
+	                    if (_input.input.mousedown(i)) {
+	                        var _iteratorNormalCompletion3 = true;
+	                        var _didIteratorError3 = false;
+	                        var _iteratorError3 = undefined;
+	
+	                        try {
+	                            for (var _iterator3 = this.callbacks[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+	                                var cb = _step3.value;
+	
+	                                cb(i);
+	                            }
+	                        } catch (err) {
+	                            _didIteratorError3 = true;
+	                            _iteratorError3 = err;
+	                        } finally {
+	                            try {
+	                                if (!_iteratorNormalCompletion3 && _iterator3.return) {
+	                                    _iterator3.return();
+	                                }
+	                            } finally {
+	                                if (_didIteratorError3) {
+	                                    throw _iteratorError3;
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            } catch (err) {
+	                _didIteratorError2 = true;
+	                _iteratorError2 = err;
+	            } finally {
+	                try {
+	                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	                        _iterator2.return();
+	                    }
+	                } finally {
+	                    if (_didIteratorError2) {
+	                        throw _iteratorError2;
+	                    }
+	                }
+	            }
+	        }
+	    },
+	    'mouseup': {
+	        trigger: function trigger() {
+	            var _iteratorNormalCompletion4 = true;
+	            var _didIteratorError4 = false;
+	            var _iteratorError4 = undefined;
+	
+	            try {
+	                for (var _iterator4 = (0, _util.range)(0, _input.input.mousestate.length)[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+	                    var i = _step4.value;
+	
+	                    if (_input.input.mouseup(i)) {
+	                        var _iteratorNormalCompletion5 = true;
+	                        var _didIteratorError5 = false;
+	                        var _iteratorError5 = undefined;
+	
+	                        try {
+	                            for (var _iterator5 = this.callbacks[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+	                                var cb = _step5.value;
+	
+	                                cb(i);
+	                            }
+	                        } catch (err) {
+	                            _didIteratorError5 = true;
+	                            _iteratorError5 = err;
+	                        } finally {
+	                            try {
+	                                if (!_iteratorNormalCompletion5 && _iterator5.return) {
+	                                    _iterator5.return();
+	                                }
+	                            } finally {
+	                                if (_didIteratorError5) {
+	                                    throw _iteratorError5;
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            } catch (err) {
+	                _didIteratorError4 = true;
+	                _iteratorError4 = err;
+	            } finally {
+	                try {
+	                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
+	                        _iterator4.return();
+	                    }
+	                } finally {
+	                    if (_didIteratorError4) {
+	                        throw _iteratorError4;
+	                    }
+	                }
+	            }
+	        }
+	    },
+	    'keyheld': {
+	        trigger: function trigger() {
+	            var _this2 = this;
+	
+	            [].concat(_toConsumableArray(_input.input.keystate)).forEach(function (is, key) {
+	                if (is) {
+	                    var _iteratorNormalCompletion6 = true;
+	                    var _didIteratorError6 = false;
+	                    var _iteratorError6 = undefined;
+	
+	                    try {
+	                        for (var _iterator6 = _this2.callbacks[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+	                            var cb = _step6.value;
+	
+	                            cb(key);
+	                        }
+	                    } catch (err) {
+	                        _didIteratorError6 = true;
+	                        _iteratorError6 = err;
+	                    } finally {
+	                        try {
+	                            if (!_iteratorNormalCompletion6 && _iterator6.return) {
+	                                _iterator6.return();
+	                            }
+	                        } finally {
+	                            if (_didIteratorError6) {
+	                                throw _iteratorError6;
+	                            }
+	                        }
+	                    }
+	                }
+	            });
+	        }
+	    },
+	    'keydown': {
+	        trigger: function trigger() {
+	            var _iteratorNormalCompletion7 = true;
+	            var _didIteratorError7 = false;
+	            var _iteratorError7 = undefined;
+	
+	            try {
+	                for (var _iterator7 = (0, _util.range)(0, _input.input.keystate.length)[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+	                    var i = _step7.value;
+	
+	                    if (_input.input.keydown(i)) {
+	                        var _iteratorNormalCompletion8 = true;
+	                        var _didIteratorError8 = false;
+	                        var _iteratorError8 = undefined;
+	
+	                        try {
+	                            for (var _iterator8 = this.callbacks[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+	                                var cb = _step8.value;
+	
+	                                cb(i);
+	                            }
+	                        } catch (err) {
+	                            _didIteratorError8 = true;
+	                            _iteratorError8 = err;
+	                        } finally {
+	                            try {
+	                                if (!_iteratorNormalCompletion8 && _iterator8.return) {
+	                                    _iterator8.return();
+	                                }
+	                            } finally {
+	                                if (_didIteratorError8) {
+	                                    throw _iteratorError8;
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            } catch (err) {
+	                _didIteratorError7 = true;
+	                _iteratorError7 = err;
+	            } finally {
+	                try {
+	                    if (!_iteratorNormalCompletion7 && _iterator7.return) {
+	                        _iterator7.return();
+	                    }
+	                } finally {
+	                    if (_didIteratorError7) {
+	                        throw _iteratorError7;
+	                    }
+	                }
+	            }
+	        }
+	    },
+	    'keyup': {
+	        trigger: function trigger() {
+	            var _iteratorNormalCompletion9 = true;
+	            var _didIteratorError9 = false;
+	            var _iteratorError9 = undefined;
+	
+	            try {
+	                for (var _iterator9 = (0, _util.range)(0, _input.input.keystate.length)[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+	                    var i = _step9.value;
+	
+	                    if (_input.input.keydown(i)) {
+	                        var _iteratorNormalCompletion10 = true;
+	                        var _didIteratorError10 = false;
+	                        var _iteratorError10 = undefined;
+	
+	                        try {
+	                            for (var _iterator10 = this.callbacks[Symbol.iterator](), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
+	                                var cb = _step10.value;
+	
+	                                cb(i);
+	                            }
+	                        } catch (err) {
+	                            _didIteratorError10 = true;
+	                            _iteratorError10 = err;
+	                        } finally {
+	                            try {
+	                                if (!_iteratorNormalCompletion10 && _iterator10.return) {
+	                                    _iterator10.return();
+	                                }
+	                            } finally {
+	                                if (_didIteratorError10) {
+	                                    throw _iteratorError10;
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            } catch (err) {
+	                _didIteratorError9 = true;
+	                _iteratorError9 = err;
+	            } finally {
+	                try {
+	                    if (!_iteratorNormalCompletion9 && _iterator9.return) {
+	                        _iterator9.return();
+	                    }
+	                } finally {
+	                    if (_didIteratorError9) {
+	                        throw _iteratorError9;
+	                    }
+	                }
+	            }
+	        }
+	    }
+	};
+	
+	var on = exports.on = function on(event) {
+	    for (var _len = arguments.length, handlers = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	        handlers[_key - 1] = arguments[_key];
+	    }
+	
+	    if (events[event].callbacks === undefined) {
+	        events[event].callbacks = new Set();
+	    }
+	    var _iteratorNormalCompletion11 = true;
+	    var _didIteratorError11 = false;
+	    var _iteratorError11 = undefined;
+	
+	    try {
+	        for (var _iterator11 = handlers[Symbol.iterator](), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
+	            var handler = _step11.value;
+	
+	            events[event].callbacks.add(handler);
+	        }
+	    } catch (err) {
+	        _didIteratorError11 = true;
+	        _iteratorError11 = err;
+	    } finally {
+	        try {
+	            if (!_iteratorNormalCompletion11 && _iterator11.return) {
+	                _iterator11.return();
+	            }
+	        } finally {
+	            if (_didIteratorError11) {
+	                throw _iteratorError11;
+	            }
+	        }
+	    }
+	
+	    return on;
+	};
+	
+	var off = exports.off = function off(event) {
+	    for (var _len2 = arguments.length, handlers = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+	        handlers[_key2 - 1] = arguments[_key2];
+	    }
+	
+	    var _iteratorNormalCompletion12 = true;
+	    var _didIteratorError12 = false;
+	    var _iteratorError12 = undefined;
+	
+	    try {
+	        for (var _iterator12 = handlers[Symbol.iterator](), _step12; !(_iteratorNormalCompletion12 = (_step12 = _iterator12.next()).done); _iteratorNormalCompletion12 = true) {
+	            var handler = _step12.value;
+	
+	            events[event].callbacks.delete(handler);
+	        }
+	    } catch (err) {
+	        _didIteratorError12 = true;
+	        _iteratorError12 = err;
+	    } finally {
+	        try {
+	            if (!_iteratorNormalCompletion12 && _iterator12.return) {
+	                _iterator12.return();
+	            }
+	        } finally {
+	            if (_didIteratorError12) {
+	                throw _iteratorError12;
+	            }
+	        }
+	    }
+	
+	    return off;
+	};
+	
+	var trigger = exports.trigger = function trigger() {
+	    for (var event in events) {
+	        events[event].trigger();
+	    }
+	    _input.input.refresh();
+	};
+	
+	exports.default = { on: on, off: off, trigger: trigger };
+
+/***/ },
+/* 351 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	    Various structures to make things easier
+	*/
+	'use strict';
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var ELEMENTS = Symbol('ELEMENTS');
+	var INDEX = Symbol('INDEX');
+	
+	// A sequence of values, which loops around on itself as you iterate over it
+	
+	var Sequence = exports.Sequence = new Proxy((function () {
+	    function _class() {
+	        _classCallCheck(this, _class);
+	    }
+	
+	    return _class;
+	})(), {
+	    construct: function construct(target, args) {
+	        var InnerSequence = (function () {
+	            function InnerSequence() {
+	                _classCallCheck(this, InnerSequence);
+	
+	                for (var _len = arguments.length, elements = Array(_len), _key = 0; _key < _len; _key++) {
+	                    elements[_key] = arguments[_key];
+	                }
+	
+	                this[ELEMENTS] = elements;
+	                this[INDEX] = 0;
+	            }
+	
+	            _createClass(InnerSequence, [{
+	                key: Symbol.iterator,
+	                value: regeneratorRuntime.mark(function value() {
+	                    return regeneratorRuntime.wrap(function value$(_context) {
+	                        while (1) {
+	                            switch (_context.prev = _context.next) {
+	                                case 0:
+	                                    return _context.delegateYield(this[ELEMENTS], 't0', 1);
+	
+	                                case 1:
+	                                case 'end':
+	                                    return _context.stop();
+	                            }
+	                        }
+	                    }, value, this);
+	                })
+	            }, {
+	                key: 'infinite',
+	                value: function infinite() {
+	                    var that = this;
+	                    return regeneratorRuntime.mark(function _callee() {
+	                        return regeneratorRuntime.wrap(function _callee$(_context2) {
+	                            while (1) {
+	                                switch (_context2.prev = _context2.next) {
+	                                    case 0:
+	                                        if (false) {
+	                                            _context2.next = 5;
+	                                            break;
+	                                        }
+	
+	                                        _context2.next = 3;
+	                                        return that.next().value;
+	
+	                                    case 3:
+	                                        _context2.next = 0;
+	                                        break;
+	
+	                                    case 5:
+	                                    case 'end':
+	                                        return _context2.stop();
+	                                }
+	                            }
+	                        }, _callee, this);
+	                    })();
+	                }
+	            }, {
+	                key: 'next',
+	                value: function next() {
+	                    return { done: false, value: this[ELEMENTS][this.index++] };
+	                }
+	            }, {
+	                key: 'length',
+	                get: function get() {
+	                    return this[ELEMENTS].length;
+	                }
+	            }, {
+	                key: 'current',
+	                get: function get() {
+	                    return this[ELEMENTS][this[INDEX]];
+	                }
+	            }, {
+	                key: 'index',
+	                get: function get() {
+	                    return this[INDEX];
+	                },
+	                set: function set(x) {
+	                    return this[INDEX] = x % this[ELEMENTS].length;
+	                }
+	            }]);
+	
+	            return InnerSequence;
+	        })();
+	        return new Proxy(new (Function.prototype.bind.apply(InnerSequence, [null].concat(_toConsumableArray(args))))(), {
+	            get: function get(target, prop) {
+	                return (typeof prop === 'undefined' ? 'undefined' : _typeof(prop)) !== 'symbol' && !isNaN(prop) ? target[ELEMENTS][(target.length + prop % target.length) % target.length] : target[prop];
+	            },
+	            set: function set(target, prop, value) {
+	                if ((typeof prop === 'undefined' ? 'undefined' : _typeof(prop)) !== 'symbol' && !isNaN(prop)) {
+	                    target[ELEMENTS][(target.length + prop % target.length) % target.length] = value;
+	                    return true;
+	                } else {
+	                    target[prop] = value;
+	                    return true;
+	                }
+	            }
+	        });
+	    }
+	});
+	
+	var MIN = Symbol('MIN');
+	var MAX = Symbol('MAX');
+	var STEP = Symbol('STEP');
+	// A range of values (similar to Python)
+	
+	var Range = exports.Range = new Proxy((function () {
+	    function _class2() {
+	        _classCallCheck(this, _class2);
+	    }
+	
+	    return _class2;
+	})(), {
+	    construct: function construct(target, args) {
+	        var InternalRange = (function () {
+	            function InternalRange(min, max) {
+	                var step = arguments.length <= 2 || arguments[2] === undefined ? 1 : arguments[2];
+	
+	                _classCallCheck(this, InternalRange);
+	
+	                this[MIN] = min;
+	                this[MAX] = max;
+	                this[STEP] = step;
+	            }
+	
+	            _createClass(InternalRange, [{
+	                key: Symbol.iterator,
+	                value: regeneratorRuntime.mark(function value() {
+	                    var i;
+	                    return regeneratorRuntime.wrap(function value$(_context3) {
+	                        while (1) {
+	                            switch (_context3.prev = _context3.next) {
+	                                case 0:
+	                                    if (!(this[STEP] === 0)) {
+	                                        _context3.next = 2;
+	                                        break;
+	                                    }
+	
+	                                    throw new TypeError('Cannot iterate with 0 step');
+	
+	                                case 2:
+	                                    i = this[MIN];
+	
+	                                case 3:
+	                                    if (!(i < this[MAX])) {
+	                                        _context3.next = 9;
+	                                        break;
+	                                    }
+	
+	                                    _context3.next = 6;
+	                                    return i;
+	
+	                                case 6:
+	                                    i += this[STEP];
+	                                    _context3.next = 3;
+	                                    break;
+	
+	                                case 9:
+	                                case 'end':
+	                                    return _context3.stop();
+	                            }
+	                        }
+	                    }, value, this);
+	                })
+	            }, {
+	                key: 'constrain',
+	                value: function constrain(x) {
+	                    if (this[STEP] !== 0) {
+	                        x = this[MIN] + Math.round((x - this[MIN]) / this[STEP]) * this[STEP];
+	                    }
+	                    return Math.min(Math.max(x, this[MIN]), this[MAX]);
+	                }
+	            }, {
+	                key: 'min',
+	                get: function get() {
+	                    return this[MIN];
+	                },
+	                set: function set(x) {
+	                    return this[MIN] = x;
+	                }
+	            }, {
+	                key: 'max',
+	                get: function get() {
+	                    return this[MAX];
+	                },
+	                set: function set(x) {
+	                    return this[MAX] = x;
+	                }
+	            }, {
+	                key: 'step',
+	                get: function get() {
+	                    return this[STEP];
+	                },
+	                set: function set(x) {
+	                    return this[STEP] = x;
+	                }
+	            }, {
+	                key: 'length',
+	                get: function get() {
+	                    return Math.ceil((this[MAX] - this[MIN]) / this[STEP]);
+	                }
+	            }]);
+	
+	            return InternalRange;
+	        })();
+	        return new Proxy(new (Function.prototype.bind.apply(InternalRange, [null].concat(_toConsumableArray(args))))(), {
+	            has: function has(target, x) {
+	                return x >= target.min && x < target.max && (target.step === 0 || (x - target.min) % target.step === 0);
+	            }
+	        });
+	    }
+	});
+	
+	// Function produces a range in array form
+	var range = exports.range = function range() {
+	    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	        args[_key2] = arguments[_key2];
+	    }
+	
+	    return new (Function.prototype.bind.apply(Range, [null].concat(args)))();
+	};
+	
+	// Pads str with char until its length is len
+	var pad = exports.pad = function pad(str) {
+	    var len = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+	    var char = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
+	
+	    if (char === '') {
+	        throw new TypeError('Cannot pad with no character');
+	    }
+	    return str.length >= len ? str : pad(char + str, len, char);
+	};
+	
+	exports.default = { Sequence: Sequence, Range: Range, range: range, pad: pad };
+
+/***/ },
+/* 352 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	__webpack_require__(1);
+	mocha.setup("bdd");
+	__webpack_require__(353);
+	__webpack_require__(298);
+	if (false) {
+		module.hot.accept();
+		module.hot.dispose(function () {
+			mocha.suite.suites.length = 0;
+			var stats = document.getElementById('mocha-stats');
+			var report = document.getElementById('mocha-report');
+			stats.parentNode.removeChild(stats);
+			report.parentNode.removeChild(report);
+		});
+	}
+
+/***/ },
+/* 353 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _chai = __webpack_require__(10);
+	
+	var _sinon = __webpack_require__(303);
+	
+	var _game = __webpack_require__(354);
+	
+	var _game2 = _interopRequireDefault(_game);
+	
+	var _event = __webpack_require__(350);
+	
+	var _event2 = _interopRequireDefault(_event);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	describe('game.es6', function () {
+	    describe('Game', function () {
+	        var step = (0, _sinon.spy)();
+	        var clock = undefined,
+	            gm = undefined,
+	            trigger = undefined;
+	
+	        before(function () {
+	            return clock = (0, _sinon.useFakeTimers)();
+	        });
+	        beforeEach(function () {
+	            trigger = (0, _sinon.stub)(_event2.default, 'trigger');
+	            gm = new _game2.default.Game(step);
+	        });
+	        afterEach(function () {
+	            gm.end();
+	            step.reset();
+	            trigger.restore();
+	        });
+	        after(function () {
+	            clock.restore();
+	        });
+	
+	        it('should be constructed with new Game(step)', function () {
+	            (0, _chai.expect)(function () {
+	                return _game2.default.Game(function () {});
+	            }).to.throw(TypeError);
+	            var g = new _game2.default.Game(function () {});
+	            (0, _chai.expect)(g).to.be.an.instanceof(_game2.default.Game);
+	            g.end();
+	        });
+	        it('should throw if a step is not a function', function () {
+	            (0, _chai.expect)(function () {
+	                return _game2.default.Game();
+	            }).to.throw(TypeError);
+	            (0, _chai.expect)(function () {
+	                return _game2.default.Game(3);
+	            }).to.throw(TypeError);
+	        });
+	        it('should run step 30 times per second', function () {
+	            clock.tick(999);
+	            (0, _chai.expect)(step).to.have.callCount(30);
+	        });
+	        it('should trigger events 30 times per second', function () {
+	            clock.tick(999);
+	            (0, _chai.expect)(trigger).to.have.callCount(30);
+	        });
+	
+	        describe('#end()', function () {
+	            it('should end the game', function () {
+	                clock.tick(999);
+	                (0, _chai.expect)(step).to.have.callCount(30);
+	                gm.end();
+	                step.reset();
+	                trigger.reset();
+	                clock.tick(999);
+	                (0, _chai.expect)(step).to.not.have.been.called;
+	                (0, _chai.expect)(trigger).to.not.have.been.called;
+	            });
+	        });
+	
+	        describe('#paused', function () {
+	            it('should return true if the game is paused, false if not', function () {
+	                (0, _chai.expect)(gm.paused).to.be.false;
+	                gm.pause();
+	                (0, _chai.expect)(gm.paused).to.be.true;
+	                gm.unpause();
+	                (0, _chai.expect)(gm.paused).to.be.false;
+	            });
+	        });
+	        describe('#pause()', function () {
+	            it('should pause the game', function () {
+	                gm.pause();
+	                step.reset();
+	                trigger.reset();
+	                clock.tick(999);
+	                (0, _chai.expect)(step).to.not.have.been.called;
+	                (0, _chai.expect)(trigger).to.not.have.been.called;
+	            });
+	        });
+	        describe('#unpause()', function () {
+	            it('should unpause the game', function () {
+	                gm.pause();
+	                step.reset();
+	                trigger.reset();
+	                clock.tick(999);
+	                gm.unpause();
+	                clock.tick(999);
+	                (0, _chai.expect)(trigger).to.have.callCount(30);
+	                (0, _chai.expect)(step).to.have.callCount(30);
+	            });
+	            it('should not throw if the game was not paused', function () {
+	                (0, _chai.expect)(gm.paused).to.be.false;
+	                (0, _chai.expect)(function () {
+	                    return gm.unpause();
+	                }).to.not.throw();
+	                (0, _chai.expect)(function () {
+	                    return gm.unpause();
+	                }).to.not.throw();
+	            });
+	        });
+	    });
+	});
+
+/***/ },
+/* 354 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.Game = undefined;
+	
+	var _event = __webpack_require__(350);
+	
+	var _event2 = _interopRequireDefault(_event);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var GENERATOR = Symbol('GENERATOR');
+	var LOOP = Symbol('LOOP');
+	var PAUSED = Symbol('PAUSED');
+	var Game = exports.Game = (function () {
+	    function Game(step) {
+	        _classCallCheck(this, Game);
+	
+	        if (typeof step !== 'function') {
+	            throw new TypeError('step must be a function');
+	        }
+	        this[LOOP] = true;
+	        this[PAUSED] = false;
+	        var game = this;
+	        this[GENERATOR] = regeneratorRuntime.mark(function _callee() {
+	            return regeneratorRuntime.wrap(function _callee$(_context) {
+	                while (1) {
+	                    switch (_context.prev = _context.next) {
+	                        case 0:
+	                            if (!game[LOOP]) {
+	                                _context.next = 10;
+	                                break;
+	                            }
+	
+	                            if (!game[PAUSED]) {
+	                                _context.next = 4;
+	                                break;
+	                            }
+	
+	                            _context.next = 4;
+	                            return;
+	
+	                        case 4:
+	                            _event2.default.trigger();
+	                            step();
+	                            _context.next = 8;
+	                            return setTimeout(function () {
+	                                return game[GENERATOR].next();
+	                            }, 1000 / 30);
+	
+	                        case 8:
+	                            _context.next = 0;
+	                            break;
+	
+	                        case 10:
+	                        case 'end':
+	                            return _context.stop();
+	                    }
+	                }
+	            }, _callee, this);
+	        })();
+	        this[GENERATOR].next();
+	    }
+	
+	    _createClass(Game, [{
+	        key: 'end',
+	        value: function end() {
+	            this[LOOP] = false;
+	        }
+	    }, {
+	        key: 'pause',
+	        value: function pause() {
+	            this[PAUSED] = true;
+	        }
+	    }, {
+	        key: 'unpause',
+	        value: function unpause() {
+	            if (this[PAUSED]) {
+	                this[PAUSED] = false;
+	                this[GENERATOR].next();
+	            }
+	        }
+	    }, {
+	        key: 'paused',
+	        get: function get() {
+	            return this[PAUSED];
+	        }
+	    }]);
+	
+	    return Game;
+	})();
+	
+	exports.default = { Game: Game };
+
+/***/ },
+/* 355 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	__webpack_require__(1);
+	mocha.setup("bdd");
+	__webpack_require__(356);
+	__webpack_require__(298);
+	if (false) {
+		module.hot.accept();
+		module.hot.dispose(function () {
+			mocha.suite.suites.length = 0;
+			var stats = document.getElementById('mocha-stats');
+			var report = document.getElementById('mocha-report');
+			stats.parentNode.removeChild(stats);
+			report.parentNode.removeChild(report);
+		});
+	}
+
+/***/ },
+/* 356 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _chai = __webpack_require__(10);
+	
+	var _sinon = __webpack_require__(303);
+	
+	var _sprite = __webpack_require__(357);
+	
+	var _draw = __webpack_require__(358);
 	
 	var _draw2 = _interopRequireDefault(_draw);
 	
-	var _sprite = __webpack_require__(297);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	describe('sprite.es6', function () {
+	    var img = new Image();img.src = 'image.png';
+	    var spr = new _sprite.Sprite(img, 32, 64, [[0, 0], [32, 0], [64, 0], [0, 64], [32, 64], [64, 64]]);
+	
+	    describe('Sprite', function () {
+	        it('should be constructed with new Sprite(image, frameWidth, frameHeight, frames)', function () {
+	            (0, _chai.expect)(new _sprite.Sprite('image.png', 32, 32, [[0, 0], [32, 0], [64, 0], [0, 32], [32, 32], [64, 32]])).to.be.an.instanceof(_sprite.Sprite);
+	            (0, _chai.expect)(new _sprite.Sprite(img, 32, 64, [[0, 0], [32, 0], [64, 0], [0, 64], [32, 64], [64, 64]])).to.deep.equal(spr);
+	        });
+	        it('should convert a URL for img to an Image object when constructed', function () {
+	            (0, _chai.expect)(new _sprite.Sprite('image.png', 32, 32, [[0, 0], [32, 0], [64, 0], [0, 32], [32, 32], [32, 64]]).image).to.be.an.instanceof(Image);
+	        });
+	        describe('#width', function () {
+	            it('should return the width of the Sprite', function () {
+	                (0, _chai.expect)(spr.width).to.equal(32);
+	            });
+	            it('should be read only', function () {
+	                (0, _chai.expect)(function () {
+	                    return spr.width = 3;
+	                }).to.throw(TypeError);
+	            });
+	        });
+	        describe('#height', function () {
+	            it('should return the height of the Sprite', function () {
+	                (0, _chai.expect)(spr.height).to.equal(64);
+	            });
+	            it('should be read only', function () {
+	                (0, _chai.expect)(function () {
+	                    return spr.height = 3;
+	                }).to.throw(TypeError);
+	            });
+	        });
+	        describe('#image', function () {
+	            it('should return the image that the Sprite uses', function () {
+	                (0, _chai.expect)(spr.image).to.be.an.instanceof(Image);
+	                (0, _chai.expect)(spr.image).to.equal(img);
+	            });
+	            it('should be read only', function () {
+	                (0, _chai.expect)(function () {
+	                    return spr.height = new Image();
+	                }).to.throw(TypeError);
+	            });
+	        });
+	        describe('#frames', function () {
+	            describe('#length', function () {
+	                it('should return the number of frames', function () {
+	                    (0, _chai.expect)(spr.frames.length).to.equal(6);
+	                });
+	                it('a sprite should always have at least 1 frame', function () {
+	                    (0, _chai.expect)(new _sprite.Sprite().frames.length).to.equal(1);
+	                });
+	                it('should be read only', function () {
+	                    (0, _chai.expect)(function () {
+	                        return spr.frames.length = 3;
+	                    }).to.throw(TypeError);
+	                });
+	            });
+	            describe('#operator[i]', function () {
+	                it('should return the i-th frame: [x, y, w, h]', function () {
+	                    (0, _chai.expect)(spr.frames[0]).to.deep.equal([0, 0, 32, 64]);
+	                    (0, _chai.expect)(spr.frames[4]).to.deep.equal([32, 64, 32, 64]);
+	                });
+	                it('should be read only', function () {
+	                    (0, _chai.expect)(function () {
+	                        return spr.frames[0] = 5;
+	                    }).to.throw(TypeError);
+	                });
+	            });
+	        });
+	        describe('#draw(subimage, x, y)', function () {
+	            it('should be an alias for draw.sprite(this, subimage, x, y)', function () {
+	                var drawSprite = (0, _sinon.stub)(_draw2.default, 'sprite');
+	                spr.draw(1, 32, 32);
+	                (0, _chai.expect)(drawSprite).to.have.been.calledWith(spr, 1, 32, 32);
+	                drawSprite.restore();
+	            });
+	        });
+	    });
+	});
+
+/***/ },
+/* 357 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	    Breaks up an image into predefined sections
+	*/
+	'use strict';
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.Sprite = undefined;
+	
+	var _draw2 = __webpack_require__(358);
+	
+	var _draw3 = _interopRequireDefault(_draw2);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var WIDTH = Symbol('WIDTH');
+	var HEIGHT = Symbol('HEIGHT');
+	var IMAGE = Symbol('IMAGE');
+	var FRAMES = Symbol('FRAMES');
+	var Sprite = exports.Sprite = (function () {
+	    function Sprite(image, frameWidth, frameHeight, frames) {
+	        _classCallCheck(this, Sprite);
+	
+	        this[IMAGE] = image;
+	        if (typeof image === 'string') {
+	            this[IMAGE] = new Image();
+	            this[IMAGE].src = image;
+	        }
+	        this[FRAMES] = frames || [[0, 0]];
+	        this[WIDTH] = frameWidth;
+	        this[HEIGHT] = frameHeight;
+	    }
+	
+	    _createClass(Sprite, [{
+	        key: 'draw',
+	        value: function draw(subimage, x, y) {
+	            _draw3.default.sprite(this, subimage, x, y);
+	        }
+	    }, {
+	        key: 'width',
+	        get: function get() {
+	            return this[WIDTH];
+	        }
+	    }, {
+	        key: 'height',
+	        get: function get() {
+	            return this[HEIGHT];
+	        }
+	    }, {
+	        key: 'image',
+	        get: function get() {
+	            return this[IMAGE];
+	        }
+	    }, {
+	        key: 'frames',
+	        get: function get() {
+	            return new Proxy(this, {
+	                get: function get(target, index) {
+	                    if (index === 'length') {
+	                        return target[FRAMES][index];
+	                    }
+	                    return new Proxy([].concat(_toConsumableArray(target[FRAMES][index]), [target[WIDTH], target[HEIGHT]]), {
+	                        get: function get(target, prop) {
+	                            if (['x', 'y', 'w', 'h'].indexOf(prop) !== -1) {
+	                                prop = ['x', 'y', 'w', 'h'].indexOf(prop);
+	                            }
+	                            return target[prop];
+	                        }
+	                    });
+	                },
+	                set: function set() {
+	                    throw new TypeError('Sprite frames are read-only');
+	                }
+	            });
+	        }
+	    }]);
+	
+	    return Sprite;
+	})();
+	
+	exports.default = { Sprite: Sprite };
+
+/***/ },
+/* 358 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	    Wrapper around the default canvas drawing functions to make them more usable
+	    and easier to improve upon
+	*/
+	'use strict';
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.PixelData = exports.Path = exports.transformed = exports.setFont = exports.setShadow = exports.setLine = exports.setComposite = exports.setAlpha = exports.setColor = exports.clear = exports.pixelData = exports.sprite = exports.image = exports.textWidth = exports.text = exports.circle = exports.point = exports.rect = undefined;
+	
+	var _canvas = __webpack_require__(242);
+	
+	var _util = __webpack_require__(351);
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	var GENERATE = Symbol('GENERATE');
+	var STACK = Symbol('STACK');
+	var IMAGE_DATA = Symbol('IMAGE_DATA');
+	var rect = exports.rect = function rect(x, y, w, h) {
+	    var stroke = arguments.length <= 4 || arguments[4] === undefined ? false : arguments[4];
+	
+	    if (stroke) {
+	        _canvas.c2d.strokeRect(x, y, w, h);
+	    } else {
+	        _canvas.c2d.fillRect(x, y, w, h);
+	    }
+	};
+	
+	var point = exports.point = function point(x, y) {
+	    return _canvas.c2d.fillRect(x, y, 1, 1);
+	};
+	
+	var circle = exports.circle = function circle(x, y, r) {
+	    var stroke = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+	
+	    _canvas.c2d.beginPath();
+	    _canvas.c2d.arc(x, y, r, 0, Math.PI * 2);
+	    if (stroke) {
+	        _canvas.c2d.stroke();
+	    } else {
+	        _canvas.c2d.fill();
+	    }
+	};
+	
+	var text = exports.text = function text(str, x, y) {
+	    var stroke = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+	
+	    if (stroke) {
+	        _canvas.c2d.strokeText(str, x, y);
+	    } else {
+	        _canvas.c2d.fillText(str, x, y);
+	    }
+	};
+	var textWidth = exports.textWidth = function textWidth(str) {
+	    return _canvas.c2d.measureText(str).width;
+	};
+	
+	var image = exports.image = function image() {
+	    _canvas.c2d.drawImage.apply(_canvas.c2d, arguments);
+	};
+	
+	var sprite = exports.sprite = function sprite(spr, subimage, x, y) {
+	    if (spr.image instanceof Image) {
+	        _canvas.c2d.drawImage.apply(_canvas.c2d, [spr.image].concat(_toConsumableArray(spr.frames[subimage]), [x, y, spr.frames[subimage].h, spr.frames[subimage].w]));
+	    }
+	};
+	
+	var pixelData = exports.pixelData = function pixelData(pd, x, y) {
+	    pd.draw(x, y);
+	};
+	
+	var clear = exports.clear = function clear() {
+	    return _canvas.c2d.clearRect(0, 0, _canvas.canvas.width, _canvas.canvas.height);
+	};
+	
+	var setColor = exports.setColor = function setColor(c) {
+	    _canvas.c2d.fillStyle = _canvas.c2d.strokeStyle = typeof c === 'number' ? '#' + (0, _util.pad)(c.toString(16), 6, '0') : c;
+	};
+	var setAlpha = exports.setAlpha = function setAlpha(a) {
+	    return _canvas.c2d.globalAlpha = (0, _util.range)(0, 1, 0).constrain(a);
+	};
+	var setComposite = exports.setComposite = function setComposite(o) {
+	    return _canvas.c2d.globalCompositeOperation = o;
+	};
+	
+	var setLine = exports.setLine = function setLine() {
+	    var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	
+	    var cap = _ref.cap;
+	    var join = _ref.join;
+	    var width = _ref.width;
+	    var miter = _ref.miter;
+	    var reset = _ref.reset;
+	
+	    if (reset === true) {
+	        return setLine({ cap: 'butt', join: 'miter', width: 1, miter: 10 });
+	    }
+	    if (cap !== undefined) {
+	        _canvas.c2d.lineCap = cap;
+	    }
+	    if (join !== undefined) {
+	        _canvas.c2d.lineJoin = join;
+	    }
+	    if (width !== undefined) {
+	        _canvas.c2d.lineWidth = width;
+	    }
+	    if (miter !== undefined) {
+	        _canvas.c2d.miterLimit = miter;
+	    }
+	};
+	var setShadow = exports.setShadow = function setShadow() {
+	    var _ref2 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	
+	    var x = _ref2.x;
+	    var y = _ref2.y;
+	    var blur = _ref2.blur;
+	    var color = _ref2.color;
+	    var reset = _ref2.reset;
+	
+	    if (reset === true) {
+	        return setShadow({ x: 0, y: 0, blur: 0, color: '#000000' });
+	    }
+	    if (x !== undefined) {
+	        _canvas.c2d.shadowOffsetX = x;
+	    }
+	    if (y !== undefined) {
+	        _canvas.c2d.shadowOffsetY = y;
+	    }
+	    if (blur !== undefined) {
+	        _canvas.c2d.shadowBlur = blur;
+	    }
+	    if (color !== undefined) {
+	        _canvas.c2d.shadowColor = typeof color === 'number' ? '#' + (0, _util.pad)(color.toString(16), 6, '0') : color;
+	    }
+	};
+	
+	var fontSize = 10;
+	var fontFamily = 'sans-serif';
+	var setFont = exports.setFont = function setFont() {
+	    var _ref3 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	
+	    var family = _ref3.family;
+	    var size = _ref3.size;
+	    var align = _ref3.align;
+	    var baseline = _ref3.baseline;
+	    var reset = _ref3.reset;
+	
+	    if (reset === true) {
+	        return setFont({ family: 'sans-serif', size: 10, align: 'start', baseline: 'alphabetic' });
+	    }
+	    if (family !== undefined) {
+	        fontFamily = family;
+	    }
+	    if (size !== undefined) {
+	        fontSize = size;
+	    }
+	    _canvas.c2d.font = fontSize + 'px ' + fontFamily;
+	    if (align !== undefined) {
+	        _canvas.c2d.textAlign = align;
+	    }
+	    if (baseline !== undefined) {
+	        _canvas.c2d.textBaseline = baseline;
+	    }
+	};
+	
+	// Transform the context and perform the given function(s)
+	var transformed = exports.transformed = function transformed(opts) {
+	    for (var _len = arguments.length, todo = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	        todo[_key - 1] = arguments[_key];
+	    }
+	
+	    _canvas.c2d.save();
+	
+	    if (opts) {
+	        if (opts.scale) {
+	            _canvas.c2d.scale(opts.scale.x || 1, opts.scale.y || 1);
+	        }
+	        if (opts.rotate) {
+	            _canvas.c2d.rotate(opts.rotate);
+	        }
+	        if (opts.translate) {
+	            _canvas.c2d.translate(opts.translate.x || 0, opts.translate.y || 0);
+	        }
+	        if (opts.transform) {
+	            _canvas.c2d.transform.apply(_canvas.c2d, _toConsumableArray(opts.transform));
+	        }
+	    }
+	
+	    var _iteratorNormalCompletion = true;
+	    var _didIteratorError = false;
+	    var _iteratorError = undefined;
+	
+	    try {
+	        for (var _iterator = todo[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	            var item = _step.value;
+	            item();
+	        }
+	    } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	    } finally {
+	        try {
+	            if (!_iteratorNormalCompletion && _iterator.return) {
+	                _iterator.return();
+	            }
+	        } finally {
+	            if (_didIteratorError) {
+	                throw _iteratorError;
+	            }
+	        }
+	    }
+	
+	    _canvas.c2d.restore();
+	};
+	
+	// Chained, saveable, easy to use context2d paths
+	var Path = exports.Path = (function () {
+	    function Path() {
+	        _classCallCheck(this, Path);
+	
+	        this[STACK] = [function () {
+	            return _canvas.c2d.beginPath();
+	        }];
+	    }
+	
+	    _createClass(Path, [{
+	        key: 'move',
+	        value: function move() {
+	            for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	                args[_key2] = arguments[_key2];
+	            }
+	
+	            this[STACK].push(function () {
+	                return _canvas.c2d.moveTo.apply(_canvas.c2d, args);
+	            });
+	            return this;
+	        }
+	    }, {
+	        key: 'line',
+	        value: function line() {
+	            for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+	                args[_key3] = arguments[_key3];
+	            }
+	
+	            this[STACK].push(function () {
+	                return _canvas.c2d.lineTo.apply(_canvas.c2d, args);
+	            });
+	            return this;
+	        }
+	    }, {
+	        key: 'rect',
+	        value: function rect() {
+	            for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+	                args[_key4] = arguments[_key4];
+	            }
+	
+	            this[STACK].push(function () {
+	                return _canvas.c2d.rect.apply(_canvas.c2d, args);
+	            });
+	            return this;
+	        }
+	    }, {
+	        key: 'arc',
+	        value: function arc() {
+	            for (var _len5 = arguments.length, args = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+	                args[_key5] = arguments[_key5];
+	            }
+	
+	            this[STACK].push(function () {
+	                return _canvas.c2d.arc.apply(_canvas.c2d, args);
+	            });
+	            return this;
+	        }
+	    }, {
+	        key: 'curve',
+	        value: function curve() {
+	            for (var _len6 = arguments.length, args = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+	                args[_key6] = arguments[_key6];
+	            }
+	
+	            this[STACK].push(function () {
+	                return _canvas.c2d.arcTo.apply(_canvas.c2d, args);
+	            });
+	            return this;
+	        }
+	    }, {
+	        key: 'bezier',
+	        value: function bezier() {
+	            for (var _len7 = arguments.length, args = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+	                args[_key7] = arguments[_key7];
+	            }
+	
+	            if (args.length === 6) {
+	                this[STACK].push(function () {
+	                    return _canvas.c2d.bezierCurveTo.apply(_canvas.c2d, args);
+	                });
+	            } else {
+	                this[STACK].push(function () {
+	                    return _canvas.c2d.quadraticCurveTo.apply(_canvas.c2d, args);
+	                });
+	            }
+	            return this;
+	        }
+	    }, {
+	        key: 'close',
+	        value: function close() {
+	            this[STACK].push(function () {
+	                return _canvas.c2d.closePath();
+	            });
+	            return this;
+	        }
+	    }, {
+	        key: 'do',
+	        value: function _do(fn) {
+	            var _this = this;
+	
+	            this[STACK].push(function () {
+	                return fn(_this);
+	            });
+	            return this;
+	        }
+	    }, {
+	        key: 'fill',
+	        value: function fill() {
+	            var _this2 = this;
+	
+	            var _ref4 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	
+	            var color = _ref4.color;
+	            var shadow = _ref4.shadow;
+	            var transform = _ref4.transform;
+	
+	            if (transform !== undefined) {
+	                transformed(transform, function () {
+	                    return _this2.fill({ color: color, shadow: shadow });
+	                });
+	                return this;
+	            }
+	
+	            _canvas.c2d.save();
+	
+	            if (color !== undefined) {
+	                setColor(color);
+	            }
+	            if (shadow !== undefined) {
+	                setShadow(shadow);
+	            }
+	
+	            this[GENERATE]();
+	            _canvas.c2d.fill();
+	
+	            _canvas.c2d.restore();
+	            return this;
+	        }
+	    }, {
+	        key: 'stroke',
+	        value: function stroke() {
+	            var _this3 = this;
+	
+	            var _ref5 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	
+	            var color = _ref5.color;
+	            var line = _ref5.line;
+	            var transform = _ref5.transform;
+	
+	            if (transform !== undefined) {
+	                transformed(transform, function () {
+	                    return _this3.stroke({ color: color, line: line });
+	                });
+	                return this;
+	            }
+	
+	            _canvas.c2d.save();
+	
+	            if (color !== undefined) {
+	                setColor(color);
+	            }
+	            if (line !== undefined) {
+	                setLine(line);
+	            }
+	
+	            this[GENERATE]();
+	            _canvas.c2d.stroke();
+	
+	            _canvas.c2d.restore();
+	            return this;
+	        }
+	    }, {
+	        key: 'doInside',
+	        value: function doInside(transform) {
+	            var _this4 = this;
+	
+	            for (var _len8 = arguments.length, todo = Array(_len8 > 1 ? _len8 - 1 : 0), _key8 = 1; _key8 < _len8; _key8++) {
+	                todo[_key8 - 1] = arguments[_key8];
+	            }
+	
+	            // Optional transform
+	            if (transform !== undefined && todo.length !== 0) {
+	                if (typeof transform !== 'function') {
+	                    transformed(transform, function () {
+	                        return _this4.doInside.apply(_this4, _toConsumableArray(todo));
+	                    });
+	                    return this;
+	                } else {
+	                    todo = [transform].concat(_toConsumableArray(todo));
+	                }
+	            }
+	
+	            _canvas.c2d.save();
+	            setShadow({ reset: true }); // Clip doesn't work if shadow is not default??
+	            this[GENERATE]();
+	            _canvas.c2d.clip();
+	
+	            var _iteratorNormalCompletion2 = true;
+	            var _didIteratorError2 = false;
+	            var _iteratorError2 = undefined;
+	
+	            try {
+	                for (var _iterator2 = todo[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	                    var item = _step2.value;
+	                    item();
+	                }
+	            } catch (err) {
+	                _didIteratorError2 = true;
+	                _iteratorError2 = err;
+	            } finally {
+	                try {
+	                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	                        _iterator2.return();
+	                    }
+	                } finally {
+	                    if (_didIteratorError2) {
+	                        throw _iteratorError2;
+	                    }
+	                }
+	            }
+	
+	            _canvas.c2d.restore();
+	            return this;
+	        }
+	    }, {
+	        key: 'contains',
+	        value: function contains() {
+	            this[GENERATE]();
+	            return _canvas.c2d.isPointInPath.apply(_canvas.c2d, arguments);
+	        }
+	    }, {
+	        key: 'copy',
+	        value: function copy() {
+	            var cp = new Path();
+	            cp[STACK] = [].concat(_toConsumableArray(this[STACK]));
+	            return cp;
+	        }
+	    }, {
+	        key: GENERATE,
+	        value: function value() {
+	            var _iteratorNormalCompletion3 = true;
+	            var _didIteratorError3 = false;
+	            var _iteratorError3 = undefined;
+	
+	            try {
+	                for (var _iterator3 = this[STACK][Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+	                    var item = _step3.value;
+	                    item();
+	                }
+	            } catch (err) {
+	                _didIteratorError3 = true;
+	                _iteratorError3 = err;
+	            } finally {
+	                try {
+	                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+	                        _iterator3.return();
+	                    }
+	                } finally {
+	                    if (_didIteratorError3) {
+	                        throw _iteratorError3;
+	                    }
+	                }
+	            }
+	        }
+	    }, {
+	        key: 'length',
+	        get: function get() {
+	            return this[STACK].length - 1;
+	        }
+	    }]);
+	
+	    return Path;
+	})();
+	
+	// 2D array wrapper around ImageData's 1D array
+	var PixelData = exports.PixelData = (function () {
+	    function PixelData() {
+	        _classCallCheck(this, PixelData);
+	
+	        for (var _len9 = arguments.length, args = Array(_len9), _key9 = 0; _key9 < _len9; _key9++) {
+	            args[_key9] = arguments[_key9];
+	        }
+	
+	        this[IMAGE_DATA] = args.length === 4 ? _canvas.c2d.getImageData.apply(_canvas.c2d, args) : _canvas.c2d.createImageData.apply(_canvas.c2d, args);
+	    }
+	
+	    _createClass(PixelData, [{
+	        key: 'draw',
+	        value: function draw(x, y) {
+	            _canvas.c2d.putImageData(this[IMAGE_DATA], x, y);
+	        }
+	    }, {
+	        key: 'width',
+	        get: function get() {
+	            return this[IMAGE_DATA].width;
+	        }
+	    }, {
+	        key: 'height',
+	        get: function get() {
+	            return this[IMAGE_DATA].height;
+	        }
+	    }, {
+	        key: 'data',
+	        get: function get() {
+	            return new Proxy(this, {
+	                get: function get(target, x) {
+	                    x = parseInt(x);
+	                    return new Proxy(target, {
+	                        get: function get(target, y) {
+	                            var ind = 4 * (y * target[IMAGE_DATA].width + x);
+	                            return [].concat(_toConsumableArray(target[IMAGE_DATA].data.slice(ind, ind + 4)));
+	                        },
+	                        set: function set(target, y, value) {
+	                            var ind = 4 * (y * target[IMAGE_DATA].width + x);
+	
+	                            var _value = _slicedToArray(value, 4);
+	
+	                            target[IMAGE_DATA].data[ind] = _value[0];
+	                            target[IMAGE_DATA].data[ind + 1] = _value[1];
+	                            target[IMAGE_DATA].data[ind + 2] = _value[2];
+	                            target[IMAGE_DATA].data[ind + 3] = _value[3];
+	
+	                            return true;
+	                        }
+	                    });
+	                },
+	                set: function set() {
+	                    throw new TypeError('Cannot set pixel with only one coordinate');
+	                }
+	            });
+	        }
+	    }]);
+	
+	    return PixelData;
+	})();
+	
+	exports.default = {
+	    rect: rect, point: point, circle: circle, text: text, textWidth: textWidth, image: image, pixelData: pixelData, sprite: sprite, clear: clear,
+	    setColor: setColor, setAlpha: setAlpha, setComposite: setComposite, setLine: setLine, setShadow: setShadow, setFont: setFont, transformed: transformed,
+	    Path: Path, PixelData: PixelData
+	};
+
+/***/ },
+/* 359 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	__webpack_require__(1);
+	mocha.setup("bdd");
+	__webpack_require__(360);
+	__webpack_require__(298);
+	if (false) {
+		module.hot.accept();
+		module.hot.dispose(function () {
+			mocha.suite.suites.length = 0;
+			var stats = document.getElementById('mocha-stats');
+			var report = document.getElementById('mocha-report');
+			stats.parentNode.removeChild(stats);
+			report.parentNode.removeChild(report);
+		});
+	}
+
+/***/ },
+/* 360 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _chai = __webpack_require__(10);
+	
+	var _sinon = __webpack_require__(303);
+	
+	var _jquery = __webpack_require__(243);
+	
+	var _jquery2 = _interopRequireDefault(_jquery);
+	
+	var _sprite = __webpack_require__(357);
+	
+	var _actor = __webpack_require__(361);
+	
+	var _canvas = __webpack_require__(242);
+	
+	var _draw = __webpack_require__(358);
+	
+	var _draw2 = _interopRequireDefault(_draw);
+	
+	var _event = __webpack_require__(350);
+	
+	var _event2 = _interopRequireDefault(_event);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	describe('actor.es6', function () {
+	    var img = new Image();img.src = 'image.png';
+	    var spr = new _sprite.Sprite(img, 32, 64, [[0, 0], [32, 0], [64, 0], [0, 64], [32, 64], [64, 64]]);
+	    var MyActor = (function (_Actor) {
+	        _inherits(MyActor, _Actor);
+	
+	        function MyActor() {
+	            _classCallCheck(this, MyActor);
+	
+	            return _possibleConstructorReturn(this, Object.getPrototypeOf(MyActor).apply(this, arguments));
+	        }
+	
+	        return MyActor;
+	    })(_actor.Actor);
+	    var act = new MyActor();
+	
+	    describe('Actor', function () {
+	        it('should have to be subclassed (Actor is "abstract")', function () {
+	            (0, _chai.expect)(function () {
+	                return new _actor.Actor();
+	            }).to.throw(TypeError);
+	            (0, _chai.expect)(new MyActor()).to.be.an.instanceof(_actor.Actor);
+	            (0, _chai.expect)(new MyActor()).to.be.an.instanceof(MyActor);
+	        });
+	
+	        it('should have no event callbacks when super(opts) is passed noEvents', function () {
+	            var on = (0, _sinon.stub)(_event2.default, 'on');
+	            var A = (function (_Actor2) {
+	                _inherits(A, _Actor2);
+	
+	                function A() {
+	                    _classCallCheck(this, A);
+	
+	                    return _possibleConstructorReturn(this, Object.getPrototypeOf(A).call(this, { noOpts: true }));
+	                }
+	
+	                return A;
+	            })(_actor.Actor);
+	            new A();
+	            (0, _chai.expect)(on).to.not.have.been.called;
+	            on.restore();
+	        });
+	
+	        describe('#x', function () {
+	            it('should return the x position of the Actor', function () {
+	                (0, _chai.expect)(act.x).to.equal(0);
+	            });
+	        });
+	        describe('#x=', function () {
+	            it('should set the x position of the Actor', function () {
+	                (0, _chai.expect)(act.x).to.equal(0);
+	                act.x = 5;
+	                (0, _chai.expect)(act.x).to.equal(5);
+	                act.x = 0;
+	                (0, _chai.expect)(act.x).to.equal(0);
+	            });
+	            it('should not allow setting to non-numbers', function () {
+	                (0, _chai.expect)(function () {
+	                    return act.x = 'cat';
+	                }).to.throw(TypeError);
+	            });
+	        });
+	
+	        describe('#y', function () {
+	            it('should return the y position of the Actor', function () {
+	                (0, _chai.expect)(act.y).to.equal(0);
+	            });
+	        });
+	        describe('#y=', function () {
+	            it('should set the y position of the Actor', function () {
+	                (0, _chai.expect)(act.y).to.equal(0);
+	                act.y = 5;
+	                (0, _chai.expect)(act.y).to.equal(5);
+	                act.y = 0;
+	                (0, _chai.expect)(act.y).to.equal(0);
+	            });
+	            it('should not allow setting to non-numbers', function () {
+	                (0, _chai.expect)(function () {
+	                    return act.y = 'cat';
+	                }).to.throw(TypeError);
+	            });
+	        });
+	
+	        describe('#sprite', function () {
+	            it('should return the sprite of the Actor', function () {
+	                (0, _chai.expect)(act.sprite).to.deep.equal(new _sprite.Sprite());
+	            });
+	        });
+	        describe('#sprite=', function () {
+	            it('should set the sprite of the Actor', function () {
+	                (0, _chai.expect)(act.sprite).to.deep.equal(new _sprite.Sprite());
+	                act.sprite = spr;
+	                (0, _chai.expect)(act.sprite).to.deep.equal(spr);
+	            });
+	            it('should not allow setting to non-sprites', function () {
+	                (0, _chai.expect)(function () {
+	                    return act.x = 'cat';
+	                }).to.throw(TypeError);
+	            });
+	        });
+	
+	        describe('#frame', function () {
+	            it('should return the current frame of the sprite', function () {
+	                (0, _chai.expect)(act.frame).to.equal(0);
+	            });
+	        });
+	        describe('#frame=', function () {
+	            it('should set the current frame of the sprite', function () {
+	                act.frame = 3;
+	                (0, _chai.expect)(act.frame).to.equal(3);
+	            });
+	            it('should wrap when past the last frame in the sprite', function () {
+	                act.frame = 6;
+	                (0, _chai.expect)(act.frame).to.equal(0);
+	            });
+	            it('should not allow setting to non-numbers', function () {
+	                (0, _chai.expect)(function () {
+	                    return act.frame = 'cat';
+	                }).to.throw(TypeError);
+	            });
+	        });
+	
+	        describe('#step()', function () {
+	            it('exist, but not do anything (it can do anything)', function () {
+	                (0, _chai.expect)(act.step).to.be.a('function');
+	            });
+	        });
+	
+	        describe('#draw()', function () {
+	            it('should draw the sprite (by default)', function () {
+	                var drawSprite = (0, _sinon.stub)(_draw2.default, 'sprite');
+	                act.draw();
+	                (0, _chai.expect)(drawSprite).to.have.been.calledWith(act.sprite, act.frame, act.x, act.y);
+	                drawSprite.restore();
+	            });
+	        });
+	
+	        describe('#mouse', function () {
+	            var mouse = undefined,
+	                clock = undefined;
+	            beforeEach(function () {
+	                return mouse = (0, _sinon.stub)(act, 'mouse');
+	            });
+	            afterEach(function () {
+	                return mouse.restore();
+	            });
+	            it('should be called every frame the mouse is pressed', function () {
+	                _canvas.$canvas.trigger(_jquery2.default.Event('mousedown', { which: 1 }));
+	                _event2.default.trigger();
+	                _event2.default.trigger();
+	                _event2.default.trigger();
+	                _canvas.$canvas.trigger(_jquery2.default.Event('mouseup', { which: 1 }));
+	                _event2.default.trigger();
+	                (0, _chai.expect)(mouse).to.have.been.calledThrice;
+	            });
+	            it('should ignore clicks outside of the canvas', function () {
+	                (0, _jquery2.default)(window).trigger(_jquery2.default.Event('mousedown', { which: 1 }));
+	                _event2.default.trigger();
+	                (0, _jquery2.default)(window).trigger(_jquery2.default.Event('mouseup', { which: 1 }));
+	                _event2.default.trigger();
+	                (0, _chai.expect)(mouse).to.not.have.been.called;
+	            });
+	        });
+	        describe('#mousedown', function () {
+	            var mouse = undefined;
+	            beforeEach(function () {
+	                return mouse = (0, _sinon.stub)(act, 'mousedown');
+	            });
+	            afterEach(function () {
+	                return mouse.restore();
+	            });
+	            it('should be called the first frame the mouse is pressed', function () {
+	                _canvas.$canvas.trigger(_jquery2.default.Event('mousedown', { which: 1 })).trigger(_jquery2.default.Event('mousedown', { which: 2 }));
+	                _event2.default.trigger();
+	                _canvas.$canvas.trigger(_jquery2.default.Event('mouseup', { which: 1 })).trigger(_jquery2.default.Event('mouseup', { which: 2 }));
+	                _event2.default.trigger();
+	                (0, _chai.expect)(mouse).to.have.been.calledTwice;
+	            });
+	            it('should ignore clicks outside of the canvas', function () {
+	                (0, _jquery2.default)(window).trigger(_jquery2.default.Event('mousedown', { which: 1 })).trigger(_jquery2.default.Event('mousedown', { which: 2 }));
+	                _event2.default.trigger();
+	                (0, _jquery2.default)(window).trigger(_jquery2.default.Event('mouseup', { which: 1 })).trigger(_jquery2.default.Event('mouseup', { which: 2 }));
+	                _event2.default.trigger();
+	                (0, _chai.expect)(mouse).to.not.have.been.called;
+	            });
+	        });
+	        describe('#mouseup', function () {
+	            var mouse = undefined;
+	            beforeEach(function () {
+	                return mouse = (0, _sinon.stub)(act, 'mouseup');
+	            });
+	            afterEach(function () {
+	                return mouse.restore();
+	            });
+	            it('should be called the first frame the mouse is unpressed', function () {
+	                _canvas.$canvas.trigger(_jquery2.default.Event('mousedown', { which: 1 })).trigger(_jquery2.default.Event('mousedown', { which: 2 }));
+	                _event2.default.trigger();
+	                _canvas.$canvas.trigger(_jquery2.default.Event('mouseup', { which: 1 })).trigger(_jquery2.default.Event('mouseup', { which: 2 }));
+	                _event2.default.trigger();
+	                (0, _chai.expect)(mouse).to.have.been.calledTwice;
+	            });
+	            it('should ignore clicks completely out of the canvas, but not if mousedown was on canvas', function () {
+	                _canvas.$canvas.trigger(_jquery2.default.Event('mousedown', { which: 1 }));
+	                (0, _jquery2.default)(window).trigger(_jquery2.default.Event('mousedown', { which: 2 }));
+	                _event2.default.trigger();
+	                (0, _jquery2.default)(window).trigger(_jquery2.default.Event('mouseup', { which: 1 })).trigger(_jquery2.default.Event('mouseup', { which: 2 }));
+	                _event2.default.trigger();
+	                (0, _chai.expect)(mouse).to.have.been.calledOnce;
+	            });
+	        });
+	    });
+	});
+
+/***/ },
+/* 361 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.Actor = undefined;
+	
+	var _sprite = __webpack_require__(357);
+	
+	var _canvas = __webpack_require__(242);
+	
+	var _event = __webpack_require__(350);
+	
+	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var POS = Symbol('POS');
+	var SPRITE = Symbol('SPRITE');
+	var FRAME = Symbol('FRAME');
+	var Actor = exports.Actor = (function () {
+	    function Actor() {
+	        var _this = this;
+	
+	        var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	
+	        _classCallCheck(this, Actor);
+	
+	        if (new.target === Actor) {
+	            // jshint ignore:line
+	            throw new TypeError('Actor is an abstract class and cannot be instantiated');
+	        }
+	        this[POS] = { x: 0, y: 0, z: 0 };
+	        this[SPRITE] = new _sprite.Sprite();
+	        this[FRAME] = 0;
+	        if (!opts.noEvents) {
+	            (0, _event.on)('mouseheld', function (which) {
+	                return _this.mouse(which);
+	            })('mousedown', function (which) {
+	                return _this.mousedown(which);
+	            })('mouseup', function (which) {
+	                return _this.mouseup(which);
+	            })('keyheld', function (which) {
+	                return _this.key(which);
+	            })('keydown', function (which) {
+	                return _this.keyup(which);
+	            })('keyup', function (which) {
+	                return _this.keydown(which);
+	            });
+	        }
+	    }
+	
+	    _createClass(Actor, [{
+	        key: 'mouse',
+	        value: function mouse(which) {}
+	    }, {
+	        key: 'mouseup',
+	        value: function mouseup(which) {}
+	    }, {
+	        key: 'mousedown',
+	        value: function mousedown(which) {}
+	    }, {
+	        key: 'mouseenter',
+	        value: function mouseenter() {}
+	    }, {
+	        key: 'mouseleave',
+	        value: function mouseleave() {}
+	    }, {
+	        key: 'key',
+	        value: function key(which) {}
+	    }, {
+	        key: 'keyup',
+	        value: function keyup(which) {}
+	    }, {
+	        key: 'keydown',
+	        value: function keydown(which) {}
+	    }, {
+	        key: 'step',
+	        value: function step() {}
+	    }, {
+	        key: 'draw',
+	        value: function draw() {
+	            this.sprite.draw(this.frame, this.x, this.y);
+	        }
+	    }, {
+	        key: 'x',
+	        get: function get() {
+	            return this[POS].x;
+	        },
+	        set: function set(x) {
+	            if (typeof x === 'number') {
+	                return this[POS].x = x, true;
+	            } else {
+	                throw new TypeError('Cannot set x to a ' + (typeof x === 'undefined' ? 'undefined' : _typeof(x)));
+	            }
+	        }
+	    }, {
+	        key: 'y',
+	        get: function get() {
+	            return this[POS].y;
+	        },
+	        set: function set(y) {
+	            if (typeof y === 'number') {
+	                return this[POS].y = y, true;
+	            } else {
+	                throw new TypeError('Cannot set y to a ' + (typeof y === 'undefined' ? 'undefined' : _typeof(y)));
+	            }
+	        }
+	    }, {
+	        key: 'z',
+	        get: function get() {
+	            return this[POS].z;
+	        },
+	        set: function set(z) {
+	            if (typeof z === 'number') {
+	                return this[POS].z = z, true;
+	            } else {
+	                throw new TypeError('Cannot set z to a ' + (typeof z === 'undefined' ? 'undefined' : _typeof(z)));
+	            }
+	        }
+	    }, {
+	        key: 'sprite',
+	        get: function get() {
+	            return this[SPRITE];
+	        },
+	        set: function set(s) {
+	            if (s instanceof _sprite.Sprite) {
+	                return this[SPRITE] = s, true;
+	            } else {
+	                throw new TypeError('Cannot set sprite to a ' + (typeof s === 'undefined' ? 'undefined' : _typeof(s)));
+	            }
+	        }
+	    }, {
+	        key: 'frame',
+	        get: function get() {
+	            return this[FRAME];
+	        },
+	        set: function set(f) {
+	            if (typeof f === 'number') {
+	                return this[FRAME] = f % this.sprite.frames.length, true;
+	            } else {
+	                throw new TypeError('Cannot set frame to a ' + (typeof f === 'undefined' ? 'undefined' : _typeof(f)));
+	            }
+	        }
+	    }]);
+	
+	    return Actor;
+	})();
+	
+	exports.default = { Actor: Actor };
+
+/***/ },
+/* 362 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	__webpack_require__(1);
+	mocha.setup("bdd");
+	__webpack_require__(363);
+	__webpack_require__(298);
+	if (false) {
+		module.hot.accept();
+		module.hot.dispose(function () {
+			mocha.suite.suites.length = 0;
+			var stats = document.getElementById('mocha-stats');
+			var report = document.getElementById('mocha-report');
+			stats.parentNode.removeChild(stats);
+			report.parentNode.removeChild(report);
+		});
+	}
+
+/***/ },
+/* 363 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _chai = __webpack_require__(10);
+	
+	var _sinon = __webpack_require__(303);
+	
+	var _canvas = __webpack_require__(242);
+	
+	var _draw = __webpack_require__(358);
+	
+	var _draw2 = _interopRequireDefault(_draw);
+	
+	var _sprite = __webpack_require__(357);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -40659,6 +42728,11 @@
 	            _draw2.default.sprite(spr, 0, 0, 0);
 	            (0, _chai.expect)(ctx.drawImage).to.have.been.calledWith(img, 0, 0, 32, 32, 0, 0, 32, 32);
 	            (0, _chai.expect)(ctx.drawImage).to.have.been.calledWith(img, 32, 0, 32, 32, 0, 0, 32, 32);
+	        });
+	        it('should not draw if the sprite has no image', function () {
+	            var spr = new _sprite.Sprite();
+	            _draw2.default.sprite(spr, 1, 0, 0);
+	            (0, _chai.expect)(ctx.drawImage).to.have.not.been.called;
 	        });
 	    });
 	    describe('pixelData(pd, x, y)', function () {
@@ -41225,15 +43299,15 @@
 	});
 
 /***/ },
-/* 352 */
+/* 364 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
 	__webpack_require__(1);
 	mocha.setup("bdd");
-	__webpack_require__(353);
-	__webpack_require__(300);
+	__webpack_require__(365);
+	__webpack_require__(298);
 	if (false) {
 		module.hot.accept();
 		module.hot.dispose(function () {
@@ -41246,14 +43320,14 @@
 	}
 
 /***/ },
-/* 353 */
+/* 365 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	var _chai = __webpack_require__(10);
 	
-	var _util = __webpack_require__(296);
+	var _util = __webpack_require__(351);
 	
 	var _util2 = _interopRequireDefault(_util);
 	

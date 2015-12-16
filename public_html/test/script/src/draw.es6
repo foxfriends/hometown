@@ -133,6 +133,11 @@ describe('draw.es6', () => {
             expect(ctx.drawImage).to.have.been.calledWith(img, 0, 0, 32, 32, 0, 0, 32, 32);
             expect(ctx.drawImage).to.have.been.calledWith(img, 32, 0, 32, 32, 0, 0, 32, 32);
         });
+        it('should not draw if the sprite has no image', () => {
+            const spr = new Sprite();
+            draw.sprite(spr, 1, 0, 0);
+            expect(ctx.drawImage).to.have.not.been.called;
+        });
     });
     describe('pixelData(pd, x, y)', () => {
         it('should be an alias for pd.draw(x, y)', () => {
