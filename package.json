@@ -4,7 +4,7 @@
   "description": "Run your own town, have your friends over, and make a happy life for all your townsfolk",
   "main": "server.es6",
   "scripts": {
-    "start": "babel-node server/index.es6",
+    "start": "node server/server.es6",
     "test": "gulp test"
   },
   "keywords": [

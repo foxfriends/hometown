@@ -8329,6 +8329,9 @@
 /* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/*
+	    Start the game
+	*/
 	'use strict';
 	
 	__webpack_require__(52);
@@ -30199,6 +30202,10 @@
 /* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/*
+	    Processes input and provides an easy way to check the state of the keyboard
+	    and mouse
+	*/
 	'use strict';
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -40461,6 +40468,10 @@
 /* 350 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/*
+	    Custom event listeners which are triggered on command, based on when the
+	    built in event listeners catch their events
+	*/
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
@@ -41253,6 +41264,9 @@
 /* 354 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/*
+	    Runs the game loop
+	*/
 	'use strict';
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -41571,7 +41585,6 @@
 
 	/*
 	    Wrapper around the default canvas drawing functions to make them more usable
-	    and easier to improve upon
 	*/
 	'use strict';
 	
@@ -41749,7 +41762,6 @@
 	    }
 	
 	    _canvas.c2d.save();
-	
 	    if (opts) {
 	        if (opts.scale) {
 	            _canvas.c2d.scale(opts.scale.x || 1, opts.scale.y || 1);
@@ -41764,7 +41776,6 @@
 	            _canvas.c2d.transform.apply(_canvas.c2d, _toConsumableArray(opts.transform));
 	        }
 	    }
-	
 	    var _iteratorNormalCompletion = true;
 	    var _didIteratorError = false;
 	    var _iteratorError = undefined;
@@ -41915,19 +41926,15 @@
 	                });
 	                return this;
 	            }
-	
 	            _canvas.c2d.save();
-	
 	            if (color !== undefined) {
 	                setColor(color);
 	            }
 	            if (shadow !== undefined) {
 	                setShadow(shadow);
 	            }
-	
 	            this[GENERATE]();
 	            _canvas.c2d.fill();
-	
 	            _canvas.c2d.restore();
 	            return this;
 	        }
@@ -41948,19 +41955,15 @@
 	                });
 	                return this;
 	            }
-	
 	            _canvas.c2d.save();
-	
 	            if (color !== undefined) {
 	                setColor(color);
 	            }
 	            if (line !== undefined) {
 	                setLine(line);
 	            }
-	
 	            this[GENERATE]();
 	            _canvas.c2d.stroke();
-	
 	            _canvas.c2d.restore();
 	            return this;
 	        }
@@ -41984,12 +41987,10 @@
 	                    todo = [transform].concat(_toConsumableArray(todo));
 	                }
 	            }
-	
 	            _canvas.c2d.save();
 	            setShadow({ reset: true }); // Clip doesn't work if shadow is not default??
 	            this[GENERATE]();
 	            _canvas.c2d.clip();
-	
 	            var _iteratorNormalCompletion2 = true;
 	            var _didIteratorError2 = false;
 	            var _iteratorError2 = undefined;
@@ -42067,7 +42068,7 @@
 	    return Path;
 	})();
 	
-	// 2D array wrapper around ImageData's 1D array
+	// Wrapper around built in context2d.ImageData
 	var PixelData = exports.PixelData = (function () {
 	    function PixelData() {
 	        _classCallCheck(this, PixelData);
@@ -42097,6 +42098,7 @@
 	    }, {
 	        key: 'data',
 	        get: function get() {
+	            // Provide 2D array style access to the 1D array
 	            return new Proxy(this, {
 	                get: function get(target, x) {
 	                    x = parseInt(x);
@@ -42409,6 +42411,9 @@
 /* 361 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/*
+	    A base Actor class, which should be extended for every Actor in the game
+	*/
 	'use strict';
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -42502,7 +42507,8 @@
 	        },
 	        set: function set(x) {
 	            if (typeof x === 'number') {
-	                return this[POS].x = x, true;
+	                this[POS].x = x;
+	                return true;
 	            } else {
 	                throw new TypeError('Cannot set x to a ' + (typeof x === 'undefined' ? 'undefined' : _typeof(x)));
 	            }
@@ -42514,7 +42520,8 @@
 	        },
 	        set: function set(y) {
 	            if (typeof y === 'number') {
-	                return this[POS].y = y, true;
+	                this[POS].y = y;
+	                return true;
 	            } else {
 	                throw new TypeError('Cannot set y to a ' + (typeof y === 'undefined' ? 'undefined' : _typeof(y)));
 	            }
@@ -42526,7 +42533,8 @@
 	        },
 	        set: function set(z) {
 	            if (typeof z === 'number') {
-	                return this[POS].z = z, true;
+	                this[POS].z = z;
+	                return true;
 	            } else {
 	                throw new TypeError('Cannot set z to a ' + (typeof z === 'undefined' ? 'undefined' : _typeof(z)));
 	            }
@@ -42538,7 +42546,8 @@
 	        },
 	        set: function set(s) {
 	            if (s instanceof _sprite.Sprite) {
-	                return this[SPRITE] = s, true;
+	                this[SPRITE] = s;
+	                return true;
 	            } else {
 	                throw new TypeError('Cannot set sprite to a ' + (typeof s === 'undefined' ? 'undefined' : _typeof(s)));
 	            }
@@ -42550,7 +42559,8 @@
 	        },
 	        set: function set(f) {
 	            if (typeof f === 'number') {
-	                return this[FRAME] = f % this.sprite.frames.length, true;
+	                this[FRAME] = f % this.sprite.frames.length;
+	                return true;
 	            } else {
 	                throw new TypeError('Cannot set frame to a ' + (typeof f === 'undefined' ? 'undefined' : _typeof(f)));
 	            }

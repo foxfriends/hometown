@@ -2,10 +2,10 @@
 Build a virtual town. Have your friends over, take care of your villagers, and
 make everyone happy.
 
-Inspired by Animal Crossing, &copy; Nintendo.
+Inspired by Animal Crossing: New Leaf, &copy; 2012-2013 Nintendo.
 
 Completed Features:
-* ???
+* Sort of engine?
 
 Planned features:
 * Towns
@@ -43,13 +43,13 @@ Planned features:
     * Face
     * Gender
     * Haircut
-    * Mail
 * House
     * Furniture
     * Renovation
     * Songs
+    * Mail
     * Exterior
-        * Storage
+    * Storage
 * Friends (online)
     * Visit
     * Move in
@@ -84,3 +84,7 @@ Planned features:
     * Songs
     * Decorations
     * Suggestion box
+
+## Contributing
+This project is very much a WIP, but if you feel like helping just let me know
+and I'll see what there is to be done. 
