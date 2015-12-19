@@ -1,3 +1,7 @@
+/*
+    Processes input and provides an easy way to check the state of the keyboard
+    and mouse
+*/
 'use strict';
 import $ from 'jquery';
 import {$canvas} from './canvas.es6';

@@ -1,6 +1,5 @@
 /*
     Wrapper around the default canvas drawing functions to make them more usable
-    and easier to improve upon
 */
 'use strict';
 import {canvas, c2d} from './canvas.es6';
@@ -91,16 +90,13 @@ export const setFont = ({family, size, align, baseline, reset} = {}) => {
 // Transform the context and perform the given function(s)
 export const transformed = (opts, ...todo) => {
     c2d.save();
-
     if(opts) {
         if(opts.scale)      { c2d.scale(opts.scale.x || 1, opts.scale.y || 1);}
         if(opts.rotate)     { c2d.rotate(opts.rotate); }
         if(opts.translate)  { c2d.translate(opts.translate.x || 0, opts.translate.y || 0); }
         if(opts.transform)  { c2d.transform(...opts.transform); }
     }
-
     for(let item of todo) { item(); }
-
     c2d.restore();
 };
 
@@ -154,15 +150,11 @@ export const Path = class {
             transformed(transform, () => this.fill({color: color, shadow: shadow}));
             return this;
         }
-
         c2d.save();
-
         if(color !== undefined) { setColor(color); }
         if(shadow !== undefined) { setShadow(shadow); }
-
         this[GENERATE]();
         c2d.fill();
-
         c2d.restore();
         return this;
     }
@@ -172,15 +164,11 @@ export const Path = class {
             transformed(transform, () => this.stroke({color: color, line: line}));
             return this;
         }
-
         c2d.save();
-
         if(color !== undefined) { setColor(color); }
         if(line !== undefined) { setLine(line); }
-
         this[GENERATE]();
         c2d.stroke();
-
         c2d.restore();
         return this;
     }
@@ -195,14 +183,11 @@ export const Path = class {
                 todo = [transform, ...todo];
             }
         }
-
         c2d.save();
         setShadow({reset: true}); // Clip doesn't work if shadow is not default??
         this[GENERATE]();
         c2d.clip();
-
         for(let item of todo) { item(); }
-
         c2d.restore();
         return this;
     }
@@ -225,7 +210,7 @@ export const Path = class {
     [GENERATE]() { for(let item of this[STACK]) { item(); } }
 };
 
-// 2D array wrapper around ImageData's 1D array
+// Wrapper around built in context2d.ImageData
 export const PixelData = class {
     constructor(...args) {
         this[IMAGE_DATA] = (args.length === 4) ? c2d.getImageData(...args) : c2d.createImageData(...args);
@@ -234,6 +219,7 @@ export const PixelData = class {
     get width() { return this[IMAGE_DATA].width; }
     get height() { return this[IMAGE_DATA].height; }
     get data() {
+        // Provide 2D array style access to the 1D array
         return new Proxy(this, {
             get(target, x) {
                 x = parseInt(x);
@@ -253,6 +239,7 @@ export const PixelData = class {
             set() { throw new TypeError('Cannot set pixel with only one coordinate'); }
         });
     }
+
     draw(x, y) {
         c2d.putImageData(this[IMAGE_DATA], x, y);
     }

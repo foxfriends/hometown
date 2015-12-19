@@ -1,3 +1,7 @@
+/*
+    Custom event listeners which are triggered on command, based on when the
+    built in event listeners catch their events
+*/
 'use strict';
 
 import {input} from './input.es6';

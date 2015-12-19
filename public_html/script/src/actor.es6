@@ -1,3 +1,6 @@
+/*
+    A base Actor class, which should be extended for every Actor in the game
+*/
 'use strict';
 
 import {Sprite} from './sprite.es6';
@@ -25,19 +28,54 @@ export const Actor = class {
     }
 
     get x() { return this[POS].x; }
-    set x(x) { if(typeof x === 'number') { return this[POS].x = x, true; } else { throw new TypeError(`Cannot set x to a ${typeof x}`); }}
+    set x(x) {
+        if(typeof x === 'number') {
+            this[POS].x = x;
+            return true;
+        } else {
+            throw new TypeError(`Cannot set x to a ${typeof x}`);
+        }
+    }
 
     get y() { return this[POS].y; }
-    set y(y) { if(typeof y === 'number') { return this[POS].y = y, true; } else { throw new TypeError(`Cannot set y to a ${typeof y}`); }}
+    set y(y) {
+        if(typeof y === 'number') {
+            this[POS].y = y;
+            return true;
+        } else {
+            throw new TypeError(`Cannot set y to a ${typeof y}`);
+        }
+    }
 
     get z() { return this[POS].z; }
-    set z(z) { if(typeof z === 'number') { return this[POS].z = z, true; } else { throw new TypeError(`Cannot set z to a ${typeof z}`); }}
+    set z(z) {
+        if(typeof z === 'number') {
+            this[POS].z = z;
+            return true;
+        } else {
+            throw new TypeError(`Cannot set z to a ${typeof z}`);
+        }
+}
 
     get sprite() { return this[SPRITE]; }
-    set sprite(s) { if(s instanceof Sprite) { return this[SPRITE] = s, true; } else { throw new TypeError(`Cannot set sprite to a ${typeof s}`); }}
+    set sprite(s) {
+        if(s instanceof Sprite) {
+            this[SPRITE] = s;
+            return true;
+        } else {
+            throw new TypeError(`Cannot set sprite to a ${typeof s}`);
+        }
+    }
 
     get frame() { return this[FRAME]; }
-    set frame(f) { if(typeof f === 'number') { return this[FRAME] = f % this.sprite.frames.length, true; } else { throw new TypeError(`Cannot set frame to a ${typeof f}`); }}
+    set frame(f) {
+        if(typeof f === 'number') {
+            this[FRAME] = f % this.sprite.frames.length;
+            return true;
+        } else {
+            throw new TypeError(`Cannot set frame to a ${typeof f}`);
+        }
+    }
 
     mouse(which) {}
     mouseup(which) {}

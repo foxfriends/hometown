@@ -1,3 +1,6 @@
+/*
+    Start the game
+*/
 'use strict';
 
 import 'babel-polyfill';

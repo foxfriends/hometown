@@ -1,3 +1,6 @@
+/*
+    Runs the game loop
+*/
 'use strict';
 
 import event from './event.es6';
@@ -20,7 +23,7 @@ export const Game = class {
         }();
         this[GENERATOR].next();
     }
-    
+
     end() { this[LOOP] = false; }
 
     get paused() { return this[PAUSED]; }
