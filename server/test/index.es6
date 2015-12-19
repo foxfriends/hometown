@@ -1,6 +1,8 @@
 'use strict';
-let expect = require('chai').expect;
 
-describe('hometown', () => {
-    it('should exist', () => expect(3).to.equal(3));
-});
+import chai from 'chai';
+import sinon from 'sinon-chai';
+chai.use(sinon);
+
+import './run-generator.es6';
+import './database.es6';
