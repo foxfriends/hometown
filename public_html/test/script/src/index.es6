@@ -1,12 +1,10 @@
 'use strict';
 
 // Setup sinon-chai
+import 'babel-polyfill';
 import chai from 'chai';
 import sinon from 'sinon-chai';
 chai.use(sinon);
-
-// Run the game
-import '../../../script/src/index.es6';
 
 // Import tests
 import './canvas.es6';

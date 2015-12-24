@@ -4,7 +4,6 @@ import {expect} from 'chai';
 import {spy, stub} from 'sinon';
 import $ from 'jquery';
 
-import {$canvas} from '../../../script/src/canvas.es6';
 import {input} from '../../../script/src/input.es6';
 import event from '../../../script/src/event.es6';
 
@@ -13,9 +12,9 @@ describe('event.es6', () => {
         it('should add the handlers to the event', () => {
             const [a, b, c] = [spy(), spy(), spy()];
             event.on('mousedown', a, b, c);
-            $canvas.trigger($.Event('mousedown', {which: 2}));
+            $(document).trigger($.Event('mousedown', {which: 2}));
             event.trigger();
-            $canvas.trigger($.Event('mouseup', {which: 2}));
+            $(document).trigger($.Event('mouseup', {which: 2}));
             event.trigger();
             expect(b).to.have.been.calledOnce;
             expect(a).to.have.been.calledOnce;
@@ -42,9 +41,9 @@ describe('event.es6', () => {
             const [a, b, c] = [spy(), spy(), spy()];
             event.on('mousedown', a, b, c);
             event.off('mousedown', a, b, c);
-            $canvas.trigger($.Event('mousedown', {which: 2}));
+            $(document).trigger($.Event('mousedown', {which: 2}));
             event.trigger();
-            $canvas.trigger($.Event('mouseup', {which: 2}));
+            $(document).trigger($.Event('mouseup', {which: 2}));
             event.trigger();
             expect(b).to.have.not.been.called;
             expect(a).to.have.not.been.called;
@@ -66,18 +65,18 @@ describe('event.es6', () => {
     describe('trigger()', () => {
         it('should trigger all the handlers for events that have happened', () => {
             const [a, b, c] = [spy(), spy(), spy()];
-            $canvas .trigger($.Event('mousedown', {which: 1}))
-                    .trigger($.Event('mouseup', {which: 3}))
-                    .trigger($.Event('keydown', {which: 13}))
-                    .trigger($.Event('keydown', {which: 27}));
+            $(document) .trigger($.Event('mousedown', {which: 1}))
+                        .trigger($.Event('mouseup', {which: 3}))
+                        .trigger($.Event('keydown', {which: 13}))
+                        .trigger($.Event('keydown', {which: 27}));
             event.trigger();
             expect(a).to.have.not.been.called;
             expect(b).to.have.not.been.called;
             expect(c).to.have.not.been.called;
             event.on('mousedown', a)('mouseup', b)('keyheld', c);
-            $canvas .trigger($.Event('mousedown', {which: 2}))
-                    .trigger($.Event('mousedown', {which: 3}))
-                    .trigger($.Event('mouseup', {which: 1}));
+            $(document) .trigger($.Event('mousedown', {which: 2}))
+                        .trigger($.Event('mousedown', {which: 3}))
+                        .trigger($.Event('mouseup', {which: 1}));
             event.trigger();
             expect(a).to.have.been.calledWith(2);
             expect(a).to.have.been.calledWith(3);
@@ -88,9 +87,9 @@ describe('event.es6', () => {
             expect(c).to.have.been.calledWith(27);
             expect(c).to.have.been.calledTwice;
             a.reset(), b.reset(), c.reset();
-            $canvas .trigger($.Event('mouseup', {which: 2}))
-                    .trigger($.Event('mouseup', {which: 3}))
-                    .trigger($.Event('keyup', {which: 27}));
+            $(document) .trigger($.Event('mouseup', {which: 2}))
+                        .trigger($.Event('mouseup', {which: 3}))
+                        .trigger($.Event('keyup', {which: 27}));
             event.trigger();
             expect(a).to.not.have.been.called;
             expect(b).to.have.been.calledWith(2);
@@ -99,7 +98,7 @@ describe('event.es6', () => {
             expect(c).to.have.been.calledWith(13);
             expect(c).to.have.been.calledOnce;
             a.reset(), b.reset(), c.reset();
-            $canvas.trigger($.Event('keyup', {which: 13}));
+            $(document).trigger($.Event('keyup', {which: 13}));
             event.trigger();
             expect(a).to.have.not.been.called;
             expect(b).to.have.not.been.called;
@@ -117,10 +116,10 @@ describe('event.es6', () => {
         it('should be triggered only the first frame the mouse is pressed', () => {
             const a = spy();
             event.on('mousedown', a);
-            $canvas.trigger($.Event('mousedown', {which: 1}));
+            $(document).trigger($.Event('mousedown', {which: 1}));
             event.trigger();
             event.trigger();
-            $canvas.trigger($.Event('mouseup', {which: 1}));
+            $(document).trigger($.Event('mouseup', {which: 1}));
             event.trigger();
             event.off('mousedown', a);
             expect(a).to.have.been.calledOnce;
@@ -128,9 +127,9 @@ describe('event.es6', () => {
         it('should call all handlers', () => {
             const [a, b, c] = [spy(), spy(), spy()];
             event.on('mousedown', a)('mousedown', b, c);
-            $canvas.trigger($.Event('mousedown', {which: 1}));
+            $(document).trigger($.Event('mousedown', {which: 1}));
             event.trigger();
-            $canvas.trigger($.Event('mouseup', {which: 1}));
+            $(document).trigger($.Event('mouseup', {which: 1}));
             event.trigger();
             event.off('mousedown', a, b, c);
             expect(a).to.have.been.calledOnce;
@@ -153,11 +152,11 @@ describe('event.es6', () => {
         it('should be triggered every frame the mouse is pressed', () => {
             const a = spy();
             event.on('mouseheld', a);
-            $canvas.trigger($.Event('mousedown', {which: 1}));
+            $(document).trigger($.Event('mousedown', {which: 1}));
             event.trigger();
             event.trigger();
             event.trigger();
-            $canvas.trigger($.Event('mouseup', {which: 1}));
+            $(document).trigger($.Event('mouseup', {which: 1}));
             event.trigger();
             event.off('mouseheld', a);
             expect(a).to.have.been.calledThrice;
@@ -165,11 +164,11 @@ describe('event.es6', () => {
         it('should call all handlers', () => {
             const [a, b, c] = [spy(), spy(), spy()];
             event.on('mouseheld', a)('mouseheld', b, c);
-            $canvas.trigger($.Event('mousedown', {which: 1}));
+            $(document).trigger($.Event('mousedown', {which: 1}));
             event.trigger();
             event.trigger();
             event.trigger();
-            $canvas.trigger($.Event('mouseup', {which: 1}));
+            $(document).trigger($.Event('mouseup', {which: 1}));
             event.trigger();
             event.off('mouseheld', a, b, c);
             expect(a).to.have.been.calledThrice;
@@ -191,9 +190,9 @@ describe('event.es6', () => {
         it('should be triggered only the first frame the mouse is released', () => {
             const a = spy();
             event.on('mouseup', a);
-            $canvas.trigger($.Event('mousedown', {which: 1}));
+            $(document).trigger($.Event('mousedown', {which: 1}));
             event.trigger();
-            $canvas.trigger($.Event('mouseup', {which: 1}));
+            $(document).trigger($.Event('mouseup', {which: 1}));
             event.trigger();
             event.trigger();
             event.off('mouseup', a);
@@ -202,9 +201,9 @@ describe('event.es6', () => {
         it('should call all handlers', () => {
             const [a, b, c] = [spy(), spy(), spy()];
             event.on('mouseup', a)('mouseup', b, c);
-            $canvas.trigger($.Event('mousedown', {which: 1}));
+            $(document).trigger($.Event('mousedown', {which: 1}));
             event.trigger();
-            $canvas.trigger($.Event('mouseup', {which: 1}));
+            $(document).trigger($.Event('mouseup', {which: 1}));
             event.trigger();
             event.off('mouseup', a, b, c);
             expect(a).to.have.been.calledOnce;
@@ -224,7 +223,7 @@ describe('event.es6', () => {
         it('should not ignore events off canvas if they started on canvas', () => {
             const a = spy();
             event.on('mouseup', a);
-            $canvas.trigger($.Event('mousedown', {which: 1}));
+            $(document).trigger($.Event('mousedown', {which: 1}));
             event.trigger();
             $(window).trigger($.Event('mouseup', {which: 1}));
             event.trigger();
@@ -236,10 +235,10 @@ describe('event.es6', () => {
         it('should be triggered only the first frame the key is pressed', () => {
             const a = spy();
             event.on('keydown', a);
-            $canvas.trigger($.Event('keydown', {which: 1}));
+            $(document).trigger($.Event('keydown', {which: 1}));
             event.trigger();
             event.trigger();
-            $canvas.trigger($.Event('keyup', {which: 1}));
+            $(document).trigger($.Event('keyup', {which: 1}));
             event.trigger();
             event.off('keydown', a);
             expect(a).to.have.been.calledOnce;
@@ -247,9 +246,9 @@ describe('event.es6', () => {
         it('should call all handlers', () => {
             const [a, b, c] = [spy(), spy(), spy()];
             event.on('keydown', a)('keydown', b, c);
-            $canvas.trigger($.Event('keydown', {which: 1}));
+            $(document).trigger($.Event('keydown', {which: 1}));
             event.trigger();
-            $canvas.trigger($.Event('keyup', {which: 1}));
+            $(document).trigger($.Event('keyup', {which: 1}));
             event.trigger();
             event.off('keydown', a, b, c);
             expect(a).to.have.been.calledOnce;
@@ -271,11 +270,11 @@ describe('event.es6', () => {
         it('should be triggered every frame the key is pressed', () => {
             const a = spy();
             event.on('keyheld', a);
-            $canvas.trigger($.Event('keydown', {which: 1}));
+            $(document).trigger($.Event('keydown', {which: 1}));
             event.trigger();
             event.trigger();
             event.trigger();
-            $canvas.trigger($.Event('keyup', {which: 1}));
+            $(document).trigger($.Event('keyup', {which: 1}));
             event.trigger();
             event.off('keyheld', a);
             expect(a).to.have.been.calledThrice;
@@ -283,11 +282,11 @@ describe('event.es6', () => {
         it('should call all handlers', () => {
             const [a, b, c] = [spy(), spy(), spy()];
             event.on('keyheld', a)('keyheld', b, c);
-            $canvas.trigger($.Event('keydown', {which: 1}));
+            $(document).trigger($.Event('keydown', {which: 1}));
             event.trigger();
             event.trigger();
             event.trigger();
-            $canvas.trigger($.Event('keyup', {which: 1}));
+            $(document).trigger($.Event('keyup', {which: 1}));
             event.trigger();
             event.off('keyheld', a, b, c);
             expect(a).to.have.been.calledThrice;
@@ -311,9 +310,9 @@ describe('event.es6', () => {
         it('should be triggered only the first frame the key is released', () => {
             const a = spy();
             event.on('keyup', a);
-            $canvas.trigger($.Event('keydown', {which: 1}));
+            $(document).trigger($.Event('keydown', {which: 1}));
             event.trigger();
-            $canvas.trigger($.Event('keyup', {which: 1}));
+            $(document).trigger($.Event('keyup', {which: 1}));
             event.trigger();
             event.trigger();
             event.off('keyup', a);
@@ -322,9 +321,9 @@ describe('event.es6', () => {
         it('should call all handlers', () => {
             const [a, b, c] = [spy(), spy(), spy()];
             event.on('keyup', a)('keyup', b, c);
-            $canvas.trigger($.Event('keydown', {which: 1}));
+            $(document).trigger($.Event('keydown', {which: 1}));
             event.trigger();
-            $canvas.trigger($.Event('keyup', {which: 1}));
+            $(document).trigger($.Event('keyup', {which: 1}));
             event.trigger();
             event.off('keyup', a, b, c);
             expect(a).to.have.been.calledOnce;
@@ -344,7 +343,7 @@ describe('event.es6', () => {
         it('should not ignore events off canvas if the event started on canvas', () => {
             const a = spy();
             event.on('keyup', a);
-            $canvas.trigger($.Event('keydown', {which: 1}));
+            $(document).trigger($.Event('keydown', {which: 1}));
             event.trigger();
             $(window).trigger($.Event('keyup', {which: 1}));
             event.trigger();

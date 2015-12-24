@@ -6,13 +6,22 @@
 export const run = (generator) => {
     const gen = generator();
     const {value} = gen.next();
-    const proc = (promised) => {
+    let proc, err;
+    proc = (promised) => {
         const {done, value} = gen.next(promised);
         if(!done) {
-            return value.then(proc).catch(console.error);
+            return value.then(proc).catch(err);
         } else {
             return value;
         }
     };
-    return value.then(proc).catch(console.error);
+    err = (thrown) => {
+        const {done, value} = gen.throw(thrown);
+        if(!done) {
+            return value.then(proc).catch(err);
+        } else {
+            throw value;
+        }
+    };
+    return value.then(proc).catch(err);
 };

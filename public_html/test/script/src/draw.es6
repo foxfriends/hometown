@@ -10,6 +10,10 @@ import {Sprite} from '../../../script/src/sprite.es6';
 describe('draw.es6', () => {
     let ctx;
     before(() => {
+        // Reset settings
+        draw.setFont({reset: true});
+        draw.setLine({reset: true});
+        draw.setShadow({reset: true});
         ctx = {
             fillRect: stub(c2d, 'fillRect'),
             strokeRect: stub(c2d, 'strokeRect'),
@@ -124,7 +128,7 @@ describe('draw.es6', () => {
             expect(ctx.drawImage).to.have.been.calledWith(img, 0, 0);
         });
     });
-    describe('sprite(spr, subimage, x, y)', () => {
+    describe('sprite(spr, subimage, x, y[, w, h])', () => {
         it('should draw the sprite with the correct subimage', () => {
             const img = new Image();
             const spr = new Sprite(img, 32, 32, [[0,0], [32, 0]]);
@@ -137,6 +141,12 @@ describe('draw.es6', () => {
             const spr = new Sprite();
             draw.sprite(spr, 1, 0, 0);
             expect(ctx.drawImage).to.have.not.been.called;
+        });
+        it('should draw the image stretched if dimensions are passed', () => {
+            const img = new Image();
+            const spr = new Sprite(img, 32, 32, [[0,0], [32, 0]]);
+            draw.sprite(spr, 1, 0, 0, 64, 64);
+            expect(ctx.drawImage).to.have.been.calledWith(img, 32, 0, 32, 32, 0, 0, 64, 64);
         });
     });
     describe('pixelData(pd, x, y)', () => {
@@ -597,7 +607,7 @@ describe('draw.es6', () => {
             });
         });
 
-        describe('#contains(x, y)', () => {
+        describe('#contains([offx, offy,] x, y)', () => {
             it('should be true if the point is within the path', () => {
                 expect(new draw.Path().move(0, 32).line(32, 32).contains(16, 32)).to.be.true;
                 expect(new draw.Path().move(0, 32).line(32, 32).line(32, 64).contains(30, 34)).to.be.true;
@@ -605,6 +615,10 @@ describe('draw.es6', () => {
             it('should be true if the point is not within the path', () => {
                 expect(new draw.Path().move(0, 32).line(32, 32).contains(48, 32)).to.be.false;
                 expect(new draw.Path().move(0, 32).line(32, 32).contains(16, 16)).to.be.false;
+            });
+            it('should allow offsets to be specified', () => {
+                expect(new draw.Path().move(0, 32).line(32, 32).line(32, 64).contains(130, 134)).to.be.false;
+                expect(new draw.Path().move(0, 32).line(32, 32).line(32, 64).contains(100, 100, 130, 134)).to.be.true;
             });
         });
     });

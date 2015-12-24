@@ -140,6 +140,24 @@ describe('input.es6', () => {
                     expect(inp.mousestate.length).to.equal(4);
                 });
             });
+            describe('#x', () => {
+                it('should return the mouse x position', () => {
+                    expect(inp.mousestate.x).to.equal(0);
+                });
+                it('should be settable (even though the mouse doesn\'t move)', () => {
+                    inp.mousestate.x = 10;
+                    expect(inp.mousestate.x).to.equal(10);
+                });
+            });
+            describe('#y', () => {
+                it('should return the mouse y position', () => {
+                    expect(inp.mousestate.y).to.equal(0);
+                });
+                it('should be settable (even though the mouse doesn\'t move)', () => {
+                    inp.mousestate.y = 5;
+                    expect(inp.mousestate.y).to.equal(5);
+                });
+            });
             describe('#operator[b]', () => {
                 it('should return the state of the given button', () => {
                     expect(inp.mousestate[3]).to.be.false;
@@ -293,6 +311,45 @@ describe('input.es6', () => {
                 }
             });
         });
+        describe('#mouse(name)', () => {
+            it('should be static', () => {
+                expect(input.InputState.mouse).to.be.a('function');
+            });
+            it('should return the code associated with the name', () => {
+                expect(input.InputState.mouse('left')).to.equal(1);
+                expect(input.InputState.mouse('middle')).to.equal(2);
+                expect(input.InputState.mouse('right')).to.equal(3);
+            });
+            it('should be case insensitive', () => {
+                expect(input.InputState.mouse('LefT')).to.equal(1);
+                expect(input.InputState.mouse('MIDdle')).to.equal(2);
+                expect(input.InputState.mouse('RiGhT')).to.equal(3);
+            });
+            it('should throw on invalid names', () => {
+                expect(() => input.InputState.mouse('not_mouse')).to.throw(TypeError);
+            });
+        });
+        describe('#keyboard(name)', () => {
+            it('should be static', () => {
+                expect(input.InputState.keyboard).to.be.a('function');
+            });
+            it('should return the code associated with the name', () => {
+                expect(input.InputState.keyboard('left')).to.equal(37);
+                expect(input.InputState.keyboard('enter')).to.equal(13);
+                expect(input.InputState.keyboard('escape')).to.equal(27);
+            });
+            it('should be case insensitive', () => {
+                expect(input.InputState.keyboard('LeFT')).to.equal(37);
+                expect(input.InputState.keyboard('ENter')).to.equal(13);
+                expect(input.InputState.keyboard('EsCaPe')).to.equal(27);
+                expect(input.InputState.keyboard('F3')).to.equal(114);
+                expect(input.InputState.keyboard('N0')).to.equal(96);
+            });
+            it('should throw on invalid names', () => {
+                expect(() => input.InputState.keyboard('F124')).to.throw(TypeError);
+                expect(() => input.InputState.keyboard('FDB')).to.throw(TypeError);
+            });
+        });
     });
     describe('input', () => {
         it('should be an InputState', () => {
@@ -320,6 +377,11 @@ describe('input.es6', () => {
             expect(input.input.mousestate[2]).to.be.true;
             $(window).trigger($.Event('mouseup', {which: 2}));
             expect(input.input.mousestate[2]).to.be.false;
+        });
+        it('should track the mouse position',  () => {
+            $(document).trigger($.Event('mousemove', {clientX: 5, clientY: 10}));
+            expect(input.input.mousestate.x).to.equal(5);
+            expect(input.input.mousestate.y).to.equal(10);
         });
     });
 });

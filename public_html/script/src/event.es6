@@ -66,7 +66,7 @@ let events = {
     'keyup': {
         trigger() {
             for(let i of range(0, input.keystate.length)) {
-                if(input.keydown(i)) {
+                if(input.keyup(i)) {
                     for(let cb of this.callbacks) {
                         cb(i);
                     }

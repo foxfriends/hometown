@@ -50,12 +50,37 @@
 	'use strict';
 	
 	__webpack_require__(1);
-
+	
 	__webpack_require__(191);
-
+	
 	__webpack_require__(193);
-
+	
 	__webpack_require__(244);
+	
+	var _index = __webpack_require__(245);
+	
+	var run = undefined;
+	var next = function next() {
+	    for (var _len = arguments.length, v = Array(_len), _key = 0; _key < _len; _key++) {
+	        v[_key] = arguments[_key];
+	    }
+	
+	    run.next(v);
+	};
+	(run = regeneratorRuntime.mark(function _callee() {
+	    return regeneratorRuntime.wrap(function _callee$(_context) {
+	        while (1) {
+	            switch (_context.prev = _context.next) {
+	                case 0:
+	                    return _context.delegateYield((0, _index.runner)(next), 't0', 1);
+	
+	                case 1:
+	                case 'end':
+	                    return _context.stop();
+	            }
+	        }
+	    }, _callee, this);
+	})()).next();
 
 /***/ },
 /* 1 */
@@ -21944,21 +21969,21 @@
 	
 	var KEYS = Symbol('KEYS');
 	var MOUSE = Symbol('MOUSE');
-	var CONVERT_KEYCODE = Symbol('CONVERT_KEYCODE');
-	var CONVERT_MOUSEBUTTON = Symbol('CONVERT_MOUSEBUTTON');
+	var MOUSE_POS = Symbol('MOUSE_POS');
 	var InputState = exports.InputState = (function () {
 	    function InputState() {
 	        _classCallCheck(this, InputState);
 	
 	        this[KEYS] = [[], []];
 	        this[MOUSE] = [[], []];
+	        this[MOUSE_POS] = [[0, 0], [0, 0], [0, 0]];
 	    }
 	
 	    _createClass(InputState, [{
 	        key: 'mousedown',
 	        value: function mousedown(button) {
 	            if (isNaN(button) && typeof button === 'string') {
-	                button = this[CONVERT_MOUSEBUTTON](button);
+	                button = InputState.mouse(button);
 	            }
 	            return this[MOUSE][1][button] && !this[MOUSE][0][button];
 	        }
@@ -21966,7 +21991,7 @@
 	        key: 'mouseup',
 	        value: function mouseup(button) {
 	            if (isNaN(button) && typeof button === 'string') {
-	                button = this[CONVERT_MOUSEBUTTON](button);
+	                button = InputState.mouse(button);
 	            }
 	            return !this[MOUSE][1][button] && this[MOUSE][0][button];
 	        }
@@ -21974,7 +21999,7 @@
 	        key: 'keydown',
 	        value: function keydown(key) {
 	            if (isNaN(key) && typeof key === 'string') {
-	                key = this[CONVERT_KEYCODE](key);
+	                key = InputState.keyboard(key);
 	            }
 	            return this[KEYS][1][key] && !this[KEYS][0][key];
 	        }
@@ -21982,7 +22007,7 @@
 	        key: 'keyup',
 	        value: function keyup(key) {
 	            if (isNaN(key) && typeof key === 'string') {
-	                key = this[CONVERT_KEYCODE](key);
+	                key = InputState.keyboard(key);
 	            }
 	            return !this[KEYS][1][key] && this[KEYS][0][key];
 	        }
@@ -21991,10 +22016,73 @@
 	        value: function refresh() {
 	            this[KEYS][0] = [].concat(_toConsumableArray(this[KEYS][1]));
 	            this[MOUSE][0] = [].concat(_toConsumableArray(this[MOUSE][1]));
+	            this[MOUSE_POS][0] = [].concat(_toConsumableArray(this[MOUSE_POS][1]));
 	        }
 	    }, {
-	        key: CONVERT_MOUSEBUTTON,
-	        value: function value(str) {
+	        key: 'mousestate',
+	        get: function get() {
+	            return new Proxy(this, {
+	                get: function get(target, prop) {
+	                    if (prop === Symbol.iterator) {
+	                        return target[MOUSE][1][Symbol.iterator];
+	                    }
+	                    if (prop === 'length') {
+	                        return target[MOUSE][1].length;
+	                    }
+	                    if (prop === 'x') {
+	                        return target[MOUSE_POS][1][0];
+	                    }
+	                    if (prop === 'y') {
+	                        return target[MOUSE_POS][1][1];
+	                    }
+	                    if (isNaN(prop) && typeof prop === 'string') {
+	                        prop = InputState.mouse(prop);
+	                    }
+	                    return !!target[MOUSE][1][prop];
+	                },
+	                set: function set(target, prop, value) {
+	                    if (prop === 'x') {
+	                        target[MOUSE_POS][1][0] = value;
+	                    } else if (prop === 'y') {
+	                        target[MOUSE_POS][1][1] = value;
+	                    } else {
+	                        if (isNaN(prop) && typeof prop === 'string') {
+	                            prop = InputState.mouse(prop);
+	                        }
+	                        target[MOUSE][1][prop] = value;
+	                    }
+	                    return true;
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'keystate',
+	        get: function get() {
+	            return new Proxy(this, {
+	                get: function get(target, prop) {
+	                    if (prop === Symbol.iterator) {
+	                        return target[KEYS][1][Symbol.iterator];
+	                    }
+	                    if (prop === 'length') {
+	                        return target[KEYS][1].length;
+	                    }
+	                    if (isNaN(prop) && typeof prop === 'string') {
+	                        prop = InputState.keyboard(prop);
+	                    }
+	                    return !!target[KEYS][1][prop];
+	                },
+	                set: function set(target, prop, value) {
+	                    if (isNaN(prop) && typeof prop === 'string') {
+	                        prop = InputState.keyboard(prop);
+	                    }
+	                    target[KEYS][1][prop] = value;
+	                    return true;
+	                }
+	            });
+	        }
+	    }], [{
+	        key: 'mouse',
+	        value: function mouse(str) {
 	            str = str.toUpperCase();
 	            switch (str) {
 	                case 'LEFT':
@@ -22009,8 +22097,8 @@
 	            return str;
 	        }
 	    }, {
-	        key: CONVERT_KEYCODE,
-	        value: function value(str) {
+	        key: 'keyboard',
+	        value: function keyboard(str) {
 	            str = str.toUpperCase();
 	            switch (str) {
 	                case 'BACKSPACE':
@@ -22037,67 +22125,17 @@
 	                default:
 	                    if (str.length === 1) {
 	                        str = str.charCodeAt(0);
-	                    } else if (str[0] === 'F') {
+	                    } else if (str[0] === 'F' && str.length <= 3 && !isNaN(parseInt(str.substr(1, 2)))) {
 	                        // Function keys
-	                        str = 111 + parseInt(str[1]);
-	                    } else if (str[0] === 'N') {
+	                        str = 111 + parseInt(str.substr(1, 2));
+	                    } else if (str[0] === 'N' && str.length === 2) {
 	                        // Numpad
 	                        str = 96 + parseInt(str[1]);
 	                    } else {
-	                        throw new TypeError('There is no key ' + str);
+	                        throw new TypeError('Key does not exist');
 	                    }
 	            }
 	            return str;
-	        }
-	    }, {
-	        key: 'mousestate',
-	        get: function get() {
-	            return new Proxy(this, {
-	                get: function get(target, prop) {
-	                    if (prop === Symbol.iterator) {
-	                        return target[MOUSE][1][Symbol.iterator];
-	                    }
-	                    if (prop === 'length') {
-	                        return target[MOUSE][1].length;
-	                    }
-	                    if (isNaN(prop) && typeof prop === 'string') {
-	                        prop = target[CONVERT_MOUSEBUTTON](prop);
-	                    }
-	                    return !!target[MOUSE][1][prop];
-	                },
-	                set: function set(target, prop, value) {
-	                    if (isNaN(prop) && typeof prop === 'string') {
-	                        prop = target[CONVERT_MOUSEBUTTON](prop);
-	                    }
-	                    target[MOUSE][1][prop] = value;
-	                    return true;
-	                }
-	            });
-	        }
-	    }, {
-	        key: 'keystate',
-	        get: function get() {
-	            return new Proxy(this, {
-	                get: function get(target, prop) {
-	                    if (prop === Symbol.iterator) {
-	                        return target[KEYS][1][Symbol.iterator];
-	                    }
-	                    if (prop === 'length') {
-	                        return target[KEYS][1].length;
-	                    }
-	                    if (isNaN(prop) && typeof prop === 'string') {
-	                        prop = target[CONVERT_KEYCODE](prop);
-	                    }
-	                    return !!target[KEYS][1][prop];
-	                },
-	                set: function set(target, prop, value) {
-	                    if (isNaN(prop) && typeof prop === 'string') {
-	                        prop = target[CONVERT_KEYCODE](prop);
-	                    }
-	                    target[KEYS][1][prop] = value;
-	                    return true;
-	                }
-	            });
 	        }
 	    }]);
 	
@@ -22106,7 +22144,7 @@
 	
 	var input = exports.input = new InputState();
 	
-	_canvas.$canvas.mousedown(function () {
+	(0, _jquery2.default)(document).mousedown(function () {
 	    var _ref = arguments.length <= 0 || arguments[0] === undefined ? { which: 0 } : arguments[0];
 	
 	    var which = _ref.which;
@@ -22116,20 +22154,2147 @@
 	
 	    var which = _ref2.which;
 	    return input.keystate[which] = true;
+	}).mousemove(function () {
+	    var _ref3 = arguments.length <= 0 || arguments[0] === undefined ? { clientX: 0, clientY: 0 } : arguments[0];
+	
+	    var x = _ref3.clientX;
+	    var y = _ref3.clientY;
+	    return input.mousestate.x = x, input.mousestate.y = y;
 	});
 	(0, _jquery2.default)(window).mouseup(function () {
-	    var _ref3 = arguments.length <= 0 || arguments[0] === undefined ? { which: 0 } : arguments[0];
-	
-	    var which = _ref3.which;
-	    return input.mousestate[which] = false;
-	}).keyup(function () {
 	    var _ref4 = arguments.length <= 0 || arguments[0] === undefined ? { which: 0 } : arguments[0];
 	
 	    var which = _ref4.which;
+	    return input.mousestate[which] = false;
+	}).keyup(function () {
+	    var _ref5 = arguments.length <= 0 || arguments[0] === undefined ? { which: 0 } : arguments[0];
+	
+	    var which = _ref5.which;
 	    return input.keystate[which] = false;
 	});
 	
 	exports.default = { input: input, InputState: InputState };
+
+/***/ },
+/* 245 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	    Runs the main menu (login) screen.
+	*/
+	'use strict';
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; })();
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.runner = undefined;
+	
+	var _canvas = __webpack_require__(191);
+	
+	var _sprite = __webpack_require__(246);
+	
+	var _draw = __webpack_require__(247);
+	
+	var _draw2 = _interopRequireDefault(_draw);
+	
+	var _game = __webpack_require__(249);
+	
+	var _actor_menu = __webpack_require__(251);
+	
+	var _globals = __webpack_require__(253);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var menu_sprite = new _sprite.Sprite('../../../image/title.jpg');
+	
+	var runner = exports.runner = regeneratorRuntime.mark(function runner(next) {
+	    var bg_width, bg_height, menu, menu_runner, _ref, _ref2, user;
+	
+	    return regeneratorRuntime.wrap(function runner$(_context) {
+	        while (1) {
+	            switch (_context.prev = _context.next) {
+	                case 0:
+	                    _context.next = 2;
+	                    return menu_sprite.whenLoaded().then(next);
+	
+	                case 2:
+	                    bg_width = _canvas.$canvas.width();
+	                    bg_height = menu_sprite.height * (_canvas.$canvas.width() / menu_sprite.width);
+	                    menu = new _actor_menu.Menu(next);
+	                    menu_runner = new _game.Game(function () {
+	                        step: {
+	                            menu.step();
+	                        }
+	                        paint: {
+	                            _draw2.default.clear();
+	                            _draw2.default.setAlpha(1);
+	                            menu_sprite.draw(0, 0, 0, bg_width, bg_height);
+	                            menu.draw();
+	                        }
+	                    });
+	                    _context.next = 8;
+	                    return;
+	
+	                case 8:
+	                    _ref = _context.sent;
+	                    _ref2 = _slicedToArray(_ref, 1);
+	                    user = _ref2[0];
+	
+	                    (0, _globals.set)('username', user);
+	                    _draw2.default.clear();
+	                    menu_runner.end();
+	
+	                case 14:
+	                case 'end':
+	                    return _context.stop();
+	            }
+	        }
+	    }, runner, this);
+	});
+	
+	exports.default = { runner: runner };
+
+/***/ },
+/* 246 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	    Breaks up an image into predefined sections
+	*/
+	'use strict';
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.Sprite = undefined;
+	
+	var _jquery = __webpack_require__(192);
+	
+	var _jquery2 = _interopRequireDefault(_jquery);
+	
+	var _draw2 = __webpack_require__(247);
+	
+	var _draw3 = _interopRequireDefault(_draw2);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var WIDTH = Symbol('WIDTH');
+	var HEIGHT = Symbol('HEIGHT');
+	var IMAGE = Symbol('IMAGE');
+	var FRAMES = Symbol('FRAMES');
+	var LOADED = Symbol('LOADED');
+	var Sprite = exports.Sprite = (function () {
+	    function Sprite(image, frameWidth, frameHeight, frames) {
+	        var _this = this;
+	
+	        _classCallCheck(this, Sprite);
+	
+	        this[IMAGE] = image;
+	        this[LOADED] = true;
+	        if (typeof image === 'string') {
+	            this[IMAGE] = new Image();
+	            this[IMAGE].src = image;
+	            (0, _jquery2.default)(this[IMAGE]).load(function () {
+	                _this[LOADED] = true;
+	                if (_this[WIDTH] === undefined) {
+	                    _this[WIDTH] = _this[IMAGE].width;
+	                }
+	                if (_this[HEIGHT] === undefined) {
+	                    _this[HEIGHT] = _this[IMAGE].height;
+	                }
+	            });
+	            this[LOADED] = false;
+	        }
+	        this[FRAMES] = frames || [[0, 0]];
+	        this[WIDTH] = frameWidth;
+	        this[HEIGHT] = frameHeight;
+	    }
+	
+	    _createClass(Sprite, [{
+	        key: 'whenLoaded',
+	        value: function whenLoaded(fn) {
+	            var _this2 = this;
+	
+	            if (fn !== undefined) {
+	                if (this[LOADED]) {
+	                    fn();
+	                }
+	            }
+	            if (this[LOADED] || this[IMAGE].src === '') {
+	                return Promise.resolve();
+	            } else {
+	                return new Promise(function (resolve, reject) {
+	                    (0, _jquery2.default)(_this2[IMAGE]).load(resolve);
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'draw',
+	        value: function draw(subimage, x, y, w, h) {
+	            var _this3 = this;
+	
+	            this.whenLoaded(function () {
+	                return _draw3.default.sprite(_this3, subimage, x, y, w, h);
+	            });
+	        }
+	    }, {
+	        key: 'width',
+	        get: function get() {
+	            return this[WIDTH];
+	        }
+	    }, {
+	        key: 'height',
+	        get: function get() {
+	            return this[HEIGHT];
+	        }
+	    }, {
+	        key: 'image',
+	        get: function get() {
+	            return this[IMAGE];
+	        }
+	    }, {
+	        key: 'frames',
+	        get: function get() {
+	            return new Proxy(this, {
+	                get: function get(target, index) {
+	                    if (index === 'length') {
+	                        return target[FRAMES][index];
+	                    }
+	                    return new Proxy([].concat(_toConsumableArray(target[FRAMES][index]), [target[WIDTH], target[HEIGHT]]), {
+	                        get: function get(target, prop) {
+	                            if (['x', 'y', 'w', 'h'].indexOf(prop) !== -1) {
+	                                prop = ['x', 'y', 'w', 'h'].indexOf(prop);
+	                            }
+	                            return target[prop];
+	                        }
+	                    });
+	                },
+	                set: function set() {
+	                    throw new TypeError('Sprite frames are read-only');
+	                }
+	            });
+	        }
+	    }]);
+	
+	    return Sprite;
+	})();
+	
+	exports.default = { Sprite: Sprite };
+
+/***/ },
+/* 247 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	    Wrapper around the default canvas drawing functions to make them more usable
+	*/
+	'use strict';
+	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; })();
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.PixelData = exports.Path = exports.transformed = exports.setFont = exports.setShadow = exports.setLine = exports.setComposite = exports.setAlpha = exports.setColor = exports.clear = exports.pixelData = exports.sprite = exports.image = exports.textWidth = exports.text = exports.circle = exports.point = exports.rect = undefined;
+	
+	var _canvas = __webpack_require__(191);
+	
+	var _util = __webpack_require__(248);
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	var GENERATE = Symbol('GENERATE');
+	var STACK = Symbol('STACK');
+	var IMAGE_DATA = Symbol('IMAGE_DATA');
+	var rect = exports.rect = function rect(x, y, w, h) {
+	    var stroke = arguments.length <= 4 || arguments[4] === undefined ? false : arguments[4];
+	
+	    if (stroke) {
+	        _canvas.c2d.strokeRect(x, y, w, h);
+	    } else {
+	        _canvas.c2d.fillRect(x, y, w, h);
+	    }
+	};
+	
+	var point = exports.point = function point(x, y) {
+	    return _canvas.c2d.fillRect(x, y, 1, 1);
+	};
+	
+	var circle = exports.circle = function circle(x, y, r) {
+	    var stroke = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+	
+	    _canvas.c2d.beginPath();
+	    _canvas.c2d.arc(x, y, r, 0, Math.PI * 2);
+	    if (stroke) {
+	        _canvas.c2d.stroke();
+	    } else {
+	        _canvas.c2d.fill();
+	    }
+	};
+	
+	var text = exports.text = function text(str, x, y) {
+	    var stroke = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+	
+	    if (stroke) {
+	        _canvas.c2d.strokeText(str, x, y);
+	    } else {
+	        _canvas.c2d.fillText(str, x, y);
+	    }
+	};
+	var textWidth = exports.textWidth = function textWidth(str) {
+	    return _canvas.c2d.measureText(str).width;
+	};
+	
+	var image = exports.image = function image() {
+	    _canvas.c2d.drawImage.apply(_canvas.c2d, arguments);
+	};
+	
+	var sprite = exports.sprite = function sprite(spr, subimage, x, y, w, h) {
+	    if (spr.image instanceof Image) {
+	        _canvas.c2d.drawImage.apply(_canvas.c2d, [spr.image].concat(_toConsumableArray(spr.frames[subimage]), [x, y, w || spr.frames[subimage].w, h || spr.frames[subimage].h]));
+	    }
+	};
+	
+	var pixelData = exports.pixelData = function pixelData(pd, x, y) {
+	    pd.draw(x, y);
+	};
+	
+	var clear = exports.clear = function clear() {
+	    return _canvas.c2d.clearRect(0, 0, _canvas.canvas.width, _canvas.canvas.height);
+	};
+	
+	var setColor = exports.setColor = function setColor(c) {
+	    _canvas.c2d.fillStyle = _canvas.c2d.strokeStyle = typeof c === 'number' ? '#' + (0, _util.pad)(c.toString(16), 6, '0') : c;
+	};
+	var setAlpha = exports.setAlpha = function setAlpha(a) {
+	    return _canvas.c2d.globalAlpha = (0, _util.range)(0, 1, 0).constrain(a);
+	};
+	var setComposite = exports.setComposite = function setComposite(o) {
+	    return _canvas.c2d.globalCompositeOperation = o;
+	};
+	
+	var setLine = exports.setLine = function setLine() {
+	    var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	
+	    var cap = _ref.cap;
+	    var join = _ref.join;
+	    var width = _ref.width;
+	    var miter = _ref.miter;
+	    var reset = _ref.reset;
+	
+	    if (reset === true) {
+	        return setLine({ cap: 'butt', join: 'miter', width: 1, miter: 10 });
+	    }
+	    if (cap !== undefined) {
+	        _canvas.c2d.lineCap = cap;
+	    }
+	    if (join !== undefined) {
+	        _canvas.c2d.lineJoin = join;
+	    }
+	    if (width !== undefined) {
+	        _canvas.c2d.lineWidth = width;
+	    }
+	    if (miter !== undefined) {
+	        _canvas.c2d.miterLimit = miter;
+	    }
+	};
+	var setShadow = exports.setShadow = function setShadow() {
+	    var _ref2 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	
+	    var x = _ref2.x;
+	    var y = _ref2.y;
+	    var blur = _ref2.blur;
+	    var color = _ref2.color;
+	    var reset = _ref2.reset;
+	
+	    if (reset === true) {
+	        return setShadow({ x: 0, y: 0, blur: 0, color: '#000000' });
+	    }
+	    if (x !== undefined) {
+	        _canvas.c2d.shadowOffsetX = x;
+	    }
+	    if (y !== undefined) {
+	        _canvas.c2d.shadowOffsetY = y;
+	    }
+	    if (blur !== undefined) {
+	        _canvas.c2d.shadowBlur = blur;
+	    }
+	    if (color !== undefined) {
+	        _canvas.c2d.shadowColor = typeof color === 'number' ? '#' + (0, _util.pad)(color.toString(16), 6, '0') : color;
+	    }
+	};
+	
+	var fontSize = 10;
+	var fontFamily = 'sans-serif';
+	var setFont = exports.setFont = function setFont() {
+	    var _ref3 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	
+	    var family = _ref3.family;
+	    var size = _ref3.size;
+	    var align = _ref3.align;
+	    var baseline = _ref3.baseline;
+	    var reset = _ref3.reset;
+	
+	    if (reset === true) {
+	        return setFont({ family: 'sans-serif', size: 10, align: 'start', baseline: 'alphabetic' });
+	    }
+	    if (family !== undefined) {
+	        fontFamily = family;
+	    }
+	    if (size !== undefined) {
+	        fontSize = size;
+	    }
+	    _canvas.c2d.font = fontSize + 'px ' + fontFamily;
+	    if (align !== undefined) {
+	        _canvas.c2d.textAlign = align;
+	    }
+	    if (baseline !== undefined) {
+	        _canvas.c2d.textBaseline = baseline;
+	    }
+	};
+	
+	// Transform the context and perform the given function(s)
+	var transformed = exports.transformed = function transformed(opts) {
+	    for (var _len = arguments.length, todo = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	        todo[_key - 1] = arguments[_key];
+	    }
+	
+	    _canvas.c2d.save();
+	    if (opts) {
+	        if (opts.scale) {
+	            _canvas.c2d.scale(opts.scale.x || 1, opts.scale.y || 1);
+	        }
+	        if (opts.rotate) {
+	            _canvas.c2d.rotate(opts.rotate);
+	        }
+	        if (opts.translate) {
+	            _canvas.c2d.translate(opts.translate.x || 0, opts.translate.y || 0);
+	        }
+	        if (opts.transform) {
+	            _canvas.c2d.transform.apply(_canvas.c2d, _toConsumableArray(opts.transform));
+	        }
+	    }
+	    var _iteratorNormalCompletion = true;
+	    var _didIteratorError = false;
+	    var _iteratorError = undefined;
+	
+	    try {
+	        for (var _iterator = todo[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	            var item = _step.value;
+	            item();
+	        }
+	    } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	    } finally {
+	        try {
+	            if (!_iteratorNormalCompletion && _iterator.return) {
+	                _iterator.return();
+	            }
+	        } finally {
+	            if (_didIteratorError) {
+	                throw _iteratorError;
+	            }
+	        }
+	    }
+	
+	    _canvas.c2d.restore();
+	};
+	
+	// Chained, saveable, easy to use context2d paths
+	var Path = exports.Path = (function () {
+	    function Path() {
+	        _classCallCheck(this, Path);
+	
+	        this[STACK] = [function () {
+	            return _canvas.c2d.beginPath();
+	        }];
+	    }
+	
+	    _createClass(Path, [{
+	        key: 'move',
+	        value: function move() {
+	            for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	                args[_key2] = arguments[_key2];
+	            }
+	
+	            this[STACK].push(function () {
+	                return _canvas.c2d.moveTo.apply(_canvas.c2d, args);
+	            });
+	            return this;
+	        }
+	    }, {
+	        key: 'line',
+	        value: function line() {
+	            for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+	                args[_key3] = arguments[_key3];
+	            }
+	
+	            this[STACK].push(function () {
+	                return _canvas.c2d.lineTo.apply(_canvas.c2d, args);
+	            });
+	            return this;
+	        }
+	    }, {
+	        key: 'rect',
+	        value: function rect() {
+	            for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+	                args[_key4] = arguments[_key4];
+	            }
+	
+	            this[STACK].push(function () {
+	                return _canvas.c2d.rect.apply(_canvas.c2d, args);
+	            });
+	            return this;
+	        }
+	    }, {
+	        key: 'arc',
+	        value: function arc() {
+	            for (var _len5 = arguments.length, args = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+	                args[_key5] = arguments[_key5];
+	            }
+	
+	            this[STACK].push(function () {
+	                return _canvas.c2d.arc.apply(_canvas.c2d, args);
+	            });
+	            return this;
+	        }
+	    }, {
+	        key: 'curve',
+	        value: function curve() {
+	            for (var _len6 = arguments.length, args = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+	                args[_key6] = arguments[_key6];
+	            }
+	
+	            this[STACK].push(function () {
+	                return _canvas.c2d.arcTo.apply(_canvas.c2d, args);
+	            });
+	            return this;
+	        }
+	    }, {
+	        key: 'bezier',
+	        value: function bezier() {
+	            for (var _len7 = arguments.length, args = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+	                args[_key7] = arguments[_key7];
+	            }
+	
+	            if (args.length === 6) {
+	                this[STACK].push(function () {
+	                    return _canvas.c2d.bezierCurveTo.apply(_canvas.c2d, args);
+	                });
+	            } else {
+	                this[STACK].push(function () {
+	                    return _canvas.c2d.quadraticCurveTo.apply(_canvas.c2d, args);
+	                });
+	            }
+	            return this;
+	        }
+	    }, {
+	        key: 'close',
+	        value: function close() {
+	            this[STACK].push(function () {
+	                return _canvas.c2d.closePath();
+	            });
+	            return this;
+	        }
+	    }, {
+	        key: 'do',
+	        value: function _do(fn) {
+	            var _this = this;
+	
+	            this[STACK].push(function () {
+	                return fn(_this);
+	            });
+	            return this;
+	        }
+	    }, {
+	        key: 'fill',
+	        value: function fill() {
+	            var _this2 = this;
+	
+	            var _ref4 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	
+	            var color = _ref4.color;
+	            var shadow = _ref4.shadow;
+	            var transform = _ref4.transform;
+	
+	            if (transform !== undefined) {
+	                transformed(transform, function () {
+	                    return _this2.fill({ color: color, shadow: shadow });
+	                });
+	                return this;
+	            }
+	            _canvas.c2d.save();
+	            if (color !== undefined) {
+	                setColor(color);
+	            }
+	            if (shadow !== undefined) {
+	                setShadow(shadow);
+	            }
+	            this[GENERATE]();
+	            _canvas.c2d.fill();
+	            _canvas.c2d.restore();
+	            return this;
+	        }
+	    }, {
+	        key: 'stroke',
+	        value: function stroke() {
+	            var _this3 = this;
+	
+	            var _ref5 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	
+	            var color = _ref5.color;
+	            var line = _ref5.line;
+	            var transform = _ref5.transform;
+	
+	            if (transform !== undefined) {
+	                transformed(transform, function () {
+	                    return _this3.stroke({ color: color, line: line });
+	                });
+	                return this;
+	            }
+	            _canvas.c2d.save();
+	            if (color !== undefined) {
+	                setColor(color);
+	            }
+	            if (line !== undefined) {
+	                setLine(line);
+	            }
+	            this[GENERATE]();
+	            _canvas.c2d.stroke();
+	            _canvas.c2d.restore();
+	            return this;
+	        }
+	    }, {
+	        key: 'doInside',
+	        value: function doInside(transform) {
+	            var _this4 = this;
+	
+	            for (var _len8 = arguments.length, todo = Array(_len8 > 1 ? _len8 - 1 : 0), _key8 = 1; _key8 < _len8; _key8++) {
+	                todo[_key8 - 1] = arguments[_key8];
+	            }
+	
+	            // Optional transform
+	            if (transform !== undefined && todo.length !== 0) {
+	                if (typeof transform !== 'function') {
+	                    transformed(transform, function () {
+	                        return _this4.doInside.apply(_this4, _toConsumableArray(todo));
+	                    });
+	                    return this;
+	                } else {
+	                    todo = [transform].concat(_toConsumableArray(todo));
+	                }
+	            }
+	            _canvas.c2d.save();
+	            setShadow({ reset: true }); // Clip doesn't work if shadow is not default??
+	            this[GENERATE]();
+	            _canvas.c2d.clip();
+	            var _iteratorNormalCompletion2 = true;
+	            var _didIteratorError2 = false;
+	            var _iteratorError2 = undefined;
+	
+	            try {
+	                for (var _iterator2 = todo[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	                    var item = _step2.value;
+	                    item();
+	                }
+	            } catch (err) {
+	                _didIteratorError2 = true;
+	                _iteratorError2 = err;
+	            } finally {
+	                try {
+	                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	                        _iterator2.return();
+	                    }
+	                } finally {
+	                    if (_didIteratorError2) {
+	                        throw _iteratorError2;
+	                    }
+	                }
+	            }
+	
+	            _canvas.c2d.restore();
+	            return this;
+	        }
+	    }, {
+	        key: 'contains',
+	        value: function contains() {
+	            this[GENERATE]();
+	
+	            for (var _len9 = arguments.length, args = Array(_len9), _key9 = 0; _key9 < _len9; _key9++) {
+	                args[_key9] = arguments[_key9];
+	            }
+	
+	            if (args.length === 2) {
+	                return _canvas.c2d.isPointInPath.apply(_canvas.c2d, args);
+	            } else {
+	                return _canvas.c2d.isPointInPath(args[2] - args[0], args[3] - args[1]);
+	            }
+	        }
+	    }, {
+	        key: 'copy',
+	        value: function copy() {
+	            var cp = new Path();
+	            cp[STACK] = [].concat(_toConsumableArray(this[STACK]));
+	            return cp;
+	        }
+	    }, {
+	        key: GENERATE,
+	        value: function value() {
+	            var _iteratorNormalCompletion3 = true;
+	            var _didIteratorError3 = false;
+	            var _iteratorError3 = undefined;
+	
+	            try {
+	                for (var _iterator3 = this[STACK][Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+	                    var item = _step3.value;
+	                    item();
+	                }
+	            } catch (err) {
+	                _didIteratorError3 = true;
+	                _iteratorError3 = err;
+	            } finally {
+	                try {
+	                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+	                        _iterator3.return();
+	                    }
+	                } finally {
+	                    if (_didIteratorError3) {
+	                        throw _iteratorError3;
+	                    }
+	                }
+	            }
+	        }
+	    }, {
+	        key: 'length',
+	        get: function get() {
+	            return this[STACK].length - 1;
+	        }
+	    }]);
+	
+	    return Path;
+	})();
+	
+	// Wrapper around built in context2d.ImageData
+	var PixelData = exports.PixelData = (function () {
+	    function PixelData() {
+	        _classCallCheck(this, PixelData);
+	
+	        for (var _len10 = arguments.length, args = Array(_len10), _key10 = 0; _key10 < _len10; _key10++) {
+	            args[_key10] = arguments[_key10];
+	        }
+	
+	        this[IMAGE_DATA] = args.length === 4 ? _canvas.c2d.getImageData.apply(_canvas.c2d, args) : _canvas.c2d.createImageData.apply(_canvas.c2d, args);
+	    }
+	
+	    _createClass(PixelData, [{
+	        key: 'draw',
+	        value: function draw(x, y) {
+	            _canvas.c2d.putImageData(this[IMAGE_DATA], x, y);
+	        }
+	    }, {
+	        key: 'width',
+	        get: function get() {
+	            return this[IMAGE_DATA].width;
+	        }
+	    }, {
+	        key: 'height',
+	        get: function get() {
+	            return this[IMAGE_DATA].height;
+	        }
+	    }, {
+	        key: 'data',
+	        get: function get() {
+	            // Provide 2D array style access to the 1D array
+	            return new Proxy(this, {
+	                get: function get(target, x) {
+	                    x = parseInt(x);
+	                    return new Proxy(target, {
+	                        get: function get(target, y) {
+	                            var ind = 4 * (y * target[IMAGE_DATA].width + x);
+	                            return [].concat(_toConsumableArray(target[IMAGE_DATA].data.slice(ind, ind + 4)));
+	                        },
+	                        set: function set(target, y, value) {
+	                            var ind = 4 * (y * target[IMAGE_DATA].width + x);
+	
+	                            var _value = _slicedToArray(value, 4);
+	
+	                            target[IMAGE_DATA].data[ind] = _value[0];
+	                            target[IMAGE_DATA].data[ind + 1] = _value[1];
+	                            target[IMAGE_DATA].data[ind + 2] = _value[2];
+	                            target[IMAGE_DATA].data[ind + 3] = _value[3];
+	
+	                            return true;
+	                        }
+	                    });
+	                },
+	                set: function set() {
+	                    throw new TypeError('Cannot set pixel with only one coordinate');
+	                }
+	            });
+	        }
+	    }]);
+	
+	    return PixelData;
+	})();
+	
+	exports.default = {
+	    rect: rect, point: point, circle: circle, text: text, textWidth: textWidth, image: image, pixelData: pixelData, sprite: sprite, clear: clear,
+	    setColor: setColor, setAlpha: setAlpha, setComposite: setComposite, setLine: setLine, setShadow: setShadow, setFont: setFont, transformed: transformed,
+	    Path: Path, PixelData: PixelData
+	};
+
+/***/ },
+/* 248 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	    Various structures to make things easier
+	*/
+	'use strict';
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var ELEMENTS = Symbol('ELEMENTS');
+	var INDEX = Symbol('INDEX');
+	
+	// A sequence of values, which loops around on itself as you iterate over it
+	
+	var Sequence = exports.Sequence = new Proxy((function () {
+	    function _class() {
+	        _classCallCheck(this, _class);
+	    }
+	
+	    return _class;
+	})(), {
+	    construct: function construct(target, args) {
+	        var InnerSequence = (function () {
+	            function InnerSequence() {
+	                _classCallCheck(this, InnerSequence);
+	
+	                for (var _len = arguments.length, elements = Array(_len), _key = 0; _key < _len; _key++) {
+	                    elements[_key] = arguments[_key];
+	                }
+	
+	                this[ELEMENTS] = elements;
+	                this[INDEX] = 0;
+	            }
+	
+	            _createClass(InnerSequence, [{
+	                key: Symbol.iterator,
+	                value: regeneratorRuntime.mark(function value() {
+	                    return regeneratorRuntime.wrap(function value$(_context) {
+	                        while (1) {
+	                            switch (_context.prev = _context.next) {
+	                                case 0:
+	                                    return _context.delegateYield(this[ELEMENTS], 't0', 1);
+	
+	                                case 1:
+	                                case 'end':
+	                                    return _context.stop();
+	                            }
+	                        }
+	                    }, value, this);
+	                })
+	            }, {
+	                key: 'infinite',
+	                value: function infinite() {
+	                    var that = this;
+	                    return regeneratorRuntime.mark(function _callee() {
+	                        return regeneratorRuntime.wrap(function _callee$(_context2) {
+	                            while (1) {
+	                                switch (_context2.prev = _context2.next) {
+	                                    case 0:
+	                                        if (false) {
+	                                            _context2.next = 5;
+	                                            break;
+	                                        }
+	
+	                                        _context2.next = 3;
+	                                        return that.next().value;
+	
+	                                    case 3:
+	                                        _context2.next = 0;
+	                                        break;
+	
+	                                    case 5:
+	                                    case 'end':
+	                                        return _context2.stop();
+	                                }
+	                            }
+	                        }, _callee, this);
+	                    })();
+	                }
+	            }, {
+	                key: 'next',
+	                value: function next() {
+	                    return { done: false, value: this[ELEMENTS][this.index++] };
+	                }
+	            }, {
+	                key: 'length',
+	                get: function get() {
+	                    return this[ELEMENTS].length;
+	                }
+	            }, {
+	                key: 'current',
+	                get: function get() {
+	                    return this[ELEMENTS][this[INDEX]];
+	                }
+	            }, {
+	                key: 'index',
+	                get: function get() {
+	                    return this[INDEX];
+	                },
+	                set: function set(x) {
+	                    return this[INDEX] = x % this[ELEMENTS].length;
+	                }
+	            }]);
+	
+	            return InnerSequence;
+	        })();
+	        return new Proxy(new (Function.prototype.bind.apply(InnerSequence, [null].concat(_toConsumableArray(args))))(), {
+	            get: function get(target, prop) {
+	                return (typeof prop === 'undefined' ? 'undefined' : _typeof(prop)) !== 'symbol' && !isNaN(prop) ? target[ELEMENTS][(target.length + prop % target.length) % target.length] : target[prop];
+	            },
+	            set: function set(target, prop, value) {
+	                if ((typeof prop === 'undefined' ? 'undefined' : _typeof(prop)) !== 'symbol' && !isNaN(prop)) {
+	                    target[ELEMENTS][(target.length + prop % target.length) % target.length] = value;
+	                    return true;
+	                } else {
+	                    target[prop] = value;
+	                    return true;
+	                }
+	            }
+	        });
+	    }
+	});
+	
+	var MIN = Symbol('MIN');
+	var MAX = Symbol('MAX');
+	var STEP = Symbol('STEP');
+	// A range of values (similar to Python)
+	
+	var Range = exports.Range = new Proxy((function () {
+	    function _class2() {
+	        _classCallCheck(this, _class2);
+	    }
+	
+	    return _class2;
+	})(), {
+	    construct: function construct(target, args) {
+	        var InternalRange = (function () {
+	            function InternalRange(min, max) {
+	                var step = arguments.length <= 2 || arguments[2] === undefined ? 1 : arguments[2];
+	
+	                _classCallCheck(this, InternalRange);
+	
+	                this[MIN] = min;
+	                this[MAX] = max;
+	                this[STEP] = step;
+	            }
+	
+	            _createClass(InternalRange, [{
+	                key: Symbol.iterator,
+	                value: regeneratorRuntime.mark(function value() {
+	                    var i;
+	                    return regeneratorRuntime.wrap(function value$(_context3) {
+	                        while (1) {
+	                            switch (_context3.prev = _context3.next) {
+	                                case 0:
+	                                    if (!(this[STEP] === 0)) {
+	                                        _context3.next = 2;
+	                                        break;
+	                                    }
+	
+	                                    throw new TypeError('Cannot iterate with 0 step');
+	
+	                                case 2:
+	                                    i = this[MIN];
+	
+	                                case 3:
+	                                    if (!(i < this[MAX])) {
+	                                        _context3.next = 9;
+	                                        break;
+	                                    }
+	
+	                                    _context3.next = 6;
+	                                    return i;
+	
+	                                case 6:
+	                                    i += this[STEP];
+	                                    _context3.next = 3;
+	                                    break;
+	
+	                                case 9:
+	                                case 'end':
+	                                    return _context3.stop();
+	                            }
+	                        }
+	                    }, value, this);
+	                })
+	            }, {
+	                key: 'constrain',
+	                value: function constrain(x) {
+	                    if (this[STEP] !== 0) {
+	                        x = this[MIN] + Math.round((x - this[MIN]) / this[STEP]) * this[STEP];
+	                    }
+	                    return Math.min(Math.max(x, this[MIN]), this[MAX]);
+	                }
+	            }, {
+	                key: 'min',
+	                get: function get() {
+	                    return this[MIN];
+	                },
+	                set: function set(x) {
+	                    return this[MIN] = x;
+	                }
+	            }, {
+	                key: 'max',
+	                get: function get() {
+	                    return this[MAX];
+	                },
+	                set: function set(x) {
+	                    return this[MAX] = x;
+	                }
+	            }, {
+	                key: 'step',
+	                get: function get() {
+	                    return this[STEP];
+	                },
+	                set: function set(x) {
+	                    return this[STEP] = x;
+	                }
+	            }, {
+	                key: 'length',
+	                get: function get() {
+	                    return Math.ceil((this[MAX] - this[MIN]) / this[STEP]);
+	                }
+	            }]);
+	
+	            return InternalRange;
+	        })();
+	        return new Proxy(new (Function.prototype.bind.apply(InternalRange, [null].concat(_toConsumableArray(args))))(), {
+	            has: function has(target, x) {
+	                return x >= target.min && x < target.max && (target.step === 0 || (x - target.min) % target.step === 0);
+	            }
+	        });
+	    }
+	});
+	
+	// Function produces a range in array form
+	var range = exports.range = function range() {
+	    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	        args[_key2] = arguments[_key2];
+	    }
+	
+	    return new (Function.prototype.bind.apply(Range, [null].concat(args)))();
+	};
+	
+	// Pads str with char until its length is len
+	var pad = exports.pad = function pad(str) {
+	    var len = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+	    var char = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
+	
+	    if (char === '') {
+	        throw new TypeError('Cannot pad with no character');
+	    }
+	    return str.length >= len ? str : pad(char + str, len, char);
+	};
+	
+	exports.default = { Sequence: Sequence, Range: Range, range: range, pad: pad };
+
+/***/ },
+/* 249 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	    Runs the game loop
+	*/
+	'use strict';
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.Game = undefined;
+	
+	var _event = __webpack_require__(250);
+	
+	var _event2 = _interopRequireDefault(_event);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var GENERATOR = Symbol('GENERATOR');
+	var LOOP = Symbol('LOOP');
+	var PAUSED = Symbol('PAUSED');
+	var Game = exports.Game = (function () {
+	    function Game(step) {
+	        _classCallCheck(this, Game);
+	
+	        if (typeof step !== 'function') {
+	            throw new TypeError('step must be a function');
+	        }
+	        this[LOOP] = true;
+	        this[PAUSED] = false;
+	        var game = this;
+	        this[GENERATOR] = regeneratorRuntime.mark(function _callee() {
+	            return regeneratorRuntime.wrap(function _callee$(_context) {
+	                while (1) {
+	                    switch (_context.prev = _context.next) {
+	                        case 0:
+	                            if (!game[LOOP]) {
+	                                _context.next = 10;
+	                                break;
+	                            }
+	
+	                            if (!game[PAUSED]) {
+	                                _context.next = 4;
+	                                break;
+	                            }
+	
+	                            _context.next = 4;
+	                            return;
+	
+	                        case 4:
+	                            _event2.default.trigger();
+	                            step();
+	                            _context.next = 8;
+	                            return setTimeout(function () {
+	                                return game[GENERATOR].next();
+	                            }, 1000 / 30);
+	
+	                        case 8:
+	                            _context.next = 0;
+	                            break;
+	
+	                        case 10:
+	                        case 'end':
+	                            return _context.stop();
+	                    }
+	                }
+	            }, _callee, this);
+	        })();
+	        this[GENERATOR].next();
+	    }
+	
+	    _createClass(Game, [{
+	        key: 'end',
+	        value: function end() {
+	            this[LOOP] = false;
+	        }
+	    }, {
+	        key: 'pause',
+	        value: function pause() {
+	            this[PAUSED] = true;
+	        }
+	    }, {
+	        key: 'unpause',
+	        value: function unpause() {
+	            if (this[PAUSED]) {
+	                this[PAUSED] = false;
+	                this[GENERATOR].next();
+	            }
+	        }
+	    }, {
+	        key: 'paused',
+	        get: function get() {
+	            return this[PAUSED];
+	        }
+	    }]);
+	
+	    return Game;
+	})();
+	
+	exports.default = { Game: Game };
+
+/***/ },
+/* 250 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	    Custom event listeners which are triggered on command, based on when the
+	    built in event listeners catch their events
+	*/
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.trigger = exports.off = exports.on = undefined;
+	
+	var _input = __webpack_require__(244);
+	
+	var _util = __webpack_require__(248);
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	var events = {
+	    'mouseheld': {
+	        trigger: function trigger() {
+	            var _this = this;
+	
+	            [].concat(_toConsumableArray(_input.input.mousestate)).forEach(function (is, button) {
+	                if (is) {
+	                    var _iteratorNormalCompletion = true;
+	                    var _didIteratorError = false;
+	                    var _iteratorError = undefined;
+	
+	                    try {
+	                        for (var _iterator = _this.callbacks[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                            var cb = _step.value;
+	
+	                            cb(button);
+	                        }
+	                    } catch (err) {
+	                        _didIteratorError = true;
+	                        _iteratorError = err;
+	                    } finally {
+	                        try {
+	                            if (!_iteratorNormalCompletion && _iterator.return) {
+	                                _iterator.return();
+	                            }
+	                        } finally {
+	                            if (_didIteratorError) {
+	                                throw _iteratorError;
+	                            }
+	                        }
+	                    }
+	                }
+	            });
+	        }
+	    },
+	    'mousedown': {
+	        trigger: function trigger() {
+	            var _iteratorNormalCompletion2 = true;
+	            var _didIteratorError2 = false;
+	            var _iteratorError2 = undefined;
+	
+	            try {
+	                for (var _iterator2 = (0, _util.range)(0, _input.input.mousestate.length)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	                    var i = _step2.value;
+	
+	                    if (_input.input.mousedown(i)) {
+	                        var _iteratorNormalCompletion3 = true;
+	                        var _didIteratorError3 = false;
+	                        var _iteratorError3 = undefined;
+	
+	                        try {
+	                            for (var _iterator3 = this.callbacks[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+	                                var cb = _step3.value;
+	
+	                                cb(i);
+	                            }
+	                        } catch (err) {
+	                            _didIteratorError3 = true;
+	                            _iteratorError3 = err;
+	                        } finally {
+	                            try {
+	                                if (!_iteratorNormalCompletion3 && _iterator3.return) {
+	                                    _iterator3.return();
+	                                }
+	                            } finally {
+	                                if (_didIteratorError3) {
+	                                    throw _iteratorError3;
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            } catch (err) {
+	                _didIteratorError2 = true;
+	                _iteratorError2 = err;
+	            } finally {
+	                try {
+	                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	                        _iterator2.return();
+	                    }
+	                } finally {
+	                    if (_didIteratorError2) {
+	                        throw _iteratorError2;
+	                    }
+	                }
+	            }
+	        }
+	    },
+	    'mouseup': {
+	        trigger: function trigger() {
+	            var _iteratorNormalCompletion4 = true;
+	            var _didIteratorError4 = false;
+	            var _iteratorError4 = undefined;
+	
+	            try {
+	                for (var _iterator4 = (0, _util.range)(0, _input.input.mousestate.length)[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+	                    var i = _step4.value;
+	
+	                    if (_input.input.mouseup(i)) {
+	                        var _iteratorNormalCompletion5 = true;
+	                        var _didIteratorError5 = false;
+	                        var _iteratorError5 = undefined;
+	
+	                        try {
+	                            for (var _iterator5 = this.callbacks[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+	                                var cb = _step5.value;
+	
+	                                cb(i);
+	                            }
+	                        } catch (err) {
+	                            _didIteratorError5 = true;
+	                            _iteratorError5 = err;
+	                        } finally {
+	                            try {
+	                                if (!_iteratorNormalCompletion5 && _iterator5.return) {
+	                                    _iterator5.return();
+	                                }
+	                            } finally {
+	                                if (_didIteratorError5) {
+	                                    throw _iteratorError5;
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            } catch (err) {
+	                _didIteratorError4 = true;
+	                _iteratorError4 = err;
+	            } finally {
+	                try {
+	                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
+	                        _iterator4.return();
+	                    }
+	                } finally {
+	                    if (_didIteratorError4) {
+	                        throw _iteratorError4;
+	                    }
+	                }
+	            }
+	        }
+	    },
+	    'keyheld': {
+	        trigger: function trigger() {
+	            var _this2 = this;
+	
+	            [].concat(_toConsumableArray(_input.input.keystate)).forEach(function (is, key) {
+	                if (is) {
+	                    var _iteratorNormalCompletion6 = true;
+	                    var _didIteratorError6 = false;
+	                    var _iteratorError6 = undefined;
+	
+	                    try {
+	                        for (var _iterator6 = _this2.callbacks[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+	                            var cb = _step6.value;
+	
+	                            cb(key);
+	                        }
+	                    } catch (err) {
+	                        _didIteratorError6 = true;
+	                        _iteratorError6 = err;
+	                    } finally {
+	                        try {
+	                            if (!_iteratorNormalCompletion6 && _iterator6.return) {
+	                                _iterator6.return();
+	                            }
+	                        } finally {
+	                            if (_didIteratorError6) {
+	                                throw _iteratorError6;
+	                            }
+	                        }
+	                    }
+	                }
+	            });
+	        }
+	    },
+	    'keydown': {
+	        trigger: function trigger() {
+	            var _iteratorNormalCompletion7 = true;
+	            var _didIteratorError7 = false;
+	            var _iteratorError7 = undefined;
+	
+	            try {
+	                for (var _iterator7 = (0, _util.range)(0, _input.input.keystate.length)[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+	                    var i = _step7.value;
+	
+	                    if (_input.input.keydown(i)) {
+	                        var _iteratorNormalCompletion8 = true;
+	                        var _didIteratorError8 = false;
+	                        var _iteratorError8 = undefined;
+	
+	                        try {
+	                            for (var _iterator8 = this.callbacks[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+	                                var cb = _step8.value;
+	
+	                                cb(i);
+	                            }
+	                        } catch (err) {
+	                            _didIteratorError8 = true;
+	                            _iteratorError8 = err;
+	                        } finally {
+	                            try {
+	                                if (!_iteratorNormalCompletion8 && _iterator8.return) {
+	                                    _iterator8.return();
+	                                }
+	                            } finally {
+	                                if (_didIteratorError8) {
+	                                    throw _iteratorError8;
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            } catch (err) {
+	                _didIteratorError7 = true;
+	                _iteratorError7 = err;
+	            } finally {
+	                try {
+	                    if (!_iteratorNormalCompletion7 && _iterator7.return) {
+	                        _iterator7.return();
+	                    }
+	                } finally {
+	                    if (_didIteratorError7) {
+	                        throw _iteratorError7;
+	                    }
+	                }
+	            }
+	        }
+	    },
+	    'keyup': {
+	        trigger: function trigger() {
+	            var _iteratorNormalCompletion9 = true;
+	            var _didIteratorError9 = false;
+	            var _iteratorError9 = undefined;
+	
+	            try {
+	                for (var _iterator9 = (0, _util.range)(0, _input.input.keystate.length)[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+	                    var i = _step9.value;
+	
+	                    if (_input.input.keyup(i)) {
+	                        var _iteratorNormalCompletion10 = true;
+	                        var _didIteratorError10 = false;
+	                        var _iteratorError10 = undefined;
+	
+	                        try {
+	                            for (var _iterator10 = this.callbacks[Symbol.iterator](), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
+	                                var cb = _step10.value;
+	
+	                                cb(i);
+	                            }
+	                        } catch (err) {
+	                            _didIteratorError10 = true;
+	                            _iteratorError10 = err;
+	                        } finally {
+	                            try {
+	                                if (!_iteratorNormalCompletion10 && _iterator10.return) {
+	                                    _iterator10.return();
+	                                }
+	                            } finally {
+	                                if (_didIteratorError10) {
+	                                    throw _iteratorError10;
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            } catch (err) {
+	                _didIteratorError9 = true;
+	                _iteratorError9 = err;
+	            } finally {
+	                try {
+	                    if (!_iteratorNormalCompletion9 && _iterator9.return) {
+	                        _iterator9.return();
+	                    }
+	                } finally {
+	                    if (_didIteratorError9) {
+	                        throw _iteratorError9;
+	                    }
+	                }
+	            }
+	        }
+	    }
+	};
+	
+	var on = exports.on = function on(event) {
+	    for (var _len = arguments.length, handlers = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	        handlers[_key - 1] = arguments[_key];
+	    }
+	
+	    if (events[event].callbacks === undefined) {
+	        events[event].callbacks = new Set();
+	    }
+	    var _iteratorNormalCompletion11 = true;
+	    var _didIteratorError11 = false;
+	    var _iteratorError11 = undefined;
+	
+	    try {
+	        for (var _iterator11 = handlers[Symbol.iterator](), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
+	            var handler = _step11.value;
+	
+	            events[event].callbacks.add(handler);
+	        }
+	    } catch (err) {
+	        _didIteratorError11 = true;
+	        _iteratorError11 = err;
+	    } finally {
+	        try {
+	            if (!_iteratorNormalCompletion11 && _iterator11.return) {
+	                _iterator11.return();
+	            }
+	        } finally {
+	            if (_didIteratorError11) {
+	                throw _iteratorError11;
+	            }
+	        }
+	    }
+	
+	    return on;
+	};
+	
+	var off = exports.off = function off(event) {
+	    for (var _len2 = arguments.length, handlers = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+	        handlers[_key2 - 1] = arguments[_key2];
+	    }
+	
+	    var _iteratorNormalCompletion12 = true;
+	    var _didIteratorError12 = false;
+	    var _iteratorError12 = undefined;
+	
+	    try {
+	        for (var _iterator12 = handlers[Symbol.iterator](), _step12; !(_iteratorNormalCompletion12 = (_step12 = _iterator12.next()).done); _iteratorNormalCompletion12 = true) {
+	            var handler = _step12.value;
+	
+	            events[event].callbacks.delete(handler);
+	        }
+	    } catch (err) {
+	        _didIteratorError12 = true;
+	        _iteratorError12 = err;
+	    } finally {
+	        try {
+	            if (!_iteratorNormalCompletion12 && _iterator12.return) {
+	                _iterator12.return();
+	            }
+	        } finally {
+	            if (_didIteratorError12) {
+	                throw _iteratorError12;
+	            }
+	        }
+	    }
+	
+	    return off;
+	};
+	
+	var trigger = exports.trigger = function trigger() {
+	    for (var event in events) {
+	        events[event].trigger();
+	    }
+	    _input.input.refresh();
+	};
+	
+	exports.default = { on: on, off: off, trigger: trigger };
+
+/***/ },
+/* 251 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	    Actor to show the menu options and take input
+	*/
+	'use strict';
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.Menu = undefined;
+	
+	var _jquery = __webpack_require__(192);
+	
+	var _jquery2 = _interopRequireDefault(_jquery);
+	
+	var _canvas = __webpack_require__(191);
+	
+	var _socket = __webpack_require__(193);
+	
+	var _input = __webpack_require__(244);
+	
+	var _actor = __webpack_require__(252);
+	
+	var _util = __webpack_require__(248);
+	
+	var _draw2 = __webpack_require__(247);
+	
+	var _draw3 = _interopRequireDefault(_draw2);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var SELECTED = Symbol('SELECTED');
+	var OPTIONS = Symbol('OPTIONS');
+	var ALPHA = Symbol('ALPHA');
+	var LAYER = Symbol('LAYER');
+	var PULSE = Symbol('PULSE');
+	var AWAITING = Symbol('AWAITING');
+	var SEND = Symbol('SEND');
+	var FORM = Symbol('FORM');
+	var MESSAGE = Symbol('MESSAGE');
+	var CLOSE = Symbol('CLOSE');
+	
+	var temp = (0, _jquery2.default)('<input>').attr('required', true);
+	var defaultValidationMessage = temp[0].validationMessage;
+	temp.remove();
+	
+	var floatingBox = new _draw3.default.Path().arc(25, 25, 25, Math.PI / 2, Math.PI / 2 * 3).line(275, 0).arc(275, 25, 25, Math.PI / 2 * 3, Math.PI / 2).line(25, 50);
+	
+	var Menu = exports.Menu = (function (_Actor) {
+	    _inherits(Menu, _Actor);
+	
+	    function Menu(next) {
+	        _classCallCheck(this, Menu);
+	
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Menu).call(this));
+	
+	        _this[SELECTED] = 0;
+	        _this[CLOSE] = next;
+	        _this[ALPHA] = [0, 0, 0, 0];
+	        _this[LAYER] = 0;
+	        _this[PULSE] = 0;
+	        _this[AWAITING] = false;
+	        _this[MESSAGE] = '';
+	        return _this;
+	    }
+	
+	    _createClass(Menu, [{
+	        key: 'mousedown',
+	        value: function mousedown(which) {
+	            switch (this[LAYER]) {
+	                case 0:
+	                    this[LAYER]++;
+	                    break;
+	                case 1:
+	                    if (which === _input.InputState.mouse('left')) {
+	                        if (floatingBox.contains(_canvas.$canvas.width() / 2 - 150, _canvas.$canvas.height() - 100 - 25, _input.input.mousestate.x, _input.input.mousestate.y)) {
+	                            this[LAYER] = 3;
+	                            this[FORM]('signup');
+	                        } else if (floatingBox.contains(_canvas.$canvas.width() / 2 - 150, _canvas.$canvas.height() - 175 - 25, _input.input.mousestate.x, _input.input.mousestate.y)) {
+	                            this[LAYER] = 2;
+	                            this[FORM]('login');
+	                        }
+	                    }
+	                    break;
+	                case 2:case 3:
+	                    if (!this[AWAITING]) {
+	                        if (which === _input.InputState.mouse('left')) {
+	                            if (floatingBox.contains(_canvas.$canvas.width() / 2 - 150, _canvas.$canvas.height() - 100 - 25, _input.input.mousestate.x, _input.input.mousestate.y)) {
+	                                this[LAYER] = 1;
+	                                (0, _jquery2.default)('form').remove();
+	                            } else if (floatingBox.contains(_canvas.$canvas.width() / 2 - 150, _canvas.$canvas.height() - 175 - 25, _input.input.mousestate.x, _input.input.mousestate.y)) {
+	                                this[SEND](this[LAYER] === 2 ? 'login' : 'signup');
+	                            }
+	                        }
+	                    }
+	                    break;
+	            }
+	        }
+	    }, {
+	        key: 'keydown',
+	        value: function keydown(which) {
+	            if (this[LAYER] === 0) {
+	                this[LAYER]++;
+	            } else if (this[LAYER] >= 2) {
+	                if (which === _input.InputState.keyboard('enter')) {
+	                    if ((0, _jquery2.default)('#username:focus').length === 1) {
+	                        (0, _jquery2.default)('#password').focus();
+	                    } else if ((0, _jquery2.default)('#password:focus').length === 1) {
+	                        if (this[LAYER] === 2) {
+	                            this[SEND]('login');
+	                        } else {
+	                            (0, _jquery2.default)('#confirm-password').focus();
+	                        }
+	                    } else if ((0, _jquery2.default)('#confirm-password:focus').length === 1) {
+	                        (0, _jquery2.default)('#email').focus();
+	                    } else if ((0, _jquery2.default)('#email:focus').length === 1) {
+	                        this[SEND]('signup');
+	                    }
+	                }
+	            }
+	        }
+	    }, {
+	        key: 'step',
+	        value: function step() {
+	            for (var i in this[ALPHA]) {
+	                if (i == this[LAYER]) {
+	                    this[ALPHA][i] = (0, _util.range)(0, 1, 0).constrain(this[ALPHA][i] + Math.max(0.02, 0.2 * (1 - this[ALPHA][i])));
+	                } else {
+	                    this[ALPHA][i] = (0, _util.range)(0, 1, 0).constrain(this[ALPHA][i] - Math.max(0.02, 0.2 * this[ALPHA][i]));
+	                }
+	            }
+	            switch (this[LAYER]) {
+	                case 0:
+	                    this[PULSE] = (this[PULSE] + 6) % 360;
+	                    if (floatingBox.contains(_canvas.$canvas.width() / 2 - 150, _canvas.$canvas.height() - 100 - 25, _input.input.mousestate.x, _input.input.mousestate.y)) {
+	                        _canvas.$canvas.css('cursor', 'pointer');
+	                    } else {
+	                        _canvas.$canvas.css('cursor', 'auto');
+	                    }
+	                    break;
+	                case 1:case 2:case 3:
+	                    if (floatingBox.contains(_canvas.$canvas.width() / 2 - 150, _canvas.$canvas.height() - 100 - 25, _input.input.mousestate.x, _input.input.mousestate.y) || floatingBox.contains(_canvas.$canvas.width() / 2 - 150, _canvas.$canvas.height() - 175 - 25, _input.input.mousestate.x, _input.input.mousestate.y)) {
+	                        _canvas.$canvas.css('cursor', 'pointer');
+	                    } else {
+	                        _canvas.$canvas.css('cursor', 'auto');
+	                    }
+	                    break;
+	            }
+	        }
+	    }, {
+	        key: 'draw',
+	        value: function draw() {
+	            var _this2 = this;
+	
+	            if (this[ALPHA][0] > 0) {
+	                _draw3.default.transformed({ translate: { y: (1 - this[ALPHA][0]) * 50 } }, function () {
+	                    _draw3.default.setAlpha(0.5 * _this2[ALPHA][0]);
+	                    _draw3.default.setColor('#eeeeee');
+	                    floatingBox.fill({ shadow: { blur: 10, color: '#eeeeee' }, transform: { translate: { x: _canvas.$canvas.width() / 2 - 150, y: _canvas.$canvas.height() - 100 - 25 } } });
+	                    _draw3.default.setAlpha((Math.sin(_this2[PULSE] * Math.PI / 180) / 4 + 0.75) * _this2[ALPHA][0]);
+	                    _draw3.default.setColor('#000000');
+	                    _draw3.default.setFont({ size: 24, family: '"Rii Pop",cursive', align: 'center', baseline: 'middle' });
+	                    _draw3.default.text('Press any key to begin', _canvas.$canvas.width() / 2, _canvas.$canvas.height() - 100);
+	                });
+	            }
+	            if (this[ALPHA][1] > 0) {
+	                _draw3.default.transformed({ translate: { y: (1 - this[ALPHA][1]) * 50 } }, function () {
+	                    _draw3.default.setAlpha(0.5 * _this2[ALPHA][1]);
+	                    _draw3.default.setColor('#eeeeee');
+	                    floatingBox.fill({ shadow: { blur: 10, color: '#eeeeee' }, transform: { translate: { x: _canvas.$canvas.width() / 2 - 150, y: _canvas.$canvas.height() - 175 - 25 } } });
+	                    floatingBox.fill({ shadow: { blur: 10, color: '#eeeeee' }, transform: { translate: { x: _canvas.$canvas.width() / 2 - 150, y: _canvas.$canvas.height() - 100 - 25 } } });
+	
+	                    _draw3.default.setAlpha(_this2[ALPHA][1]);
+	                    _draw3.default.setColor('#000000');
+	                    _draw3.default.setFont({ size: 12, family: '"Rii Pop",cursive', align: 'center', baseline: 'middle' });
+	                    if (_this2[MESSAGE] !== '') {
+	                        _draw3.default.text(_this2[MESSAGE], _canvas.$canvas.width() / 2, _canvas.$canvas.height() - 83);
+	                    }
+	
+	                    _draw3.default.setFont({ size: 24 });
+	
+	                    _draw3.default.text('Log in', _canvas.$canvas.width() / 2, _canvas.$canvas.height() - 175);
+	                    _draw3.default.text('Create a new account', _canvas.$canvas.width() / 2, _canvas.$canvas.height() - 100);
+	                });
+	            }
+	            if (this[ALPHA][2] > 0) {
+	                (0, _jquery2.default)('#username').css({
+	                    top: _canvas.$canvas.height() - 350 + (1 - this[ALPHA][2]) * 50
+	                });
+	                (0, _jquery2.default)('#password').css({
+	                    top: _canvas.$canvas.height() - 275 + (1 - this[ALPHA][2]) * 50
+	                });
+	                _draw3.default.transformed({ translate: { y: (1 - this[ALPHA][2]) * 50 } }, function () {
+	                    _draw3.default.setAlpha(0.5 * _this2[ALPHA][2]);
+	                    _draw3.default.setColor('#eeeeee');
+	                    floatingBox.fill({ shadow: { blur: 10, color: '#eeeeee' }, transform: { translate: { x: _canvas.$canvas.width() / 2 - 150, y: _canvas.$canvas.height() - 325 - 25 } } });
+	                    floatingBox.fill({ shadow: { blur: 10, color: '#eeeeee' }, transform: { translate: { x: _canvas.$canvas.width() / 2 - 150, y: _canvas.$canvas.height() - 250 - 25 } } });
+	                    floatingBox.fill({ shadow: { blur: 10, color: '#eeeeee' }, transform: { translate: { x: _canvas.$canvas.width() / 2 - 150, y: _canvas.$canvas.height() - 175 - 25 } } });
+	                    floatingBox.fill({ shadow: { blur: 10, color: '#eeeeee' }, transform: { translate: { x: _canvas.$canvas.width() / 2 - 150, y: _canvas.$canvas.height() - 100 - 25 } } });
+	
+	                    _draw3.default.setAlpha(_this2[ALPHA][2]);
+	                    _draw3.default.setColor('#000000');
+	                    _draw3.default.setFont({ size: 12, family: '"Rii Pop",cursive', align: 'center', baseline: 'middle' });
+	                    if (_this2[LAYER] === 2) {
+	                        if ((0, _jquery2.default)('#username')[0].validationMessage !== defaultValidationMessage) {
+	                            _draw3.default.text((0, _jquery2.default)('#username')[0].validationMessage, _canvas.$canvas.width() / 2, _canvas.$canvas.height() - 308);
+	                        }
+	                        if ((0, _jquery2.default)('#password')[0].validationMessage !== defaultValidationMessage) {
+	                            _draw3.default.text((0, _jquery2.default)('#password')[0].validationMessage, _canvas.$canvas.width() / 2, _canvas.$canvas.height() - 233);
+	                        }
+	                    }
+	
+	                    _draw3.default.setFont({ size: 24 });
+	                    _draw3.default.text('Log in', _canvas.$canvas.width() / 2, _canvas.$canvas.height() - 175);
+	                    _draw3.default.text('Back', _canvas.$canvas.width() / 2, _canvas.$canvas.height() - 100);
+	                });
+	            }
+	            if (this[ALPHA][3] > 0) {
+	                if (this[LAYER] === 3) {
+	                    (0, _jquery2.default)('#username').css({
+	                        top: _canvas.$canvas.height() - 500 + (1 - this[ALPHA][3]) * 50
+	                    });
+	                    (0, _jquery2.default)('#password').css({
+	                        top: _canvas.$canvas.height() - 425 + (1 - this[ALPHA][3]) * 50
+	                    });
+	                }
+	                (0, _jquery2.default)('#confirm-password').css({
+	                    top: _canvas.$canvas.height() - 350 + (1 - this[ALPHA][3]) * 50
+	                });
+	                (0, _jquery2.default)('#email').css({
+	                    top: _canvas.$canvas.height() - 275 + (1 - this[ALPHA][3]) * 50
+	                });
+	                _draw3.default.transformed({ translate: { y: (1 - this[ALPHA][3]) * 50 } }, function () {
+	                    _draw3.default.setAlpha(0.5 * _this2[ALPHA][3]);
+	                    _draw3.default.setColor('#eeeeee');
+	                    floatingBox.fill({ shadow: { blur: 10, color: '#eeeeee' }, transform: { translate: { x: _canvas.$canvas.width() / 2 - 150, y: _canvas.$canvas.height() - 475 - 25 } } });
+	                    floatingBox.fill({ shadow: { blur: 10, color: '#eeeeee' }, transform: { translate: { x: _canvas.$canvas.width() / 2 - 150, y: _canvas.$canvas.height() - 400 - 25 } } });
+	                    floatingBox.fill({ shadow: { blur: 10, color: '#eeeeee' }, transform: { translate: { x: _canvas.$canvas.width() / 2 - 150, y: _canvas.$canvas.height() - 325 - 25 } } });
+	                    floatingBox.fill({ shadow: { blur: 10, color: '#eeeeee' }, transform: { translate: { x: _canvas.$canvas.width() / 2 - 150, y: _canvas.$canvas.height() - 250 - 25 } } });
+	                    floatingBox.fill({ shadow: { blur: 10, color: '#eeeeee' }, transform: { translate: { x: _canvas.$canvas.width() / 2 - 150, y: _canvas.$canvas.height() - 175 - 25 } } });
+	                    floatingBox.fill({ shadow: { blur: 10, color: '#eeeeee' }, transform: { translate: { x: _canvas.$canvas.width() / 2 - 150, y: _canvas.$canvas.height() - 100 - 25 } } });
+	
+	                    _draw3.default.setAlpha(_this2[ALPHA][3]);
+	                    _draw3.default.setColor('#000000');
+	                    _draw3.default.setFont({ size: 12, family: '"Rii Pop",cursive', align: 'center', baseline: 'middle' });
+	                    if (_this2[LAYER] === 3) {
+	                        if ((0, _jquery2.default)('#username')[0].validationMessage !== defaultValidationMessage) {
+	                            _draw3.default.text((0, _jquery2.default)('#username')[0].validationMessage, _canvas.$canvas.width() / 2, _canvas.$canvas.height() - 458);
+	                        }
+	                        if ((0, _jquery2.default)('#confirm-password')[0].validationMessage !== defaultValidationMessage) {
+	                            _draw3.default.text((0, _jquery2.default)('#confirm-password')[0].validationMessage, _canvas.$canvas.width() / 2, _canvas.$canvas.height() - 308);
+	                        }
+	                        if ((0, _jquery2.default)('#email')[0].validationMessage !== defaultValidationMessage) {
+	                            _draw3.default.text((0, _jquery2.default)('#email')[0].validationMessage, _canvas.$canvas.width() / 2, _canvas.$canvas.height() - 233);
+	                        }
+	                    }
+	
+	                    _draw3.default.setFont({ size: 24 });
+	                    _draw3.default.text('Sign up', _canvas.$canvas.width() / 2, _canvas.$canvas.height() - 175);
+	                    _draw3.default.text('Back', _canvas.$canvas.width() / 2, _canvas.$canvas.height() - 100);
+	                });
+	            }
+	        }
+	    }, {
+	        key: SEND,
+	        value: function value(evt) {
+	            var _this3 = this;
+	
+	            if (evt === 'login') {
+	                if ((0, _jquery2.default)('#username').val() !== '' && (0, _jquery2.default)('#password').val() !== '') {
+	                    this[AWAITING] = true;
+	                    _socket.socket.emit('login', {
+	                        username: (0, _jquery2.default)('#username').val(),
+	                        password: (0, _jquery2.default)('#password').val()
+	                    }, function (_ref) {
+	                        var username = _ref.username;
+	                        var password = _ref.password;
+	                        var error = _ref.error;
+	
+	                        _this3[AWAITING] = false;
+	                        if (!username) {
+	                            (0, _jquery2.default)('#password')[0].setCustomValidity('There is no user with this name');
+	                        }
+	                        if (!password) {
+	                            (0, _jquery2.default)('#password')[0].setCustomValidity('The password for this user is incorrect');
+	                        }
+	                        if (error !== '') {
+	                            console.error(error);
+	                        }
+	                        if (username && password && error === '') {
+	                            _this3[CLOSE]((0, _jquery2.default)('#username').val());
+	                            (0, _jquery2.default)('input').remove();
+	                        }
+	                    });
+	                }
+	            } else {
+	                if ((0, _jquery2.default)('#username').val() !== '' && (0, _jquery2.default)('#email').val() !== '' && (0, _jquery2.default)('#email:valid').length !== 0 && (0, _jquery2.default)('#password').val() !== '' && (0, _jquery2.default)('#password').val() === (0, _jquery2.default)('#confirm-password').val()) {
+	                    this[AWAITING] = true;
+	                    _socket.socket.emit('signup', {
+	                        username: (0, _jquery2.default)('#username').val(),
+	                        password: (0, _jquery2.default)('#password').val(),
+	                        email: (0, _jquery2.default)('#email').val()
+	                    }, function (_ref2) {
+	                        var username = _ref2.username;
+	                        var email = _ref2.email;
+	                        var error = _ref2.error;
+	
+	                        _this3[AWAITING] = false;
+	                        if (username !== '') {
+	                            (0, _jquery2.default)('#username')[0].setCustomValidity(username);
+	                        }
+	                        if (email !== '') {
+	                            (0, _jquery2.default)('#email')[0].setCustomValidity(email);
+	                        }
+	                        if (error !== '') {
+	                            console.error(error);
+	                        }
+	                        if (username === '' && email === '' && error === '') {
+	                            _this3[LAYER] = 1;
+	                            (0, _jquery2.default)('form').remove();
+	                            _this3[MESSAGE] = 'Account created successfully';
+	                        }
+	                    });
+	                } else {
+	                    if ((0, _jquery2.default)('#password').val() !== (0, _jquery2.default)('#confirm-password').val()) {
+	                        (0, _jquery2.default)('#confirm-password')[0].setCustomValidity('Passwords must match');
+	                    } else if ((0, _jquery2.default)('#password').val() === '' || (0, _jquery2.default)('#confirm-password').val() === '') {
+	                        (0, _jquery2.default)('#confirm-password')[0].setCustomValidity('Passwords cannot be blank');
+	                    }
+	                    if ((0, _jquery2.default)('#username').val() === '') {
+	                        (0, _jquery2.default)('#username')[0].setCustomValidity('Username cannot be blank');
+	                    }
+	                    if ((0, _jquery2.default)('#email').val() === '') {
+	                        (0, _jquery2.default)('#email')[0].setCustomValidity('Email cannot be blank');
+	                    } else {
+	                        (0, _jquery2.default)('#email')[0].setCustomValidity('');
+	                    }
+	                }
+	            }
+	        }
+	    }, {
+	        key: FORM,
+	        value: function value(evt) {
+	            (0, _jquery2.default)('body').append((0, _jquery2.default)('<form></form>').submit(function () {
+	                return false;
+	            }));
+	            (0, _jquery2.default)('form').append((0, _jquery2.default)('<input>').attr({
+	                id: 'username',
+	                type: 'text',
+	                placeholder: 'Username',
+	                required: true
+	            }), (0, _jquery2.default)('<input>').attr({
+	                id: 'password',
+	                type: 'password',
+	                placeholder: 'Password',
+	                required: true
+	            }));
+	            if (evt === 'signup') {
+	                (0, _jquery2.default)('form').append((0, _jquery2.default)('<input>').attr({
+	                    id: 'confirm-password',
+	                    type: 'password',
+	                    placeholder: 'Confirm Password',
+	                    required: true
+	                }), (0, _jquery2.default)('<input>').attr({
+	                    id: 'email',
+	                    type: 'email',
+	                    placeholder: 'email@example.com',
+	                    required: true
+	                }));
+	            }
+	            (0, _jquery2.default)('input').css({
+	                left: _canvas.$canvas.width() / 2 - 150,
+	                width: 300,
+	                height: 50,
+	                'line-height': 50,
+	                padding: 10,
+	                'font-size': 24,
+	                'border-radius': 25
+	            }).on('input', function () {
+	                (0, _jquery2.default)(this)[0].setCustomValidity('');
+	            });
+	            (0, _jquery2.default)('#username').focus();
+	        }
+	    }]);
+	
+	    return Menu;
+	})(_actor.Actor);
+	
+	exports.default = { Menu: Menu };
+
+/***/ },
+/* 252 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	    A base Actor class, which should be extended for every Actor in the game
+	*/
+	'use strict';
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.Actor = undefined;
+	
+	var _sprite = __webpack_require__(246);
+	
+	var _canvas = __webpack_require__(191);
+	
+	var _event = __webpack_require__(250);
+	
+	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var POS = Symbol('POS');
+	var SPRITE = Symbol('SPRITE');
+	var FRAME = Symbol('FRAME');
+	var Actor = exports.Actor = (function () {
+	    function Actor() {
+	        var _this = this;
+	
+	        var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	
+	        _classCallCheck(this, Actor);
+	
+	        if (new.target === Actor) {
+	            // jshint ignore:line
+	            throw new TypeError('Actor is an abstract class and cannot be instantiated');
+	        }
+	        this[POS] = { x: 0, y: 0, z: 0 };
+	        this[SPRITE] = new _sprite.Sprite();
+	        this[FRAME] = 0;
+	        if (!opts.noEvents) {
+	            (0, _event.on)('mouseheld', function (which) {
+	                return _this.mouse(which);
+	            })('mousedown', function (which) {
+	                return _this.mousedown(which);
+	            })('mouseup', function (which) {
+	                return _this.mouseup(which);
+	            })('keyheld', function (which) {
+	                return _this.key(which);
+	            })('keydown', function (which) {
+	                return _this.keydown(which);
+	            })('keyup', function (which) {
+	                return _this.keyup(which);
+	            });
+	        }
+	    }
+	
+	    _createClass(Actor, [{
+	        key: 'mouse',
+	        value: function mouse(which) {}
+	    }, {
+	        key: 'mouseup',
+	        value: function mouseup(which) {}
+	    }, {
+	        key: 'mousedown',
+	        value: function mousedown(which) {}
+	    }, {
+	        key: 'key',
+	        value: function key(which) {}
+	    }, {
+	        key: 'keyup',
+	        value: function keyup(which) {}
+	    }, {
+	        key: 'keydown',
+	        value: function keydown(which) {}
+	    }, {
+	        key: 'step',
+	        value: function step() {}
+	    }, {
+	        key: 'draw',
+	        value: function draw() {
+	            this.sprite.draw(this.frame, this.x, this.y);
+	        }
+	    }, {
+	        key: 'x',
+	        get: function get() {
+	            return this[POS].x;
+	        },
+	        set: function set(x) {
+	            if (typeof x === 'number') {
+	                this[POS].x = x;
+	                return true;
+	            } else {
+	                throw new TypeError('Cannot set x to a ' + (typeof x === 'undefined' ? 'undefined' : _typeof(x)));
+	            }
+	        }
+	    }, {
+	        key: 'y',
+	        get: function get() {
+	            return this[POS].y;
+	        },
+	        set: function set(y) {
+	            if (typeof y === 'number') {
+	                this[POS].y = y;
+	                return true;
+	            } else {
+	                throw new TypeError('Cannot set y to a ' + (typeof y === 'undefined' ? 'undefined' : _typeof(y)));
+	            }
+	        }
+	    }, {
+	        key: 'z',
+	        get: function get() {
+	            return this[POS].z;
+	        },
+	        set: function set(z) {
+	            if (typeof z === 'number') {
+	                this[POS].z = z;
+	                return true;
+	            } else {
+	                throw new TypeError('Cannot set z to a ' + (typeof z === 'undefined' ? 'undefined' : _typeof(z)));
+	            }
+	        }
+	    }, {
+	        key: 'sprite',
+	        get: function get() {
+	            return this[SPRITE];
+	        },
+	        set: function set(s) {
+	            if (s instanceof _sprite.Sprite) {
+	                this[SPRITE] = s;
+	                return true;
+	            } else {
+	                throw new TypeError('Cannot set sprite to a ' + (typeof s === 'undefined' ? 'undefined' : _typeof(s)));
+	            }
+	        }
+	    }, {
+	        key: 'frame',
+	        get: function get() {
+	            return this[FRAME];
+	        },
+	        set: function set(f) {
+	            if (typeof f === 'number') {
+	                this[FRAME] = f % this.sprite.frames.length;
+	                return true;
+	            } else {
+	                throw new TypeError('Cannot set frame to a ' + (typeof f === 'undefined' ? 'undefined' : _typeof(f)));
+	            }
+	        }
+	    }]);
+	
+	    return Actor;
+	})();
+	
+	exports.default = { Actor: Actor };
+
+/***/ },
+/* 253 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var globals = {};
+	
+	var set = exports.set = function set(k, v) {
+	  return globals[k] = v;
+	};
+	var get = exports.get = function get(k) {
+	  return globals[k];
+	};
+	var remove = exports.remove = function remove(k) {
+	  return delete globals[k];
+	};
+	exports.default = { set: set, get: get };
 
 /***/ }
 /******/ ]);

@@ -42,9 +42,9 @@ export const image = (...args) => {
     c2d.drawImage(...args);
 };
 
-export const sprite = (spr, subimage, x, y) => {
+export const sprite = (spr, subimage, x, y, w, h) => {
     if(spr.image instanceof Image) {
-        c2d.drawImage(spr.image, ...spr.frames[subimage], x, y, spr.frames[subimage].h, spr.frames[subimage].w);
+        c2d.drawImage(spr.image, ...spr.frames[subimage], x, y, w || spr.frames[subimage].w, h || spr.frames[subimage].h);
     }
 };
 
@@ -194,7 +194,11 @@ export const Path = class {
 
     contains(...args) {
         this[GENERATE]();
-        return c2d.isPointInPath(...args);
+        if(args.length === 2) {
+            return c2d.isPointInPath(...args);
+        } else {
+            return c2d.isPointInPath(args[2] - args[0], args[3] - args[1]);
+        }
     }
 
     copy() {

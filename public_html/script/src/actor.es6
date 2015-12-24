@@ -22,8 +22,8 @@ export const Actor = class {
                 ('mousedown',   (which) => this.mousedown(which))
                 ('mouseup',     (which) => this.mouseup(which))
                 ('keyheld',     (which) => this.key(which))
-                ('keydown',     (which) => this.keyup(which))
-                ('keyup',       (which) => this.keydown(which));
+                ('keydown',     (which) => this.keydown(which))
+                ('keyup',       (which) => this.keyup(which));
         }
     }
 
@@ -55,7 +55,7 @@ export const Actor = class {
         } else {
             throw new TypeError(`Cannot set z to a ${typeof z}`);
         }
-}
+    }
 
     get sprite() { return this[SPRITE]; }
     set sprite(s) {
@@ -80,8 +80,6 @@ export const Actor = class {
     mouse(which) {}
     mouseup(which) {}
     mousedown(which) {}
-    mouseenter() {}
-    mouseleave() {}
 
     key(which) {}
     keyup(which) {}

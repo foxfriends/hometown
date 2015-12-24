@@ -11,7 +11,7 @@ import draw from '../../../script/src/draw.es6';
 import event from '../../../script/src/event.es6';
 
 describe('actor.es6', () => {
-    const img = new Image(); img.src = 'image.png';
+    const img = new Image(); img.src = '../../../image/water.png';
     const spr = new Sprite(img, 32, 64, [[0, 0], [32, 0], [64, 0], [0, 64], [32, 64], [64, 64]]);
     const MyActor = class extends Actor {};
     const act = new MyActor();
@@ -112,7 +112,9 @@ describe('actor.es6', () => {
             it('should draw the sprite (by default)', () => {
                 const drawSprite = stub(draw, 'sprite');
                 act.draw();
-                expect(drawSprite).to.have.been.calledWith(act.sprite, act.frame, act.x, act.y);
+                setTimeout(() => {
+                    expect(drawSprite).to.have.been.calledWith(act.sprite, act.frame, act.x, act.y);
+                }, 0);
                 drawSprite.restore();
             });
         });

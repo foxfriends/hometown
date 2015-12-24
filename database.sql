@@ -70,7 +70,9 @@ CREATE TABLE accounts (
     user_id SERIAL PRIMARY KEY,
     username VARCHAR(512) UNIQUE NOT NULL,
     password VARCHAR(512) NOT NULL,
-    email VARCHAR(512) UNIQUE NOT NULL
+    salt VARCHAR(512) NOT NULL, 
+    email VARCHAR(512) UNIQUE NOT NULL,
+    join_date TIMESTAMP NOT NULL DEFAULT (NOW()::TIMESTAMP)
 );
 CREATE INDEX accounts_user_index ON accounts (user_id);
 CREATE INDEX accounts_username_index ON accounts (username);

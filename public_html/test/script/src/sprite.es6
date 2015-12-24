@@ -1,24 +1,24 @@
 'use strict';
 
 import {expect} from 'chai';
-import {stub} from 'sinon';
+import {spy, stub} from 'sinon';
 
 import {Sprite} from '../../../script/src/sprite.es6';
 import draw from '../../../script/src/draw.es6';
 
 describe('sprite.es6', () => {
-    const img = new Image(); img.src = 'image.png';
+    const img = new Image(); img.src = '../../../image/water.png';
     const spr = new Sprite(img, 32, 64, [[0, 0], [32, 0], [64, 0], [0, 64], [32, 64], [64, 64]]);
 
     describe('Sprite', () => {
         it('should be constructed with new Sprite(image, frameWidth, frameHeight, frames)', () => {
-            expect(new Sprite('image.png', 32, 32, [[0, 0], [32, 0], [64, 0], [0, 32], [32, 32], [64, 32]]))
+            expect(new Sprite('../../../image/water.png', 32, 32, [[0, 0], [32, 0], [64, 0], [0, 32], [32, 32], [64, 32]]))
                 .to.be.an.instanceof(Sprite);
             expect(new Sprite(img, 32, 64, [[0, 0], [32, 0], [64, 0], [0, 64], [32, 64], [64, 64]]))
                 .to.deep.equal(spr);
         });
         it('should convert a URL for img to an Image object when constructed', () => {
-            expect(new Sprite('image.png', 32, 32, [[0, 0], [32, 0], [64, 0], [0, 32], [32, 32], [32, 64]]).image)
+            expect(new Sprite('../../../image/water.png', 32, 32, [[0, 0], [32, 0], [64, 0], [0, 32], [32, 32], [32, 64]]).image)
                 .to.be.an.instanceof(Image);
         });
         describe('#width', () => {
@@ -68,11 +68,28 @@ describe('sprite.es6', () => {
                 });
             });
         });
-        describe('#draw(subimage, x, y)', () => {
-            it('should be an alias for draw.sprite(this, subimage, x, y)', () => {
+        describe('#whenLoaded()', () => {
+            it('should return a Promise', () => {
+                expect(spr.whenLoaded()).to.be.instanceof(Promise);
+            });
+            it('should resolve when the image is loaded', (done) => {
+                spr.whenLoaded().then(() => done());
+            });
+            it('should run the callback immediately if loaded, or never if not loaded', () => {
+                const a = spy();
+                spr.whenLoaded(a);
+                expect(a).to.have.been.calledOnce;
+            });
+        });
+        describe('#draw(subimage, x, y[, w, h])', () => {
+            it('should call draw.sprite(this, subimage, x, y[, w, h]) once the image loads', () => {
                 const drawSprite = stub(draw, 'sprite');
                 spr.draw(1, 32, 32);
-                expect(drawSprite).to.have.been.calledWith(spr, 1, 32, 32);
+                spr.draw(1, 32, 32, 64, 64);
+                setTimeout(() => {
+                    expect(drawSprite).to.have.been.calledWith(spr, 1, 32, 32);
+                    expect(drawSprite).to.have.been.calledWith(spr, 1, 32, 32, 64, 64);
+                }, 0);
                 drawSprite.restore();
             });
         });
