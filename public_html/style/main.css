@@ -1,8 +1,4 @@
 @font-face {
-    src: url('../fonts/YOzFontProNR.otf');
-    font-family: 'YOzFont';
-}
-@font-face {
     src: url('../fonts/RiiPopkkR.otf');
     font-family: 'Rii Pop';
 }
@@ -22,7 +18,7 @@ canvas.game {
 }
 
 input {
-    font-family: 'Rii Pop',cursive;
+    font-family: 'Rii Pop', cursive;
     box-sizing: border-box;
     display: block;
     background-color: transparent;
