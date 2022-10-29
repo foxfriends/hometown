@@ -33,7 +33,7 @@
   "devDependencies": {
     "chai": "^3.4.1",
     "chai-as-promised": "^5.2.0",
-    "css-loader": "^0.23.0",
+    "css-loader": "^6.7.1",
     "del": "^2.2.0",
     "mocha": "^2.3.4",
     "mocha-loader": "^0.7.1",
