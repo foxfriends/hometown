@@ -36,12 +36,12 @@
     "css-loader": "^6.7.1",
     "del": "^2.2.0",
     "mocha": "^2.3.4",
-    "mocha-loader": "^0.7.1",
+    "mocha-loader": "^5.1.5",
     "sinon": "^2.0.0-pre",
     "sinon-as-promised": "^4.0.0",
     "sinon-chai": "^2.8.0",
     "style-loader": "^0.13.0",
-    "webpack": "^3.5.5"
+    "webpack": "^5.75.0"
   },
   "repository": {
     "type": "git",
